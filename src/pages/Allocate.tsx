@@ -31,7 +31,7 @@ const Allocate: React.FC = () => {
                   <img src={ProfileImg} alt="" />
                 </div>
                 <div className="profile-name">
-                  <h5>Person 1</h5>
+                  <h5>Person {i + 1}</h5>
                 </div>
               </div>
             ))}
