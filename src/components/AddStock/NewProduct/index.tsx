@@ -119,13 +119,6 @@ const NewProducts: React.FC = () => {
                     )}
                   </label>
                 </div>
-                {/* <div className="upload-image-box">
-                  <h4>
-                    Upload <br />
-                    Image
-                  </h4>
-                  <img src={PlusIcon} alt="" />
-                </div> */}
               </div>
               <div className="product-content">
                 <div className="cancel-btn">

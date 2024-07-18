@@ -1,7 +1,7 @@
 .header-wrapper {
   display: flex;
   justify-content: space-between;
-  padding: 30px 37px;
+  padding: 25px 37px;
   .header-content {
     .logo {
       h2 {
@@ -65,6 +65,58 @@
           color: #6a6969;
           font-weight: 400;
         }
+      }
+    }
+  }
+}
+.dashboard-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 37px;
+  margin-left: 190px;
+  margin-bottom: 15px;
+  .heading {
+    h4 {
+      font-size: 32px;
+      font-weight: 500;
+      color: #515050;
+      span {
+        color: #ffbb64;
+      }
+    }
+  }
+  .dashboard-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    .flex-item {
+      display: flex;
+      align-items: center;
+      background: #d9d9d9;
+      padding: 4px 18px;
+      border-radius: 8px;
+      justify-content: space-between;
+      border-radius: 50px;
+      cursor: pointer;
+      p {
+        padding: 11px 14px;
+        border-radius: 20px;
+        color: #464343;
+        font-size: 12px;
+        &:hover {
+          background: #fff;
+          color: #000;
+        }
+      }
+    }
+    .month-input {
+      input {
+        outline: none;
+        border: none;
+        background: #d9d9d9;
+        padding: 13px 26px;
+        border-radius: 50px;
       }
     }
   }

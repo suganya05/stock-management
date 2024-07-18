@@ -4,12 +4,11 @@
   background: #dbdbdb;
   border-radius: 15px;
   padding: 16px;
-  margin-top: 25px;
   .topSales-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     h4 {
       font-size: 17px;
     }
@@ -18,7 +17,7 @@
     }
   }
   .topSales-container-box {
-    height: 150px;
+    height: 160px;
     overflow-y: auto;
     &::-webkit-scrollbar {
       width: 0px;

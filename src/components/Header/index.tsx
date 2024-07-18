@@ -1,10 +1,12 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 import PlusIcon from "../../assets/icons/plus-icon.png";
 import Profile from "../../assets/icons/profile.png";
 import Date from "../../assets/icons/Date.png";
 import "./Header.scss";
 
 const Header: React.FC = () => {
+  const location = useLocation();
   return (
     <>
       <div className="header-wrapper">
@@ -40,6 +42,50 @@ const Header: React.FC = () => {
           </div>
         </div>
       </div>
+      {location.pathname === "/dashboard" && (
+        <div className="dashboard-container">
+          <div className="heading">
+            <h4>
+              Welcome, <span>Smith</span>
+            </h4>
+          </div>
+          <div className="dashboard-head">
+            <div className="flex-item">
+              <p>Today</p>
+              <p>Week</p>
+              <p>Month</p>
+              <p>Year</p>
+            </div>
+            <div className="month-input">
+              <form action="">
+                <input type="month" />
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+      {location.pathname === "/report" && (
+        <div className="dashboard-container">
+          <div className="heading">
+            <h4>
+              Welcome, <span>Smith</span>
+            </h4>
+          </div>
+          <div className="dashboard-head">
+            <div className="flex-item">
+              <p>Today</p>
+              <p>Week</p>
+              <p>Month</p>
+              <p>Year</p>
+            </div>
+            <div className="month-input">
+              <form action="">
+                <input type="month" />
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
