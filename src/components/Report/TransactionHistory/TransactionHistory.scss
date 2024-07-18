@@ -1,0 +1,131 @@
+.transaction-wrapper {
+  max-width: 100%;
+  width: 100%;
+  background: #dbdbdb;
+  border-radius: 15px;
+  padding: 16px;
+  margin-top: 14px;
+  .transaction-head {
+    margin-bottom: 16px;
+    h4 {
+      font-size: 17px;
+    }
+  }
+  .table-wrapper {
+    width: 100%;
+    white-space: nowrap;
+    height: 140px;
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+      width: 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      .align-right {
+        text-align: right;
+      }
+
+      .align-left {
+        text-align: left;
+      }
+
+      thead {
+        th {
+          color: #6a6969;
+          font-size: 13px;
+          font-weight: 600;
+          background-color: #ffbb64;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          padding: 12px 5px 12px 12px;
+          color: #000;
+
+          > span {
+            display: flex;
+            align-items: center;
+          }
+        }
+      }
+      tbody {
+        background: #fff;
+        tr {
+          cursor: pointer;
+        }
+        .flex-item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          span {
+            color: #6b6754;
+            font-size: 18px;
+            font-weight: 700;
+          }
+        }
+        .img-box {
+          border: 1px solid #6caa7d;
+          border-radius: 12px;
+          width: 42px;
+          height: 42px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          img {
+            width: 40px;
+            border-radius: 10px;
+          }
+        }
+        .rupee-img {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          img {
+            width: 13px;
+            height: 15px;
+          }
+          span {
+            font-size: 17px;
+            font-weight: 800;
+          }
+        }
+        .date {
+          span {
+            font-weight: 600;
+            font-size: 14px;
+          }
+        }
+        .status {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          background: #ddf7c9;
+          border-radius: 10px;
+          width: fit-content;
+          padding: 5px 12px;
+          .box {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #008000;
+          }
+          h5 {
+            color: #000;
+            font-size: 12px;
+            font-weight: 600;
+          }
+        }
+        td {
+          border-bottom: 1px solid #e7e7e7;
+          height: 60px;
+          text-align: left;
+          font-size: 15px;
+          font-weight: 400;
+          line-height: 1;
+          white-space: nowrap;
+          padding: 0 5px;
+        }
+      }
+    }
+  }
+}

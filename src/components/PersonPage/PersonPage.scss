@@ -1,0 +1,100 @@
+.person-page-wrapper {
+  .person-page-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    .profile-img {
+      img {
+        width: 50px;
+        height: 57px;
+        object-fit: cover;
+        border: 1px solid #ffbb64;
+        border-radius: 10px;
+      }
+    }
+    .person {
+      h5 {
+        font-size: 24px;
+        color: #ffbb64;
+        font-weight: 500;
+      }
+    }
+  }
+  .person-page-container {
+    display: grid;
+    grid-template-columns: 0.9fr 1fr;
+    .form-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 0.5fr;
+      margin-top: 30px;
+      .part-one {
+        h4 {
+          font-size: 25px;
+          font-weight: 500;
+        }
+        .form-group {
+          label {
+            p {
+              font-size: 15px;
+              color: #6a6969;
+            }
+          }
+          select {
+            width: 300px;
+            padding: 8px;
+            border-radius: 10px;
+            border-color: #b5b3b3;
+            margin-top: 5px;
+            outline: none;
+          }
+        }
+        .name-input {
+          margin-top: 30px;
+        }
+        .input {
+          margin-top: 25px;
+          input {
+            margin-top: 5px;
+            width: 80px;
+            padding: 6px 8px;
+            border-radius: 10px;
+            border: 1px solid #b5b3b3;
+            outline: none;
+          }
+        }
+        .cancel-btn {
+          margin-top: 160px;
+          h5 {
+            border-bottom: 1px solid #000;
+            font-size: 14px;
+            font-weight: 500;
+            width: fit-content;
+          }
+        }
+      }
+      .part-two {
+        .product-img-box {
+          max-width: 170px;
+          width: 100%;
+          height: 190px;
+          background: #f9f9f9;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          margin-top: 30px;
+          cursor: pointer;
+          h4 {
+            font-size: 15px;
+            text-align: center;
+            font-weight: 600;
+          }
+        }
+        .add-stock-btn {
+          margin-top: 90px;
+        }
+      }
+    }
+  }
+}

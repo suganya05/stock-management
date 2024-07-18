@@ -1,0 +1,71 @@
+.header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  padding: 30px 37px;
+  .header-content {
+    .logo {
+      h2 {
+        font-family: "Josefin Sans", sans-serif;
+        font-weight: 600;
+        font-size: 30px;
+      }
+    }
+  }
+  .header-container {
+    display: flex;
+    align-items: center;
+    gap: 80px;
+    .header-content-two {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      .plus-icon {
+        img {
+          width: 40px;
+        }
+      }
+      .profile-content {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        .profile {
+          img {
+            width: 40px;
+          }
+        }
+        .content {
+          h4 {
+            font-size: 15px;
+            font-weight: 500;
+          }
+          h5 {
+            font-size: 12px;
+            color: #6a6969;
+            font-weight: 400;
+          }
+        }
+      }
+    }
+    .month {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      .date {
+        img {
+          width: 40px;
+        }
+      }
+      .month-content {
+        h4 {
+          font-size: 15px;
+          font-weight: 500;
+        }
+        h5 {
+          font-size: 12px;
+          color: #6a6969;
+          font-weight: 400;
+        }
+      }
+    }
+  }
+}

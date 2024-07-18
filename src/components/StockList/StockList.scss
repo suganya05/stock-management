@@ -1,0 +1,109 @@
+.stockList-wrapper {
+  margin-left: 40px;
+  border-left: 1px solid #d9d8d8;
+
+  .stock-list-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+
+    .stock-head {
+      margin-left: 30px;
+      h4 {
+        font-size: 25px;
+        font-weight: 500;
+      }
+    }
+    .drop-down-list {
+      select {
+        border: 1px solid #ffbb64;
+        outline: none;
+        background: #f6f6f6;
+        border-radius: 10px;
+        padding: 6px 8px;
+        color: #ffbb64;
+        cursor: pointer;
+      }
+    }
+  }
+  .data-content {
+    height: 350px;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      width: 1px;
+    }
+    .box {
+      background: #e3e1e1;
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 12px;
+      margin-left: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .flex-box {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        .img {
+          img {
+            width: 50px;
+            border-radius: 10px;
+          }
+        }
+        .para {
+          color: #6a6969;
+          font-size: 15px;
+          font-weight: 500;
+
+          .flex-rupee-content {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-top: 12px;
+            .flex-rupee {
+              display: flex;
+              align-items: center;
+              gap: 4px;
+              .flex {
+                display: flex;
+                align-items: center;
+                gap: 2px;
+              }
+            }
+          }
+        }
+      }
+      .add-delete-content {
+        display: flex;
+        align-items: center;
+        gap: 40px;
+        .litre {
+          p {
+            font-size: 16px;
+            font-weight: 600;
+            span {
+              color: #6a6969;
+              font-size: 12px;
+            }
+          }
+        }
+        .edit-icon {
+          cursor: pointer;
+        }
+        .delete-icon {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  .confirm-stock-btn {
+    margin-left: 30px;
+    margin-top: 25px;
+    button {
+      width: 100%;
+    }
+  }
+}

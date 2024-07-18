@@ -1,0 +1,51 @@
+.revenue-wrapper {
+  max-width: 55%;
+  width: 100%;
+  background: #dbdbdb;
+  border-radius: 15px;
+  padding: 16px;
+  margin-top: 25px;
+  .revenue-head {
+    margin-bottom: 16px;
+    h4 {
+      font-size: 17px;
+    }
+  }
+  .total-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    .total-wrapper {
+      .flex-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        .dot {
+          width: 10px;
+          height: 10px;
+          background: #ffbb64;
+          border-radius: 50%;
+        }
+        p {
+          font-size: 13px;
+          font-weight: 500;
+        }
+      }
+      .flex-content {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 6px;
+        img {
+          width: 9px;
+          height: 12px;
+        }
+        h3 {
+          font-size: 20px;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,70 @@
+.sidebar-wrapper {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .sidebar-content {
+    display: flex;
+    flex-direction: column;
+
+    .icon {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 60px;
+      text-decoration: none;
+      cursor: pointer;
+
+      svg {
+        transition: fill 0.3s;
+      }
+
+      h5 {
+        font-size: 15px;
+        font-weight: 400;
+        color: #6a6969;
+        transition: color 0.3s;
+      }
+
+      &.active {
+        svg {
+          fill: #ffbb64;
+        }
+
+        h5 {
+          color: #ffbb64;
+        }
+      }
+    }
+  }
+
+  .logout {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 55px;
+    cursor: pointer;
+
+    svg {
+      transition: fill 0.3s;
+    }
+
+    h5 {
+      font-size: 15px;
+      font-weight: 400;
+      color: #6a6969;
+      transition: color 0.3s;
+    }
+
+    &.active {
+      svg {
+        fill: #ffbb64;
+      }
+
+      h5 {
+        color: #ffbb64;
+      }
+    }
+  }
+}

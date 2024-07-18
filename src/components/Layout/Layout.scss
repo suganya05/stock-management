@@ -1,0 +1,12 @@
+.layoutWrapper {
+  height: calc(100vh - 182.4px);
+  display: flex;
+  .layout-children {
+    width: calc(100vw - 250px);
+    height: calc(100vh - 150px);
+    margin-left: 45px;
+    background: #fff;
+    border-radius: 25px;
+    padding: 30px 45px;
+  }
+}

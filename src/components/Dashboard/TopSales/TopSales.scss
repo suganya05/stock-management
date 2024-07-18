@@ -1,0 +1,65 @@
+.topSales-wrapper {
+  max-width: 25%;
+  width: 100%;
+  background: #dbdbdb;
+  border-radius: 15px;
+  padding: 16px;
+  margin-top: 25px;
+  .topSales-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    h4 {
+      font-size: 17px;
+    }
+    p {
+      font-size: 12px;
+    }
+  }
+  .topSales-container-box {
+    height: 150px;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      width: 0px;
+    }
+    .topSales-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #fff;
+      margin: 8px 0;
+      padding: 8px 14px;
+      border-radius: 10px;
+      .number {
+        font-size: 20px;
+        color: #6d6d6d;
+      }
+      .img {
+        img {
+          width: 47px;
+          height: 42px;
+          object-fit: contain;
+          border-radius: 12px;
+        }
+      }
+      .para {
+        h3 {
+          font-size: 14px;
+          color: #6a6969;
+          font-weight: 500;
+        }
+        p {
+          font-size: 14px;
+          color: #fbb80c;
+          margin-top: 6px;
+        }
+      }
+    }
+  }
+  .add-btn {
+    button {
+      width: 100%;
+    }
+  }
+}
