@@ -1,5 +1,9 @@
 .new-products-wrapper {
   .new-products-content {
+    background: #f0f0f0;
+    width: 520px;
+    padding: 22px 30px;
+    border-radius: 10px;
     .head {
       margin-top: 20px;
       margin-bottom: 45px;
@@ -12,7 +16,7 @@
       .new-product-form-group {
         display: flex;
         align-items: center;
-        gap: 80px;
+        gap: 90px;
         .name {
           label {
             p {
