@@ -31,12 +31,8 @@ const TopSales: React.FC = () => {
   return (
     <div className="topSales-wrapper">
       <div className="topSales-head">
-        <div>
-          <h4>TOP SALES</h4>
-        </div>
-        <div>
-          <p>View All</p>
-        </div>
+        <h4>TOP SALES</h4>
+        <p>View All</p>
       </div>
       <div className="topSales-container-box">
         {data.map((f, index) => {

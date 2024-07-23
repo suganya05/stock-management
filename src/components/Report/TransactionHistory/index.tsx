@@ -1,6 +1,7 @@
 import React from "react";
 import ImgThree from "../../../assets/images/img-3.png";
 import Rupee from "../../../assets/images/rupee.png";
+import Edit from "../../../assets/icons/edit.png";
 import "./TransactionHistory.scss";
 
 const TransactionHistory: React.FC = () => {
@@ -8,6 +9,7 @@ const TransactionHistory: React.FC = () => {
     <div className="transaction-wrapper">
       <div className="transaction-head">
         <h4>Transaction History</h4>
+        <p>View All</p>
       </div>
       <div className="table-wrapper">
         <table>
@@ -27,6 +29,9 @@ const TransactionHistory: React.FC = () => {
               </th>
               <th>
                 <span>Executed By</span>
+              </th>
+              <th>
+                <span>Edit</span>
               </th>
             </tr>
           </thead>
@@ -58,6 +63,9 @@ const TransactionHistory: React.FC = () => {
                 </td>
                 <td className="date">
                   <span>Person 1</span>
+                </td>
+                <td className="edit-img">
+                  <img src={Edit} alt="" />
                 </td>
               </tr>
             ))}

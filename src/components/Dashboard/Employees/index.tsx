@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "../../Button";
 import "./Employees.scss";
+import { Link } from "react-router-dom";
 
 const data = [
   {
@@ -47,6 +48,11 @@ const Employees: React.FC = () => {
       </div>
       <div className="add-employee">
         <Button varient="primary">Add Employee</Button>
+      </div>
+      <div className="check-attendance">
+        <Link to="/attendance">
+          <Button varient="primary">Check Attendance</Button>
+        </Link>
       </div>
     </div>
   );

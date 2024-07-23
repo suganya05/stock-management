@@ -5,6 +5,8 @@ import AddStock from "./pages/AddStock";
 import Allocate from "./pages/Allocate";
 import PersonPage from "./components/PersonPage";
 import Report from "./pages/Report";
+import Attendance from "./components/Attendance";
+import ConfirmStockList from "./components/ConfirmStockList";
 
 const App: React.FC = () => {
   return (
@@ -15,6 +17,8 @@ const App: React.FC = () => {
       <Route path="/addStock" element={<AddStock />} />
       <Route path="/allocate" element={<Allocate />} />
       <Route path="/person-page" element={<PersonPage />} />
+      <Route path="/attendance" element={<Attendance />} />
+      <Route path="/confirm-stock-list" element={<ConfirmStockList />} />
     </Routes>
   );
 };

@@ -8,6 +8,7 @@ const TopClient: React.FC = () => {
     <div className="topclient-wrapper">
       <div className="topclient-head">
         <h4>TOP CLIENTS</h4>
+        <p>View All</p>
       </div>
       <div className="table-wrapper">
         <table>

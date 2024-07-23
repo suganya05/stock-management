@@ -8,6 +8,7 @@ const DamageProduct: React.FC = () => {
     <div className="damage-product-wrapper">
       <div className="damage-product-head">
         <h4>DAMAGE PRODUCT</h4>
+        <p>View All</p>
       </div>
       <div className="table-wrapper">
         <table>

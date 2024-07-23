@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PlusIcon from "../../assets/icons/plus.png";
 import ArrowRight from "../../assets/icons/arrow-right.png";
 import Button from "../../components/Button";
@@ -29,8 +29,23 @@ const validationSchema = Yup.object().shape({
 });
 
 const AddProducts: React.FC = () => {
+  const [selectedImage, setSelectedImage] = useState<
+    string | ArrayBuffer | null
+  >(null);
+
   const handleSubmit = (values: FormValues) => {
     console.log(values);
+  };
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -55,72 +70,100 @@ const AddProducts: React.FC = () => {
           {() => (
             <Form className="form">
               <div className="flex-end-content">
-                <div>
-                  <div className="form-group name-input">
-                    <label htmlFor="productName">
-                      <p>Name</p>
-                    </label>
-                    <Field as="select" id="productName" name="productName">
-                      <option value="">-Select Product -</option>
-                      <option value="product1">Product 1</option>
-                      <option value="product2">Product 2</option>
-                      <option value="product3">Product 3</option>
-                    </Field>
-                    <ErrorMessage
-                      name="productName"
-                      component="div"
-                      className="error"
-                    />
-                  </div>
-                  <div className="form-group input">
-                    <label htmlFor="quantity">
-                      <p>Quantity</p>
-                    </label>
-                    <Field
-                      type="text"
-                      id="quantity"
-                      name="quantity"
-                      placeholder="Litre"
-                    />
-                    <ErrorMessage
-                      name="quantity"
-                      component="div"
-                      className="error"
-                    />
-                  </div>
-                  <div className="flex-content">
-                    <div className="form-group input">
-                      <label htmlFor="wholesalePrice">
-                        <p>Wholesale Price</p>
+                <div className="addProduct">
+                  <div>
+                    <div className="form-group name-input">
+                      <label htmlFor="productName">
+                        <p>Name</p>
                       </label>
-                      <Field
-                        type="text"
-                        id="wholesalePrice"
-                        name="wholesalePrice"
-                        placeholder="Rs"
-                      />
+                      <Field as="select" id="productName" name="productName">
+                        <option value="">-Select Product -</option>
+                        <option value="product1">Product 1</option>
+                        <option value="product2">Product 2</option>
+                        <option value="product3">Product 3</option>
+                      </Field>
                       <ErrorMessage
-                        name="wholesalePrice"
+                        name="productName"
                         component="div"
                         className="error"
                       />
                     </div>
                     <div className="form-group input">
-                      <label htmlFor="retailPrice">
-                        <p>Retail Price</p>
+                      <label htmlFor="quantity">
+                        <p>Quantity</p>
                       </label>
                       <Field
                         type="text"
-                        id="retailPrice"
-                        name="retailPrice"
-                        placeholder="Rs"
+                        id="quantity"
+                        name="quantity"
+                        placeholder="Litre"
                       />
                       <ErrorMessage
-                        name="retailPrice"
+                        name="quantity"
                         component="div"
                         className="error"
                       />
                     </div>
+                    <div className="flex-content">
+                      <div className="form-group input">
+                        <label htmlFor="wholesalePrice">
+                          <p>Wholesale Price</p>
+                        </label>
+                        <Field
+                          type="text"
+                          id="wholesalePrice"
+                          name="wholesalePrice"
+                          placeholder="Rs"
+                        />
+                        <ErrorMessage
+                          name="wholesalePrice"
+                          component="div"
+                          className="error"
+                        />
+                      </div>
+                      <div className="form-group input">
+                        <label htmlFor="retailPrice">
+                          <p>Retail Price</p>
+                        </label>
+                        <Field
+                          type="text"
+                          id="retailPrice"
+                          name="retailPrice"
+                          placeholder="Rs"
+                        />
+                        <ErrorMessage
+                          name="retailPrice"
+                          component="div"
+                          className="error"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="upload-image-box">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      id="upload-input"
+                      onChange={handleImageChange}
+                    />
+                    <label htmlFor="upload-input" className="upload-label">
+                      {selectedImage ? (
+                        <img
+                          src={selectedImage as string}
+                          alt="Uploaded"
+                          className="uploaded-image"
+                        />
+                      ) : (
+                        <div className="upload">
+                          <h4>
+                            Upload <br />
+                            CSV
+                          </h4>
+                          <img src={PlusIcon} alt="Plus Icon" />
+                        </div>
+                      )}
+                    </label>
                   </div>
                 </div>
 

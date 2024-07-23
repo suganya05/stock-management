@@ -81,6 +81,11 @@ const PersonPage: React.FC = () => {
                       className="error"
                     />
                   </div>
+                  <div className="product-img-box">
+                    <h4>
+                      Product <br /> Image
+                    </h4>
+                  </div>
                   <div className="cancel-btn">
                     <h5>Cancel</h5>
                   </div>
@@ -94,7 +99,9 @@ const PersonPage: React.FC = () => {
                   </Button>
                   <div className="product-img-box">
                     <h4>
-                      Product <br /> Image
+                      Add
+                      <br />
+                      CSV Stock
                     </h4>
                   </div>
                   <div className="add-stock-btn">

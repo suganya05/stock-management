@@ -9,6 +9,7 @@ import DeleteIcon from "../../assets/icons/delete.png";
 import ArrowRight from "../../assets/icons/arrow-right.png";
 import "./StockList.scss";
 import Button from "../Button";
+import { Link } from "react-router-dom";
 
 const data = [
   {
@@ -149,13 +150,15 @@ const StockList: React.FC = () => {
         })}
       </div>
       <div className="confirm-stock-btn">
-        <Button
-          varient="primary"
-          type="submit"
-          rightIcon={<img src={ArrowRight} alt="plus" />}
-        >
-          Confirm Stock List
-        </Button>
+        <Link to="/confirm-stock-list">
+          <Button
+            varient="primary"
+            type="submit"
+            rightIcon={<img src={ArrowRight} alt="plus" />}
+          >
+            Confirm Stock List
+          </Button>
+        </Link>
       </div>
     </div>
   );
