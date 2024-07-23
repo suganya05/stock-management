@@ -5,11 +5,15 @@ import RightArrow from "../../assets/icons/arrow-right.png";
 import LeftArrow from "../../assets/icons/arrow-left.png";
 import Layout from "../Layout";
 import "./Attendance.scss";
+import { Modal } from "../Modal";
 
 const Attendance: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState("");
+  const [isModalOpen, setModalState] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const sliderRef = useRef<Slider>(null);
+
+  const toggleModal = () => setModalState(!isModalOpen);
 
   const handleChange = (event: any) => {
     setSelectedOption(event.target.value);
@@ -109,12 +113,12 @@ const Attendance: React.FC = () => {
                             <span className="date">Dec 23, 2024</span>
                           </td>
                           <td>
-                            <div className="view-box">
+                            <div className="view-box" onClick={toggleModal}>
                               <span>VIEW</span>
                             </div>
                           </td>
                           <td>
-                            <div className="check-box">
+                            <div className="check-box" onClick={toggleModal}>
                               <span>CHECK</span>
                             </div>
                           </td>
@@ -145,6 +149,7 @@ const Attendance: React.FC = () => {
             </div>
           )}
         </div>
+        <Modal isOpen={isModalOpen} onClose={toggleModal}></Modal>
       </div>
     </Layout>
   );

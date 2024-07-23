@@ -7,6 +7,9 @@ import PersonPage from "./components/PersonPage";
 import Report from "./pages/Report";
 import Attendance from "./components/Attendance";
 import ConfirmStockList from "./components/ConfirmStockList";
+import DamageProductView from "./components/DamageProductView";
+import CompanyDetails from "./components/CompanyDetails";
+import TransactionHistoryDetails from "./components/TransactionHistoryDetails";
 
 const App: React.FC = () => {
   return (
@@ -19,6 +22,12 @@ const App: React.FC = () => {
       <Route path="/person-page" element={<PersonPage />} />
       <Route path="/attendance" element={<Attendance />} />
       <Route path="/confirm-stock-list" element={<ConfirmStockList />} />
+      <Route path="/damage-product-view" element={<DamageProductView />} />
+      <Route path="/company-details" element={<CompanyDetails />} />
+      <Route
+        path="/transaction-history-details"
+        element={<TransactionHistoryDetails />}
+      />
     </Routes>
   );
 };

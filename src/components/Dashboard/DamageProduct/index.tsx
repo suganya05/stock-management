@@ -1,14 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import ImgThree from "../../../assets/images/img-3.png";
 import ImgFour from "../../../assets/images/img-4.png";
 import "./DamageProduct.scss";
+import { Link } from "react-router-dom";
+import { Modal } from "../../Modal";
 
 const DamageProduct: React.FC = () => {
+  const [isModalOpen, setModalState] = useState(false);
+
+  const toggleModal = () => setModalState(!isModalOpen);
   return (
     <div className="damage-product-wrapper">
       <div className="damage-product-head">
         <h4>DAMAGE PRODUCT</h4>
-        <p>View All</p>
+        <Link to="/damage-product-view">
+          <p>View All</p>
+        </Link>
       </div>
       <div className="table-wrapper">
         <table>
@@ -40,7 +47,7 @@ const DamageProduct: React.FC = () => {
                   </div>
                 </td>
                 <td>
-                  <div className="view-text">
+                  <div className="view-text" onClick={toggleModal}>
                     <p>VIEW</p>
                   </div>
                 </td>
@@ -55,6 +62,7 @@ const DamageProduct: React.FC = () => {
           </tbody>
         </table>
       </div>
+      <Modal isOpen={isModalOpen} onClose={toggleModal}></Modal>
     </div>
   );
 };
