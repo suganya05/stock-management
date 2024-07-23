@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import Layout from "../Layout";
 import LeftArrow from "../../assets/icons/arrow-left.png";
 import ImgThree from "../../assets/images/img-3.png";
 import ImgFour from "../../assets/images/img-4.png";
 import { useNavigate } from "react-router-dom";
 import "./DamageProductView.scss";
+import { Modal } from "../Modal";
 
 const DamageProductView: React.FC = () => {
   const navigate = useNavigate();
+  const [isModalOpen, setModalState] = useState(false);
+
+  const toggleModal = () => setModalState(!isModalOpen);
 
   const handleGoBack = () => {
     navigate(-1);
@@ -50,7 +54,7 @@ const DamageProductView: React.FC = () => {
                     </div>
                   </td>
                   <td>
-                    <div className="view-text">
+                    <div className="view-text" onClick={toggleModal}>
                       <p>VIEW</p>
                     </div>
                   </td>
@@ -66,6 +70,7 @@ const DamageProductView: React.FC = () => {
           </table>
         </div>
       </div>
+      <Modal isOpen={isModalOpen} onClose={toggleModal}></Modal>
     </Layout>
   );
 };
