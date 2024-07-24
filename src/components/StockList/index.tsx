@@ -10,6 +10,7 @@ import ArrowRight from "../../assets/icons/arrow-right.png";
 import "./StockList.scss";
 import Button from "../Button";
 import { Link } from "react-router-dom";
+import { Modal } from "../Modal";
 
 const data = [
   {
@@ -80,6 +81,9 @@ const data = [
 
 const StockList: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState("");
+  const [isModalOpen, setModalState] = useState(false);
+
+  const toggleModal = () => setModalState(!isModalOpen);
 
   const handleChange = (event: any) => {
     setSelectedOption(event.target.value);
@@ -138,10 +142,10 @@ const StockList: React.FC = () => {
                     {f.count} <span>{f.litre}</span>
                   </p>
                 </div>
-                <div className="edit-icon">
+                <div className="edit-icon" onClick={toggleModal}>
                   <img src={EditIcon} alt="" />
                 </div>
-                <div className="delete-icon">
+                <div className="delete-icon" onClick={toggleModal}>
                   <img src={DeleteIcon} alt="" />
                 </div>
               </div>
@@ -160,6 +164,7 @@ const StockList: React.FC = () => {
           </Button>
         </Link>
       </div>
+      <Modal isOpen={isModalOpen} onClose={toggleModal}></Modal>
     </div>
   );
 };
