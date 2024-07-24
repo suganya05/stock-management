@@ -4,6 +4,7 @@ import "../styles/AddStock.scss";
 import AddProducts from "../components/AddStock";
 import NewProducts from "../components/AddStock/NewProduct";
 import ProductList from "../components/AddStock/ProductList";
+import OutletList from "../components/AddStock/OutletList";
 
 const AddStock: React.FC = () => {
   const [activeComponent, setActiveComponent] = useState("Add-Products");
@@ -39,11 +40,20 @@ const AddStock: React.FC = () => {
         >
           <p>Product List</p>
         </div>
+        <div
+          className={`stocks ${
+            activeComponent === "Outlet-List" ? "active" : ""
+          }`}
+          onClick={() => handleNavigationClick("Outlet-List")}
+        >
+          <p>Outlet List</p>
+        </div>
       </div>
       <div>
         {activeComponent === "Add-Products" && <AddProducts />}
         {activeComponent === "New-Products" && <NewProducts />}
         {activeComponent === "Product-List" && <ProductList />}
+        {activeComponent === "Outlet-List" && <OutletList />}
       </div>
     </Layout>
   );
