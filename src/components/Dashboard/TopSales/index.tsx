@@ -3,6 +3,7 @@ import ImgOne from "../../../assets/images/img-1.jpg";
 import ImgTwo from "../../../assets/images/img-2.png";
 import "./TopSales.scss";
 import Button from "../../Button";
+import { Link } from "react-router-dom";
 
 const data = [
   {
@@ -53,7 +54,9 @@ const TopSales: React.FC = () => {
         })}
       </div>
       <div className="add-btn">
-        <Button varient="primary">Add Product</Button>
+        <Link to="/addStock">
+          <Button varient="primary">Add Product</Button>
+        </Link>
       </div>
     </div>
   );

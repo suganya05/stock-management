@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import ImgThree from "../../../assets/images/img-3.png";
 import Rupee from "../../../assets/images/rupee.png";
 import Edit from "../../../assets/icons/edit.png";
 import "./TransactionHistory.scss";
+import { Modal } from "../../Modal";
 
 const TransactionHistory: React.FC = () => {
+  const [isModalOpen, setModalState] = useState(false);
+
+  const toggleModal = () => setModalState(!isModalOpen);
+
   return (
     <div className="transaction-wrapper">
       <div className="transaction-head">
@@ -64,7 +69,7 @@ const TransactionHistory: React.FC = () => {
                 <td className="date">
                   <span>Person 1</span>
                 </td>
-                <td className="edit-img">
+                <td className="edit-img" onClick={toggleModal}>
                   <img src={Edit} alt="" />
                 </td>
               </tr>
@@ -72,6 +77,7 @@ const TransactionHistory: React.FC = () => {
           </tbody>
         </table>
       </div>
+      <Modal isOpen={isModalOpen} onClose={toggleModal}></Modal>
     </div>
   );
 };

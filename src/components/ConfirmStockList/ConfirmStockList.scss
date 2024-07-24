@@ -1,17 +1,22 @@
 .confirm-stock-list {
-  .drop-down-list {
+  .head {
     display: flex;
     justify-content: flex-end;
-    select {
-      border: 1px solid #ffbb64;
-      outline: none;
-      background: #f6f6f6;
-      border-radius: 10px;
-      padding: 6px 8px;
-      color: #ffbb64;
-      cursor: pointer;
+    gap: 18px;
+    padding-right: 14px;
+    .drop-down-list {
+      select {
+        border: 1px solid #ffbb64;
+        outline: none;
+        background: #f6f6f6;
+        border-radius: 10px;
+        padding: 6px 8px;
+        color: #ffbb64;
+        cursor: pointer;
+      }
     }
   }
+
   .persons-wrapper {
     padding-left: 6px;
     padding-right: 6px;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LeftArrow from "../../assets/icons/arrow-left.png";
 import ImgOne from "../../assets/images/img-3.png";
@@ -7,9 +7,13 @@ import Rupee from "../../assets/icons/Rupee.png";
 import Edit from "../../assets/icons/edit.png";
 import "./TransactionHistoryDetails.scss";
 import Layout from "../Layout";
+import { Modal } from "../Modal";
 
 const TransactionHistoryDetails: React.FC = () => {
   const navigate = useNavigate();
+  const [isModalOpen, setModalState] = useState(false);
+
+  const toggleModal = () => setModalState(!isModalOpen);
 
   const handleGoBack = () => {
     navigate(-1);
@@ -86,7 +90,7 @@ const TransactionHistoryDetails: React.FC = () => {
                     <td className="date">
                       <span>Person 1</span>
                     </td>
-                    <td className="edit-img">
+                    <td className="edit-img" onClick={toggleModal}>
                       <img src={Edit} alt="" />
                     </td>
                   </tr>
@@ -95,6 +99,7 @@ const TransactionHistoryDetails: React.FC = () => {
             </table>
           </div>
         </div>
+        <Modal isOpen={isModalOpen} onClose={toggleModal}></Modal>
       </div>
     </Layout>
   );

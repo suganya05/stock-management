@@ -10,6 +10,7 @@ import ImgOne from "../../assets/images/img-1.jpg";
 import ImgTwo from "../../assets/images/img-2.png";
 import ImgThree from "../../assets/images/img-3.png";
 import ImgFour from "../../assets/images/img-4.png";
+import PlusIcon from "../../assets/icons/plus.png";
 import Layout from "../Layout";
 import "./ConfirmStockList.scss";
 import Button from "../Button";
@@ -120,14 +121,22 @@ const ConfirmStockList: React.FC = () => {
   return (
     <Layout>
       <div className="confirm-stock-list">
-        <div className="drop-down-list">
-          <select value={selectedOption} onChange={handleChange}>
-            <option value="">16, June Today</option>
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
-            <option value="option4">Option 4</option>
-          </select>
+        <div className="head">
+          <Button
+            varient="secondary"
+            leftIcon={<img src={PlusIcon} alt="plus" />}
+          >
+            Add Person
+          </Button>
+          <div className="drop-down-list">
+            <select value={selectedOption} onChange={handleChange}>
+              <option value="">16, June Today</option>
+              <option value="option1">Option 1</option>
+              <option value="option2">Option 2</option>
+              <option value="option3">Option 3</option>
+              <option value="option4">Option 4</option>
+            </select>
+          </div>
         </div>
         <Slider ref={sliderRef} {...settings}>
           {data.map((f, index) => {

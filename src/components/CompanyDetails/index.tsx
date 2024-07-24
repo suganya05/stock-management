@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import jsPDF from "jspdf";
 import Layout from "../Layout";
 import LeftArrow from "../../assets/icons/arrow-left.png";
 import Briefcase from "../../assets/icons/briefcase.png";
@@ -8,6 +9,7 @@ import ImgOne from "../../assets/images/img-3.png";
 import ImgThree from "../../assets/images/img-3.png";
 import ImgFour from "../../assets/images/img-4.png";
 import Edit from "../../assets/icons/edit.png";
+import DownloadIcon from "../../assets/icons/download.svg";
 import "./CompanyDetails.scss";
 import { Modal } from "../Modal";
 
@@ -41,6 +43,13 @@ const CompanyDetails: React.FC = () => {
   const handleGoBack = () => {
     navigate(-1);
   };
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    doc.text("Hello world!", 10, 10);
+    doc.save("sample.pdf");
+  };
+
   return (
     <Layout>
       <div className="company-details-wrapper">
@@ -162,7 +171,7 @@ const CompanyDetails: React.FC = () => {
                         </div>
                       </td>
                       <td>
-                        <span>Dec 23,2024</span>
+                        <span className="date">Dec 23,2024</span>
                       </td>
                       <td className="img">
                         <img src={ImgFour} alt="" />
@@ -177,9 +186,14 @@ const CompanyDetails: React.FC = () => {
         <div className="transaction">
           <div className="transaction-head">
             <h4>Transaction History</h4>
-            <Link to="/transaction-history-details">
-              <p>View All</p>
-            </Link>
+            <div className="download">
+              <div onClick={generatePDF}>
+                <img src={DownloadIcon} alt="" />
+              </div>
+              <Link to="/transaction-history-details">
+                <p>View All</p>
+              </Link>
+            </div>
           </div>
           <div className="table-wrapper">
             <table>
@@ -234,7 +248,7 @@ const CompanyDetails: React.FC = () => {
                     <td className="date">
                       <span>Person 1</span>
                     </td>
-                    <td className="edit-img">
+                    <td className="edit-img" onClick={toggleModal}>
                       <img src={Edit} alt="" />
                     </td>
                   </tr>

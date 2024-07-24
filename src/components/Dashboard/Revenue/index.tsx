@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import Rupee from "../../../assets/images/rupee.png";
 import Button from "../../Button";
 import "./Revenue.scss";
+import { Modal } from "../../Modal";
 
 const Revenue: React.FC = () => {
+  const [isModalOpen, setModalState] = useState(false);
+
+  const toggleModal = () => setModalState(!isModalOpen);
   return (
     <div className="revenue-wrapper">
       <div className="revenue-head">
@@ -40,10 +44,11 @@ const Revenue: React.FC = () => {
             <h3>13,00,000</h3>
           </div>
         </div>
-        <Button varient="primary">
+        <Button varient="primary" onClick={toggleModal}>
           Add <br /> Expense
         </Button>
       </div>
+      <Modal isOpen={isModalOpen} onClose={toggleModal}></Modal>
     </div>
   );
 };
