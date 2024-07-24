@@ -14,11 +14,15 @@ import PlusIcon from "../../assets/icons/plus.png";
 import Layout from "../Layout";
 import "./ConfirmStockList.scss";
 import Button from "../Button";
+import { Modal } from "../Modal";
 
 const ConfirmStockList: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isModalOpen, setModalState] = useState(false);
   const sliderRef = useRef<Slider>(null);
+
+  const toggleModal = () => setModalState(!isModalOpen);
 
   const handleChange = (event: any) => {
     setSelectedOption(event.target.value);
@@ -165,10 +169,10 @@ const ConfirmStockList: React.FC = () => {
                             <h4>{detail.count}</h4>
                             <p>{detail.litre}</p>
                           </div>
-                          <div className="edit-icon">
+                          <div className="edit-icon" onClick={toggleModal}>
                             <img src={EditIcon} alt="" />
                           </div>
-                          <div className="delete-icon">
+                          <div className="delete-icon" onClick={toggleModal}>
                             <img src={DeleteIcon} alt="" />
                           </div>
                         </div>
@@ -204,6 +208,7 @@ const ConfirmStockList: React.FC = () => {
             </div>
           )}
         </div>
+        <Modal isOpen={isModalOpen} onClose={toggleModal}></Modal>
       </div>
     </Layout>
   );
