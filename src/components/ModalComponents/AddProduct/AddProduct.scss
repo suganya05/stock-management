@@ -1,0 +1,87 @@
+.add-product-container {
+  .add-product-head {
+    margin-bottom: 34px;
+    h4 {
+      font-size: 21px;
+      font-weight: 500;
+    }
+  }
+  .form-container {
+    .form {
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+      .form-wrapper {
+        .form-group {
+          label {
+            p {
+              font-size: 15px;
+              color: #6a6969;
+            }
+          }
+          select {
+            width: 300px;
+            padding: 8px;
+            border-radius: 10px;
+            border-color: #b5b3b3;
+            margin-top: 5px;
+            outline: none;
+          }
+        }
+        .input {
+          margin-top: 22px;
+          input {
+            margin-top: 5px;
+            width: 120px;
+            padding: 6px 8px;
+            border-radius: 10px;
+            border: 1px solid #b5b3b3;
+            outline: none;
+          }
+        }
+      }
+      .upload-image-box {
+        max-width: 150px;
+        width: 100%;
+        height: 160px;
+        margin-right: 50px;
+        background: #f9f9f9;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        cursor: pointer;
+        .upload {
+          cursor: pointer;
+          h4 {
+            font-size: 15px;
+            margin-bottom: 12px;
+            text-align: center;
+            font-weight: 600;
+          }
+        }
+
+        .uploaded-image {
+          width: 150px;
+          height: 160px;
+          object-fit: cover;
+        }
+      }
+    }
+    .total-text {
+      p {
+        font-size: 14px;
+      }
+    }
+    .add-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 30px;
+      button {
+        padding: 8px 50px;
+      }
+    }
+  }
+}

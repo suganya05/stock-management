@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import jsPDF from "jspdf";
 import { useNavigate } from "react-router-dom";
 import LeftArrow from "../../assets/icons/arrow-left.png";
+import DownloadIcon from "../../assets/icons/download.svg";
+import ShareImg from "../../assets/icons/share-2.svg";
 import ImgOne from "../../assets/images/img-3.png";
 import ImgThree from "../../assets/images/img-3.png";
 import Rupee from "../../assets/icons/Rupee.png";
-import Edit from "../../assets/icons/edit.png";
+import Edit from "../../assets/icons/edit.svg";
 import "./TransactionHistoryDetails.scss";
 import Layout from "../Layout";
 import { Modal } from "../Modal";
@@ -18,8 +21,15 @@ const TransactionHistoryDetails: React.FC = () => {
   const handleGoBack = () => {
     navigate(-1);
   };
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    doc.text("Hello world!", 10, 10);
+    doc.save("sample.pdf");
+  };
+
   return (
-    <Layout>
+    <Layout className="transaction-history">
       <div className="transaction-history-details">
         <div className="head" onClick={handleGoBack}>
           <img src={LeftArrow} alt="" />
@@ -36,13 +46,21 @@ const TransactionHistoryDetails: React.FC = () => {
         <div className="transaction">
           <div className="transaction-head">
             <h4>Transaction History</h4>
+            <div className="icons">
+              <div className="img" onClick={generatePDF}>
+                <img src={DownloadIcon} alt="" />
+              </div>
+              <div className="img">
+                <img src={ShareImg} alt="" />
+              </div>
+            </div>
           </div>
           <div className="table-wrapper">
             <table>
               <thead>
                 <tr>
                   <th>
-                    <span>Outlet</span>
+                    <span>Product</span>
                   </th>
                   <th>
                     <span>Order Amount</span>
@@ -69,7 +87,7 @@ const TransactionHistoryDetails: React.FC = () => {
                         <div className="img-box">
                           <img src={ImgThree} alt="" />
                         </div>
-                        <span>Vasanth Bavan</span>
+                        <span title="vasanth Bavan">Nanthini Milk</span>
                       </div>
                     </td>
                     <td>

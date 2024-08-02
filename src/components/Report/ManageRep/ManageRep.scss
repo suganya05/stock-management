@@ -1,0 +1,115 @@
+.manage-rep-wrapper {
+  width: 50%;
+  background: #d9d9d9;
+  border-radius: 15px;
+  padding: 18px 20px 8px 20px;
+  .manage-rep-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    h4 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    p {
+      font-size: 12px;
+    }
+  }
+  .table-wrapper {
+    white-space: nowrap;
+    height: 194px;
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+      width: 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      .align-right {
+        text-align: right;
+      }
+
+      .align-left {
+        text-align: left;
+      }
+
+      thead {
+        th {
+          color: #6a6969;
+          font-size: 13px;
+          font-weight: 600;
+          background-color: #ffbb64;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          padding: 12px 5px 12px 12px;
+          color: #000;
+
+          > span {
+            display: flex;
+            align-items: center;
+          }
+        }
+        .left {
+          margin-left: 10px;
+        }
+      }
+      tbody {
+        background: #fff;
+        tr {
+          cursor: pointer;
+        }
+        .name {
+          font-size: 17px;
+          color: #6b6754;
+          font-weight: 700;
+          margin-left: 26px;
+        }
+        .view-box {
+          background: #aaf7fe;
+          border-radius: 10px;
+          width: fit-content;
+          padding: 6px 12px;
+          span {
+            color: #000;
+            font-size: 12px;
+            font-weight: 600;
+          }
+        }
+        .check-box {
+          background: #ffefb1;
+          border-radius: 10px;
+          width: fit-content;
+          padding: 6px 8px;
+          span {
+            color: #000;
+            font-size: 12px;
+            font-weight: 600;
+          }
+        }
+        .attendance {
+          color: #02c202;
+          font-weight: 600;
+          font-size: 14px;
+        }
+        td {
+          border-bottom: 1px solid #e7e7e7;
+          height: 45px;
+          text-align: left;
+          font-size: 15px;
+          font-weight: 400;
+          line-height: 1;
+          white-space: nowrap;
+          padding: 0 5px;
+        }
+      }
+    }
+  }
+  .more-details-btn {
+    padding-top: 10px;
+    button {
+      width: 100%;
+    }
+  }
+}

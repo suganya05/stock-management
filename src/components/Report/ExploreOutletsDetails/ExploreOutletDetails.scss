@@ -1,0 +1,67 @@
+.explore-outlets-details {
+  padding: 25px;
+  .explore-outlets-details-wrapper {
+    height: 510px;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      width: 0;
+    }
+    .heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      margin-bottom: 30px;
+      img {
+        width: 23px;
+      }
+      h4 {
+        font-size: 19px;
+        font-weight: 500;
+      }
+    }
+    .explore-outlets-details-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      .explore-outlets-details-content {
+        border: 1px solid #888888;
+        border-radius: 15px;
+        cursor: pointer;
+        .logo {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          img {
+            width: 200px;
+          }
+        }
+        .content {
+          background: #f4f4f4;
+          border-bottom-left-radius: 15px;
+          border-bottom-right-radius: 15px;
+          padding: 18px;
+          .texts {
+            h3 {
+              font-size: 17px;
+              margin-bottom: 6px;
+              font-weight: 800;
+            }
+            p {
+              font-size: 13px;
+              color: #686868;
+              width: 150px;
+              line-height: 18px;
+            }
+          }
+          .explore-btn {
+            margin-top: 20px;
+            button {
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+}

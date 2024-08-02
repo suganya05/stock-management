@@ -5,9 +5,10 @@ import "./Layout.scss";
 
 interface ILayoutProps {
   children: React.ReactNode;
+  className?: string;
 }
 
-const Layout: React.FC<ILayoutProps> = ({ children }) => {
+const Layout: React.FC<ILayoutProps> = ({ children, className }) => {
   return (
     <>
       <div>
@@ -15,7 +16,7 @@ const Layout: React.FC<ILayoutProps> = ({ children }) => {
       </div>
       <div className="layoutWrapper">
         <Sidebar />
-        <div className="layout-children">{children}</div>
+        <div className={`layout-children ${className || ""}`}>{children}</div>
       </div>
     </>
   );

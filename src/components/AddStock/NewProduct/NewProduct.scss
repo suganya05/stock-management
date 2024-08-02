@@ -1,22 +1,31 @@
 .new-products-wrapper {
+  display: grid;
+  grid-template-columns: 0.9fr 1fr;
   .new-products-content {
-    background: #f0f0f0;
-    width: 520px;
-    padding: 22px 30px;
-    border-radius: 10px;
+    padding: 0px 16px;
+    border-right: 1px solid #d9d8d8;
     .head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-top: 20px;
       margin-bottom: 45px;
       h4 {
-        font-size: 25px;
+        font-size: 24px;
         font-weight: 500;
+      }
+      button {
+        padding: 6px 25px;
+        img {
+          margin-top: 2px;
+        }
       }
     }
     .new-products-form {
       .new-product-form-group {
         display: flex;
         align-items: center;
-        gap: 90px;
+        gap: 50px;
         .name {
           label {
             p {
@@ -30,7 +39,7 @@
             outline: none;
             padding: 8px 15px;
             border-radius: 10px;
-            font-size: 15px;
+            font-size: 14px;
             max-width: 350px;
             width: 100%;
             color: #6a6969;
@@ -56,10 +65,49 @@
             margin-top: 5px;
             outline: none;
             font-size: 15px;
-            color: #6a6969;
             option {
               font-size: 15px;
-              color: #6a6969;
+              &::placeholder {
+                color: #6a6969;
+              }
+            }
+          }
+        }
+        .flex-input {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          .Wholesale-input {
+            width: 140px;
+            label {
+              p {
+                font-size: 15px;
+                color: #6a6969;
+                margin-top: 30px;
+                margin-bottom: 8px;
+              }
+            }
+            .rupee-input {
+              border: 1px solid #b5b3b3;
+              padding: 8px 15px;
+              border-radius: 10px;
+              display: flex;
+              align-items: center;
+              gap: 4px;
+              img {
+                width: 10px;
+                height: 12px;
+              }
+              input {
+                border: none;
+                outline: none;
+                font-size: 14px;
+                width: 100%;
+                color: #6a6969;
+                &::placeholder {
+                  color: #c4bdbd;
+                }
+              }
             }
           }
         }
@@ -98,15 +146,129 @@
       .product-content {
         display: flex;
         align-items: center;
-        gap: 40px;
-        margin-top: 70px;
-        margin-bottom: 15px;
+        justify-content: space-between;
+        margin-top: 45px;
 
         .cancel-btn {
           h5 {
             border-bottom: 1px solid #000;
             font-size: 14px;
             font-weight: 500;
+          }
+        }
+        .add-product-btn {
+          margin-right: 14px;
+        }
+      }
+    }
+  }
+  .product-list-content {
+    padding-left: 30px;
+    .head {
+      margin-top: 20px;
+      margin-bottom: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      h4 {
+        font-size: 25px;
+        font-weight: 500;
+        margin-left: 12px;
+      }
+      .search-input {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid #ffbb64;
+        padding: 6px 12px;
+        border-radius: 6px;
+        background: #f6f6f6;
+        input {
+          border: none;
+          outline: none;
+          width: 100%;
+          font-size: 12px;
+          font-family: "Inter", sans-serif;
+          font-weight: 500;
+          color: #6a6969;
+          background: transparent;
+          &::placeholder {
+            color: #ffbb64;
+          }
+        }
+      }
+    }
+    .data-content {
+      height: 350px;
+      overflow-y: auto;
+      &::-webkit-scrollbar {
+        width: 1px;
+      }
+      .box {
+        background: #e3e1e1;
+        padding: 6px 12px;
+        border-radius: 10px;
+        margin-top: 4px;
+        margin-left: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .flex-box {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          .img {
+            img {
+              width: 50px;
+              border-radius: 10px;
+            }
+          }
+          .para {
+            h5 {
+              font-size: 15px;
+              font-weight: 500;
+            }
+            .flex-item {
+              display: flex;
+              align-items: center;
+              gap: 14px;
+              margin-top: 8px;
+              .flex {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                h3 {
+                  font-size: 11px;
+                  font-weight: 500;
+                  color: #ec5757;
+                }
+                h4 {
+                  font-size: 11px;
+                  font-weight: 500;
+                  color: #049801;
+                }
+                img {
+                  width: 6px;
+                  height: 8px;
+                }
+                p {
+                  font-size: 12px;
+                }
+              }
+            }
+          }
+        }
+        .add-delete-content {
+          display: flex;
+          align-items: center;
+          gap: 30px;
+          margin-right: 12px;
+          .edit-icon {
+            cursor: pointer;
+          }
+          .delete-icon {
+            cursor: pointer;
           }
         }
       }

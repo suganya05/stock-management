@@ -1,8 +1,11 @@
-.component {
-  display: flex;
-  gap: 16px;
-}
-.second-components {
-  display: flex;
-  gap: 16px;
+.dashboard {
+  padding: 10px;
+  .component {
+    display: flex;
+    gap: 12px;
+  }
+  .second-components {
+    display: flex;
+    gap: 12px;
+  }
 }

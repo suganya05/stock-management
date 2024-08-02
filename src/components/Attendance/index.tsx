@@ -69,7 +69,7 @@ const Attendance: React.FC = () => {
   };
 
   return (
-    <Layout>
+    <Layout className="attendance">
       <div className="attendance-wrapper">
         <div className="drop-down-list">
           <select value={selectedOption} onChange={handleChange}>

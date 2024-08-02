@@ -15,7 +15,7 @@ const Sidebar: React.FC = () => {
     const path = location.pathname;
     if (path === "/dashboard") setActiveIcon("dashboard");
     else if (path === "/report") setActiveIcon("report");
-    else if (path === "/addStock") setActiveIcon("addStock");
+    else if (path === "/inventory") setActiveIcon("inventory");
     else if (path === "/allocate") setActiveIcon("allocate");
     else setActiveIcon("");
   }, [location.pathname]);
@@ -40,12 +40,12 @@ const Sidebar: React.FC = () => {
           <h5>Report</h5>
         </Link>
         <Link
-          to="/addStock"
-          className={`icon ${activeIcon === "addStock" ? "active" : ""}`}
-          onClick={() => setActiveIcon("addStock")}
+          to="/inventory"
+          className={`icon ${activeIcon === "inventory" ? "active" : ""}`}
+          onClick={() => setActiveIcon("inventory")}
         >
           <AddStockIcon />
-          <h5>Add Stock</h5>
+          <h5>Inventory</h5>
         </Link>
         <Link
           to="/allocate"

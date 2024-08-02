@@ -12,7 +12,7 @@ const DamageProduct: React.FC = () => {
   return (
     <div className="damage-product-wrapper">
       <div className="damage-product-head">
-        <h4>DAMAGE PRODUCT</h4>
+        <h4>Damaged Product</h4>
         <Link to="/damage-product-view">
           <p>View All</p>
         </Link>
@@ -22,22 +22,19 @@ const DamageProduct: React.FC = () => {
           <thead>
             <tr>
               <th>
-                <span>CLIENT</span>
+                <span>Outlet</span>
               </th>
               <th>
-                <span>PRODUCT</span>
+                <span>Product</span>
               </th>
               <th>
-                <span>DATE</span>
-              </th>
-              <th>
-                <span>IMAGE</span>
+                <span>Image</span>
               </th>
             </tr>
           </thead>
           <tbody>
             {[...Array(10)].map((_, i) => (
-              <tr key={i.toString()} style={{ cursor: "pointer" }}>
+              <tr key={i.toString()}>
                 <td>
                   <div className="flex-item">
                     <div className="img-box">
@@ -50,9 +47,6 @@ const DamageProduct: React.FC = () => {
                   <div className="view-text" onClick={toggleModal}>
                     <p>VIEW</p>
                   </div>
-                </td>
-                <td>
-                  <span>Dec 23,2024</span>
                 </td>
                 <td className="img">
                   <img src={ImgFour} alt="" />

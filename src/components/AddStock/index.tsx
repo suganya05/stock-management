@@ -1,37 +1,43 @@
 import React, { useState } from "react";
-import PlusIcon from "../../assets/icons/plus.png";
-import ArrowRight from "../../assets/icons/arrow-right.png";
-import Button from "../../components/Button";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import "./AddStock.scss";
+import PlusIcon from "../../assets/icons/plus.png";
+import BlackPlusIcon from "../../assets/images/plus.svg";
+import ArrowRight from "../../assets/icons/arrow-right.png";
+import Button from "../../components/Button";
 import StockList from "../StockList";
+import LayoutModule from "../LayoutModal";
+import PreviewChanges from "../ModalComponents/PreviewChanges";
+import "./AddStock.scss";
 
 interface FormValues {
   productName: string;
   quantity: string;
-  wholesalePrice: string;
-  retailPrice: string;
 }
 
 const initialValues: FormValues = {
   productName: "",
   quantity: "",
-  wholesalePrice: "",
-  retailPrice: "",
 };
 
 const validationSchema = Yup.object().shape({
   productName: Yup.string().required("Product Name is required"),
   quantity: Yup.string().required("Quantity is required"),
-  wholesalePrice: Yup.string().required("WholesalePrice is required"),
-  retailPrice: Yup.string().required("Retail Price is required"),
 });
 
 const AddProducts: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<
     string | ArrayBuffer | null
   >(null);
+  const [active, setIsActive] = useState(false);
+
+  const handleOpenToggle = () => {
+    setIsActive(true);
+  };
+
+  const handleCloseToggle = () => {
+    setIsActive(false);
+  };
 
   const handleSubmit = (values: FormValues) => {
     console.log(values);
@@ -52,8 +58,23 @@ const AddProducts: React.FC = () => {
     <div className="add-product-wrapper">
       <div className="add-product-content">
         <div className="head">
-          <h4>Add Products</h4>
-          <div>
+          <h4>Re-Stock inventory</h4>
+          <div className="btns">
+            <Button
+              varient="primary"
+              leftIcon={<img src={BlackPlusIcon} alt="plus" />}
+              onClick={handleOpenToggle}
+            >
+              Upload csv
+            </Button>
+            {active && (
+              <LayoutModule
+                handleToggle={handleCloseToggle}
+                className="layout-module"
+              >
+                <PreviewChanges />
+              </LayoutModule>
+            )}
             <Button
               varient="secondary"
               leftIcon={<img src={PlusIcon} alt="plus" />}
@@ -104,40 +125,6 @@ const AddProducts: React.FC = () => {
                         className="error"
                       />
                     </div>
-                    <div className="flex-content">
-                      <div className="form-group input">
-                        <label htmlFor="wholesalePrice">
-                          <p>Wholesale Price</p>
-                        </label>
-                        <Field
-                          type="text"
-                          id="wholesalePrice"
-                          name="wholesalePrice"
-                          placeholder="Rs"
-                        />
-                        <ErrorMessage
-                          name="wholesalePrice"
-                          component="div"
-                          className="error"
-                        />
-                      </div>
-                      <div className="form-group input">
-                        <label htmlFor="retailPrice">
-                          <p>Retail Price</p>
-                        </label>
-                        <Field
-                          type="text"
-                          id="retailPrice"
-                          name="retailPrice"
-                          placeholder="Rs"
-                        />
-                        <ErrorMessage
-                          name="retailPrice"
-                          component="div"
-                          className="error"
-                        />
-                      </div>
-                    </div>
                   </div>
                   <div className="upload-image-box">
                     <input
@@ -156,11 +143,7 @@ const AddProducts: React.FC = () => {
                         />
                       ) : (
                         <div className="upload">
-                          <h4>
-                            Upload <br />
-                            CSV
-                          </h4>
-                          <img src={PlusIcon} alt="Plus Icon" />
+                          <h4>Image</h4>
                         </div>
                       )}
                     </label>

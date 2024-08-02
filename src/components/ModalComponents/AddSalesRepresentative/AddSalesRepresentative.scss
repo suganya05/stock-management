@@ -1,0 +1,126 @@
+.add-sales-representative-wrapper {
+  .add-sales-representative-head {
+    margin-bottom: 24px;
+    h4 {
+      font-size: 21px;
+      font-weight: 500;
+    }
+  }
+  .form {
+    .form-wrapper {
+      display: flex;
+      justify-content: space-between;
+      .form-flex-item {
+        .form-group {
+          label {
+            p {
+              font-size: 15px;
+              color: #6a6969;
+            }
+          }
+        }
+        .input {
+          margin-top: 14px;
+          input {
+            margin-top: 5px;
+            width: 300px;
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: 1px solid #b5b3b3;
+            outline: none;
+            &::placeholder {
+              color: #c4bdbd;
+            }
+          }
+          textarea {
+            margin-top: 5px;
+            width: 300px;
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: 1px solid #b5b3b3;
+            outline: none;
+            resize: vertical;
+            font-family: "Inter", sans-serif;
+          }
+        }
+      }
+      .upload-image-box {
+        max-width: 150px;
+        width: 100%;
+        height: 160px;
+        background: #f9f9f9;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        margin-top: 20px;
+        margin-right: 50px;
+        cursor: pointer;
+        .upload {
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+          justify-content: center;
+          cursor: pointer;
+          h4 {
+            font-size: 15px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 600;
+          }
+          img {
+            width: 17px;
+          }
+        }
+
+        .uploaded-image {
+          width: 150px;
+          height: 160px;
+          object-fit: cover;
+        }
+      }
+    }
+    .form-group {
+      label {
+        p {
+          font-size: 15px;
+          color: #6a6969;
+        }
+      }
+    }
+    .input {
+      margin-top: 14px;
+      input {
+        margin-top: 5px;
+        width: 280px;
+        padding: 8px 16px;
+        border-radius: 10px;
+        border: 1px solid #b5b3b3;
+        outline: none;
+        &::placeholder {
+          color: #c4bdbd;
+        }
+      }
+      textarea {
+        margin-top: 5px;
+        width: 300px;
+        padding: 8px 16px;
+        border-radius: 10px;
+        border: 1px solid #b5b3b3;
+        outline: none;
+        resize: vertical;
+        font-family: "Inter", sans-serif;
+      }
+    }
+    .add-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 16px;
+      button {
+        padding: 6px 52px;
+      }
+    }
+  }
+}

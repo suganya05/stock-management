@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ImgThree from "../../../assets/images/img-3.png";
 import Rupee from "../../../assets/images/rupee.png";
-import Edit from "../../../assets/icons/edit.png";
+import Edit from "../../../assets/icons/edit.svg";
 import "./TransactionHistory.scss";
 import { Modal } from "../../Modal";
 

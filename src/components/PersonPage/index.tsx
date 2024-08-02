@@ -29,7 +29,7 @@ const PersonPage: React.FC = () => {
     console.log(values);
   };
   return (
-    <Layout>
+    <Layout className="person-page">
       <div className="person-page-wrapper">
         <div className="person-page-head">
           <div className="profile-img">

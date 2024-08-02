@@ -1,23 +1,23 @@
 import React from "react";
 import Layout from "../components/Layout";
 import TopSales from "../components/Dashboard/TopSales";
-import Revenue from "../components/Dashboard/Revenue";
-import Employees from "../components/Dashboard/Employees";
 import TopClient from "../components/Dashboard/TopClients";
 import DamageProduct from "../components/Dashboard/DamageProduct";
 import "../styles/Dashboard.scss";
+import StockAssigned from "../components/StockAssigned";
+import StockDistribution from "../components/StockDistribution";
 
 const Dashboard: React.FC = () => {
   return (
-    <Layout>
+    <Layout className="dashboard">
       <div className="component">
-        <TopSales />
-        <Revenue />
-        <Employees />
+        <StockAssigned />
+        <StockDistribution />
       </div>
       <div className="second-components">
-        <TopClient />
+        <TopSales />
         <DamageProduct />
+        <TopClient />
       </div>
     </Layout>
   );

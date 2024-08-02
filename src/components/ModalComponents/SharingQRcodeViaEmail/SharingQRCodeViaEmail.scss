@@ -1,0 +1,73 @@
+.sharing-qr-code-wrapper {
+  .sharing-qr-code-head {
+    margin-bottom: 32px;
+    h4 {
+      font-size: 21px;
+      font-weight: 500;
+    }
+  }
+  .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    h3 {
+      font-size: 18px;
+      font-weight: 500;
+    }
+    p {
+      color: #ffbb64;
+    }
+  }
+  .sharing-qr-code-container {
+    height: 320px;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      width: 0;
+    }
+    .sharing-qr-code-content {
+      background: #f4f4f4;
+      border-radius: 10px;
+      padding: 9px 12px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .names {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        img {
+          width: 40px;
+          height: 40px;
+          object-fit: cover;
+        }
+        p {
+          font-size: 16px;
+        }
+      }
+      .check-input {
+        display: flex;
+        align-items: center;
+        input[type="checkbox"] {
+          width: 18px;
+          height: 18px;
+          cursor: pointer;
+          accent-color: #ffbb64;
+        }
+      }
+      .check-input {
+        margin-right: 10px;
+      }
+    }
+  }
+  .send-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 18px;
+    button {
+      padding: 7px 48px;
+    }
+  }
+}

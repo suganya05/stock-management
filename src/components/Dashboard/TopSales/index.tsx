@@ -32,7 +32,7 @@ const TopSales: React.FC = () => {
   return (
     <div className="topSales-wrapper">
       <div className="topSales-head">
-        <h4>TOP SALES</h4>
+        <h4>Top Sales</h4>
         <p>View All</p>
       </div>
       <div className="topSales-container-box">
@@ -54,7 +54,7 @@ const TopSales: React.FC = () => {
         })}
       </div>
       <div className="add-btn">
-        <Link to="/addStock">
+        <Link to="/inventory">
           <Button varient="primary">Add Product</Button>
         </Link>
       </div>

@@ -7,6 +7,7 @@ import "./Header.scss";
 
 const Header: React.FC = () => {
   const location = useLocation();
+
   return (
     <>
       <div className="header-wrapper">
@@ -49,18 +50,11 @@ const Header: React.FC = () => {
               Welcome, <span>Smith</span>
             </h4>
           </div>
-          <div className="dashboard-head">
-            <div className="flex-item">
-              <p>Today</p>
-              <p>Week</p>
-              <p>Month</p>
-              <p>Year</p>
-            </div>
-            <div className="month-input">
-              <form action="">
-                <input type="month" />
-              </form>
-            </div>
+
+          <div className="month-input">
+            <form action="">
+              <input type="month" />
+            </form>
           </div>
         </div>
       )}
@@ -71,18 +65,10 @@ const Header: React.FC = () => {
               Welcome, <span>Smith</span>
             </h4>
           </div>
-          <div className="dashboard-head">
-            <div className="flex-item">
-              <p>Today</p>
-              <p>Week</p>
-              <p>Month</p>
-              <p>Year</p>
-            </div>
-            <div className="month-input">
-              <form action="">
-                <input type="month" />
-              </form>
-            </div>
+          <div className="month-input">
+            <form action="">
+              <input type="month" />
+            </form>
           </div>
         </div>
       )}

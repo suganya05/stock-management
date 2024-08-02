@@ -1,0 +1,102 @@
+.allocated-list-wrapper {
+  padding: 0 40px;
+  .allocated-list-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    margin-left: 30px;
+    h4 {
+      font-size: 25px;
+      font-weight: 500;
+    }
+    .drop-down-list {
+      select {
+        border: 1px solid #ffbb64;
+        outline: none;
+        background: #f6f6f6;
+        border-radius: 10px;
+        padding: 6px 8px;
+        color: #ffbb64;
+        cursor: pointer;
+      }
+    }
+  }
+  .data-content {
+    height: 280px;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      width: 1px;
+    }
+    .box {
+      background: #e3e1e1;
+      padding: 6px 12px;
+      border-radius: 10px;
+      margin-top: 4px;
+      margin-left: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .flex-box {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        .img {
+          img {
+            width: 50px;
+            border-radius: 10px;
+          }
+        }
+        .para {
+          h5 {
+            font-size: 15px;
+            font-weight: 500;
+          }
+        }
+      }
+      .add-delete-content {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        margin-right: 12px;
+        .litre {
+          p {
+            font-size: 16px;
+            font-weight: 600;
+            span {
+              color: #6a6969;
+              font-size: 12px;
+            }
+          }
+        }
+        .edit-icon {
+          cursor: pointer;
+        }
+        .delete-icon {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  .clear {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    margin-top: 12px;
+    cursor: pointer;
+    p {
+      font-size: 13px;
+      font-weight: 500;
+      border-bottom: 1px solid #000;
+    }
+  }
+  .add-product-btn {
+    margin-left: 40px;
+    padding-top: 11px;
+    button {
+      width: 100%;
+      padding: 9px 0;
+    }
+  }
+}

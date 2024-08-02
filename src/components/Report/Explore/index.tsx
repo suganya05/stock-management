@@ -1,7 +1,8 @@
 import React from "react";
 import ImgOne from "../../../assets/images/img-3.png";
-import "./Explore.scss";
+import RightArrow from "../../../assets/icons/right.svg";
 import { Link } from "react-router-dom";
+import "./Explore.scss";
 
 const data = [
   {
@@ -40,21 +41,16 @@ const ExploreOutlets: React.FC = () => {
       <div className="explore-container">
         {data.map((f, index) => {
           return (
-            <Link to="/company-details" key={index}>
+            <Link to="/explore-outlet-details" key={index}>
               <div className="explore-content">
                 <div className="explore-box">
                   <div className="img">
                     <img src={f.img} alt="" />
                   </div>
+                  <h4>{f.title}</h4>
                 </div>
-                <div className="explore">
-                  <div className="explore-list">
-                    <h4>{f.title}</h4>
-                    <h5>95%</h5>
-                  </div>
-                  <div className="progress-bar-dext-score">
-                    <div></div>
-                  </div>
+                <div className="arrow">
+                  <img src={RightArrow} alt="" />
                 </div>
               </div>
             </Link>

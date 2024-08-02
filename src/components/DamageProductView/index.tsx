@@ -18,7 +18,7 @@ const DamageProductView: React.FC = () => {
   };
 
   return (
-    <Layout>
+    <Layout className="damage-product-view">
       <div className="damage-product-view-wrapper">
         <div className="heading" onClick={handleGoBack}>
           <img src={LeftArrow} alt="" />
@@ -29,7 +29,7 @@ const DamageProductView: React.FC = () => {
             <thead>
               <tr>
                 <th>
-                  <span className="client">CLIENT</span>
+                  <span className="client">DELIVERED PERSON</span>
                 </th>
                 <th>
                   <span>PRODUCT</span>
@@ -50,7 +50,7 @@ const DamageProductView: React.FC = () => {
                       <div className="img-box">
                         <img src={ImgThree} alt="" />
                       </div>
-                      <span>Vasanth Bavan</span>
+                      <span>Person 1</span>
                     </div>
                   </td>
                   <td>
@@ -58,7 +58,7 @@ const DamageProductView: React.FC = () => {
                       <p>VIEW</p>
                     </div>
                   </td>
-                  <td>
+                  <td className="date">
                     <span>Dec 23,2024</span>
                   </td>
                   <td className="img">

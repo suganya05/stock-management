@@ -1,19 +1,21 @@
 import React from "react";
 import Layout from "../components/Layout";
-import "../styles/Report.scss";
-import Analytic from "../components/Report/Analytic";
 import ExploreOutlets from "../components/Report/Explore";
-import TransactionHistory from "../components/Report/TransactionHistory";
+import ManageRep from "../components/Report/ManageRep";
+import "../styles/Report.scss";
+import TopSales from "../components/Dashboard/TopSales";
+import Revenue from "../components/Report/Revenue";
 
 const Report: React.FC = () => {
   return (
-    <Layout>
+    <Layout className="report">
       <div className="component">
-        <Analytic />
+        <ManageRep />
         <ExploreOutlets />
       </div>
-      <div>
-        <TransactionHistory />
+      <div className="second-component">
+        <TopSales />
+        <Revenue />
       </div>
     </Layout>
   );

@@ -1,0 +1,167 @@
+.preview-changes-wrapper {
+  .preview-changes-heading {
+    margin-bottom: 24px;
+    h4 {
+      font-size: 21px;
+      font-weight: 500;
+    }
+  }
+  .new-product-container {
+    .new-product-head {
+      margin-bottom: 8px;
+      h4 {
+        font-size: 15px;
+      }
+    }
+    .data-content {
+      height: 210px;
+      overflow-y: auto;
+      &::-webkit-scrollbar {
+        width: 1px;
+      }
+      .box {
+        background: #e3e1e1;
+        padding: 6px 12px;
+        border-radius: 10px;
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .flex-box {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          .img {
+            img {
+              width: 50px;
+              border-radius: 10px;
+            }
+          }
+          .para {
+            h5 {
+              font-size: 15px;
+              font-weight: 500;
+            }
+            .flex-item {
+              display: flex;
+              align-items: center;
+              gap: 14px;
+              margin-top: 8px;
+              .flex {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                h3 {
+                  font-size: 12px;
+                  font-weight: 500;
+                  color: #ec5757;
+                }
+                h4 {
+                  font-size: 12px;
+                  font-weight: 500;
+                  color: #049801;
+                }
+                img {
+                  width: 6px;
+                  height: 8px;
+                }
+                p {
+                  font-size: 12px;
+                }
+              }
+            }
+          }
+        }
+        .add-delete-content {
+          margin-right: 12px;
+          .delete-icon {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+  .price-changes-container {
+    .price-changes-head {
+      margin: 8px 0;
+      h4 {
+        font-size: 15px;
+      }
+    }
+    .data-content {
+      height: 140px;
+      overflow-y: auto;
+      &::-webkit-scrollbar {
+        width: 1px;
+      }
+      .box {
+        background: #e3e1e1;
+        padding: 6px 12px;
+        border-radius: 10px;
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .flex-box {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          .img {
+            img {
+              width: 50px;
+              border-radius: 10px;
+            }
+          }
+          .para {
+            h5 {
+              font-size: 15px;
+              font-weight: 500;
+            }
+            .flex-item {
+              display: flex;
+              align-items: center;
+              gap: 14px;
+              margin-top: 8px;
+              .flex {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                h3 {
+                  font-size: 12px;
+                  font-weight: 500;
+                  color: #ec5757;
+                }
+                h4 {
+                  font-size: 12px;
+                  font-weight: 500;
+                  color: #049801;
+                }
+                img {
+                  width: 6px;
+                  height: 8px;
+                }
+                p {
+                  font-size: 12px;
+                }
+              }
+            }
+          }
+        }
+        .add-delete-content {
+          margin-right: 12px;
+          .delete-icon {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+  .commit-changes-btn {
+    padding: 15px 60px 0;
+    button {
+      width: 100%;
+    }
+  }
+}

@@ -4,7 +4,7 @@ import ProfileImg from "../../assets/images/profile-img.jpg";
 import RightArrow from "../../assets/icons/arrow-right.png";
 import LeftArrow from "../../assets/icons/arrow-left.png";
 import ArrowRight from "../../assets/icons/arrow-right.png";
-import EditIcon from "../../assets/icons/edit.png";
+import EditIcon from "../../assets/icons/edit.svg";
 import DeleteIcon from "../../assets/icons/delete.png";
 import ImgOne from "../../assets/images/img-1.jpg";
 import ImgTwo from "../../assets/images/img-2.png";
@@ -123,7 +123,7 @@ const ConfirmStockList: React.FC = () => {
   };
 
   return (
-    <Layout>
+    <Layout className="confirm-stock-list">
       <div className="confirm-stock-list">
         <div className="head">
           <Button

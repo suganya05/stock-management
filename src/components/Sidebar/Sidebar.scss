@@ -28,9 +28,9 @@
       }
 
       &.active {
-        svg {
-          fill: #ffbb64;
-        }
+        // svg {
+        //   fill: #ffbb64;
+        // }
 
         h5 {
           color: #ffbb64;
@@ -46,10 +46,6 @@
     padding-bottom: 55px;
     cursor: pointer;
 
-    svg {
-      transition: fill 0.3s;
-    }
-
     h5 {
       font-size: 15px;
       font-weight: 400;
@@ -58,10 +54,6 @@
     }
 
     &.active {
-      svg {
-        fill: #ffbb64;
-      }
-
       h5 {
         color: #ffbb64;
       }

@@ -1,0 +1,147 @@
+.stock-distribution-wrapper {
+  background: #d9d9d9;
+  border-radius: 15px;
+  padding: 12px;
+  width: 940px;
+  height: 320px;
+  .stock-distribution-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 5px 10px 13px;
+    h4 {
+      font-size: 17px;
+      font-weight: 600;
+    }
+    .right-arrow-img {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      .flex-item {
+        cursor: pointer;
+        img {
+          width: 22px;
+        }
+      }
+    }
+  }
+  .slider-wrapper {
+    background: #fff;
+    border-radius: 15px;
+    padding: 12px;
+    .persons-wrapper {
+      padding-left: 6px;
+      padding-right: 6px;
+      border-right: 1px solid #d9d8d8;
+      .person-head {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 8px;
+        img {
+          width: 30px;
+          height: 30px;
+          object-fit: cover;
+          border: 1px solid #ffbb64;
+          border-radius: 50%;
+        }
+        .heading {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          p {
+            font-size: 16px;
+            font-weight: 500;
+          }
+          .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #03c403;
+            margin-top: 3px;
+          }
+        }
+      }
+      .table-wrapper {
+        .table-head {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: #ffbb64;
+          padding: 2px 18px;
+          p {
+            font-size: 13px;
+            font-weight: 500;
+          }
+        }
+        .table-content {
+          height: 150px;
+          overflow-y: auto;
+          &::-webkit-scrollbar {
+            width: 0;
+          }
+          .table-body {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f0f0f0;
+            padding: 4.7px 10px;
+            margin: 4px 0;
+            .company-img {
+              display: flex;
+              align-items: center;
+              gap: 4px;
+              img {
+                width: 22px;
+                height: 23px;
+                object-fit: contain;
+              }
+              .vasanth-bavan {
+                width: 80px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                position: relative;
+                font-size: 13px;
+                font-weight: 500;
+                &:hover::after {
+                  content: attr(title);
+                  position: absolute;
+                  padding: 5px;
+                  white-space: nowrap;
+                  z-index: 10;
+                  left: 0;
+                  top: 100%;
+                }
+              }
+            }
+            .product {
+              margin-left: -64px;
+              p {
+                font-size: 13px;
+              }
+            }
+            .price {
+              padding-right: 8px;
+              h3 {
+                font-size: 13px;
+                font-weight: 500;
+              }
+            }
+          }
+        }
+      }
+      .total {
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 10px;
+        p {
+          font-size: 13px;
+          span {
+            color: #65a900;
+          }
+        }
+      }
+    }
+  }
+}

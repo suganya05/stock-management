@@ -1,3 +1,11 @@
-.component {
-  display: flex;
+.report {
+  padding: 15px;
+  .component {
+    display: flex;
+    gap: 10px;
+  }
+  .second-component {
+    display: flex;
+    gap: 10px;
+  }
 }

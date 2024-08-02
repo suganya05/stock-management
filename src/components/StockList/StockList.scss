@@ -28,16 +28,16 @@
     }
   }
   .data-content {
-    height: 330px;
+    height: 349px;
     overflow-y: auto;
     &::-webkit-scrollbar {
       width: 1px;
     }
     .box {
       background: #e3e1e1;
-      padding: 12px;
+      padding: 6px 12px;
       border-radius: 10px;
-      margin-top: 12px;
+      margin-top: 4px;
       margin-left: 40px;
       display: flex;
       align-items: center;
@@ -54,35 +54,16 @@
           }
         }
         .para {
-          color: #6a6969;
-          font-size: 15px;
-          font-weight: 500;
-
-          .flex-rupee-content {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            margin-top: 12px;
-            .flex-rupee {
-              display: flex;
-              align-items: center;
-              gap: 4px;
-              .flex {
-                display: flex;
-                align-items: center;
-                gap: 2px;
-                img {
-                  width: 10px;
-                }
-              }
-            }
+          h5 {
+            font-size: 15px;
+            font-weight: 500;
           }
         }
       }
       .add-delete-content {
         display: flex;
         align-items: center;
-        gap: 40px;
+        gap: 30px;
         margin-right: 12px;
         .litre {
           p {
@@ -103,11 +84,17 @@
       }
     }
   }
-  .confirm-stock-btn {
-    margin-left: 30px;
-    margin-top: 25px;
-    button {
-      width: 100%;
+  .clear {
+    margin-top: 20px;
+    margin-right: 20px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    cursor: pointer;
+    p {
+      border-bottom: 1px solid #000;
+      width: fit-content;
+      font-size: 14px;
     }
   }
 }

@@ -1,117 +1,172 @@
 .topclient-wrapper {
-  max-width: 50%;
-  width: 100%;
-  background: #dbdbdb;
-  border-radius: 15px;
-  padding: 16px;
-  margin-top: 14px;
-  .topclient-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-    h4 {
-      font-size: 17px;
-    }
-    p {
-      font-size: 12px;
-    }
-  }
-  .table-wrapper {
-    width: 100%;
-    white-space: nowrap;
-    height: 190px;
-    overflow-y: scroll;
-    &::-webkit-scrollbar {
-      width: 0;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      .align-right {
-        text-align: right;
-      }
-
-      .align-left {
-        text-align: left;
-      }
-
-      thead {
-        th {
-          color: #6a6969;
-          font-size: 13px;
-          font-weight: 600;
-          background-color: #ffbb64;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          padding: 12px 5px 12px 12px;
-          color: #000;
-
-          > span {
-            display: flex;
-            align-items: center;
-          }
-        }
-      }
-      tbody {
-        background: #fff;
-        tr {
-          cursor: pointer;
-        }
-        .flex-item {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding-left: 9px;
-          span {
-            color: #6b6754;
-            font-size: 18px;
-            font-weight: 700;
-          }
-        }
-        .img-box {
-          border: 1px solid #6caa7d;
-          border-radius: 12px;
-          width: 42px;
-          height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  .flex-one {
+    margin-top: 9px;
+    .box {
+      background: #dbdbdb;
+      border-radius: 15px;
+      padding: 10px 26px;
+      margin-bottom: 3px;
+      .total-sales {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        .briefcase-img {
+          background: #fff;
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+          padding: 8px;
           display: flex;
           align-items: center;
           justify-content: center;
           img {
-            width: 40px;
-            border-radius: 10px;
-          }
-        }
-        .rupee-img {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          img {
-            width: 13px;
+            width: 15px;
             height: 15px;
           }
-          span {
-            font-size: 17px;
-            font-weight: 800;
-          }
         }
-        .status {
-          span {
-            color: #06bc02;
-            font-size: 12px;
-            font-weight: 600;
-          }
+        p {
+          font-size: 13px;
+          font-weight: 700;
         }
-        td {
-          border-bottom: 1px solid #e7e7e7;
-          height: 60px;
-          text-align: left;
+      }
+      .edit-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: -10px;
+        padding-top: 5px;
+        button {
+          padding: 4px 40px;
+          font-size: 13px;
+        }
+      }
+      .rupee {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-left: 4px;
+        margin-top: 6px;
+        img {
+          width: 10px;
+          height: 12px;
+        }
+        h3 {
           font-size: 15px;
-          font-weight: 400;
-          line-height: 1;
-          white-space: nowrap;
-          padding: 0 5px;
+        }
+      }
+    }
+  }
+  .topclient-container {
+    width: 415px;
+    height: 218px;
+    background: #dbdbdb;
+    border-radius: 15px;
+    padding: 16px 12px;
+    margin-top: 10px;
+    .topclient-head {
+      margin-bottom: 16px;
+      h4 {
+        font-size: 17px;
+        font-weight: 600;
+      }
+    }
+    .table-wrapper {
+      width: 100%;
+      white-space: nowrap;
+      height: 155px;
+      overflow-y: scroll;
+      &::-webkit-scrollbar {
+        width: 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        .align-right {
+          text-align: right;
+        }
+
+        .align-left {
+          text-align: left;
+        }
+
+        thead {
+          th {
+            color: #6a6969;
+            font-size: 13px;
+            font-weight: 600;
+            background-color: #ffbb64;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 12px 5px 12px 12px;
+            color: #000;
+
+            > span {
+              display: flex;
+              align-items: center;
+            }
+          }
+        }
+        tbody {
+          background: #fff;
+          .flex-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-left: 9px;
+            span {
+              color: #6b6754;
+              font-size: 14px;
+              font-weight: 500;
+            }
+          }
+          .img-box {
+            border: 1px solid #6caa7d;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            img {
+              width: 20px;
+              object-fit: cover;
+            }
+          }
+          .rupee-img {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            img {
+              width: 8px;
+              height: 10px;
+            }
+            span {
+              font-size: 14px;
+              font-weight: 700;
+            }
+          }
+          .status {
+            padding-left: 18px;
+            span {
+              color: #06bc02;
+              font-size: 12px;
+              font-weight: 600;
+            }
+          }
+          td {
+            border-bottom: 1px solid #e7e7e7;
+            height: 46px;
+            text-align: left;
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1;
+            white-space: nowrap;
+            padding: 0 5px;
+          }
         }
       }
     }

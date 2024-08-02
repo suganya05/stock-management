@@ -1,15 +1,9 @@
 import React, { useState } from "react";
 import ImgOne from "../../assets/images/img-1.jpg";
 import ImgTwo from "../../assets/images/img-2.png";
-import Rupee from "../../assets/icons/Rupee.png";
-import ArrowDown from "../../assets/icons/arrow-down.png";
-import ArrowTop from "../../assets/icons/arrow-top.png";
-import EditIcon from "../../assets/icons/edit.png";
+import EditIcon from "../../assets/icons/edit.svg";
 import DeleteIcon from "../../assets/icons/delete.png";
-import ArrowRight from "../../assets/icons/arrow-right.png";
 import "./StockList.scss";
-import Button from "../Button";
-import { Link } from "react-router-dom";
 import { Modal } from "../Modal";
 
 const data = [
@@ -114,26 +108,6 @@ const StockList: React.FC = () => {
                 </div>
                 <div className="para">
                   <h5>{f.name}</h5>
-                  <div className="flex-rupee-content">
-                    <div className="flex-rupee">
-                      <div>
-                        <img src={ArrowDown} alt="" />
-                      </div>
-                      <div className="flex">
-                        <img src={Rupee} alt="" />
-                        <p>{f.downCount}</p>
-                      </div>
-                    </div>
-                    <div className="flex-rupee">
-                      <div>
-                        <img src={ArrowTop} alt="" />
-                      </div>
-                      <div className="flex">
-                        <img src={Rupee} alt="" />
-                        <p>{f.topCount}</p>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
               <div className="add-delete-content">
@@ -153,16 +127,8 @@ const StockList: React.FC = () => {
           );
         })}
       </div>
-      <div className="confirm-stock-btn">
-        <Link to="/confirm-stock-list">
-          <Button
-            varient="primary"
-            type="submit"
-            rightIcon={<img src={ArrowRight} alt="plus" />}
-          >
-            Confirm Stock List
-          </Button>
-        </Link>
+      <div className="clear">
+        <p>Clear All</p>
       </div>
       <Modal isOpen={isModalOpen} onClose={toggleModal}></Modal>
     </div>
