@@ -83,14 +83,8 @@
         }
       }
       .icons {
-        display: flex;
-        align-items: center;
-        gap: 30px;
         padding-right: 10px;
-        .edit-icon {
-          cursor: pointer;
-        }
-        .delete-icon {
+        .right-icon {
           cursor: pointer;
         }
       }

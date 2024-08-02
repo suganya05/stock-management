@@ -5,6 +5,7 @@ import NewProducts from "../components/AddStock/NewProduct";
 import AddOutletList from "../components/AddStock/AddOutletList";
 import AddSalesperson from "../components/AddStock/AddSalesperson";
 import "../styles/Inventory.scss";
+import CustomPricing from "../components/AddStock/CustomPricing";
 
 const Inventory: React.FC = () => {
   const [activeComponent, setActiveComponent] = useState("Add-Products");
@@ -48,12 +49,21 @@ const Inventory: React.FC = () => {
         >
           <p>Add Salesperson</p>
         </div>
+        <div
+          className={`stocks ${
+            activeComponent === "custom-pricing" ? "active" : ""
+          }`}
+          onClick={() => handleNavigationClick("custom-pricing")}
+        >
+          <p>Custom Pricing</p>
+        </div>
       </div>
       <div>
         {activeComponent === "Add-Products" && <AddProducts />}
         {activeComponent === "New-Products" && <NewProducts />}
         {activeComponent === "Outlet-List" && <AddOutletList />}
         {activeComponent === "add-sales-person" && <AddSalesperson />}
+        {activeComponent === "custom-pricing" && <CustomPricing />}
       </div>
     </Layout>
   );

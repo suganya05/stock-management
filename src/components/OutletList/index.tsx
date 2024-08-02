@@ -1,17 +1,15 @@
 import React, { useState } from "react";
 import { ReactComponent as SearchIcon } from "../../assets/icons/search.svg";
 import ShareImg from "../../assets/icons/share-2.svg";
-import DeleteIcon from "../../assets/icons/delete.png";
 import PlusIcon from "../../assets/icons/plus.png";
-import EditIcon from "../../assets/icons/edit.svg";
+import RightArrow from "../../assets/icons/right.svg";
 import ImgOne from "../../assets/images/img-3.png";
-import "./OutletList.scss";
-import { Modal } from "../Modal";
 import Button from "../Button";
 import LayoutModule from "../LayoutModal";
 import AddOutletModal from "../ModalComponents/AddOutlet";
 import SharingQRCodeViaEmail from "../ModalComponents/SharingQRcodeViaEmail";
 import PreviewChangesModal from "../ModalComponents/PreviewChangesModal";
+import "./OutletList.scss";
 
 const data = [
   {
@@ -66,7 +64,6 @@ const data = [
 
 const OutletList: React.FC = () => {
   const [active, setIsActive] = useState(false);
-  const [isModalOpen, setModalState] = useState(false);
   const [addOutlet, setAddOutlet] = useState(false);
   const [sharingActive, setSharingActive] = useState(false);
 
@@ -90,8 +87,6 @@ const OutletList: React.FC = () => {
   const handleCloseSharing = () => {
     setSharingActive(false);
   };
-
-  const toggleModal = () => setModalState(!isModalOpen);
 
   return (
     <div className="outlet-list-wrapper">
@@ -124,17 +119,13 @@ const OutletList: React.FC = () => {
                 <h3>{f.name}</h3>
               </div>
               <div className="icons">
-                <div className="edit-icon" onClick={toggleModal}>
-                  <img src={EditIcon} alt="" />
-                </div>
-                <div className="delete-icon" onClick={toggleModal}>
-                  <img src={DeleteIcon} alt="" />
+                <div className="right-icon">
+                  <img src={RightArrow} alt="" />
                 </div>
               </div>
             </div>
           );
         })}
-        <div></div>
       </div>
       <div className="btns">
         <Button
@@ -164,7 +155,6 @@ const OutletList: React.FC = () => {
           </LayoutModule>
         )}
       </div>
-      <Modal isOpen={isModalOpen} onClose={toggleModal}></Modal>
     </div>
   );
 };
