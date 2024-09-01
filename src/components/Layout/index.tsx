@@ -6,13 +6,18 @@ import "./Layout.scss";
 interface ILayoutProps {
   children: React.ReactNode;
   className?: string;
+  monthValue?: string;
 }
 
-const Layout: React.FC<ILayoutProps> = ({ children, className }) => {
+const Layout: React.FC<ILayoutProps> = ({
+  children,
+  className,
+  monthValue,
+}) => {
   return (
     <>
       <div>
-        <Header />
+        <Header monthValue={monthValue} />
       </div>
       <div className="layoutWrapper">
         <Sidebar />

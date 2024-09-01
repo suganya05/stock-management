@@ -4,12 +4,14 @@ import { ReactComponent as AnalyticsIcon } from "../../assets/icons/analytics.sv
 import { ReactComponent as AddStockIcon } from "../../assets/icons/addStock.svg";
 import { ReactComponent as AllocateIcon } from "../../assets/icons/allocate.svg";
 import { ReactComponent as LogoutIcon } from "../../assets/icons/log-out.svg";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Sidebar.scss";
+import auth from "../../firebase/config";
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
   const [activeIcon, setActiveIcon] = useState<string>("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const path = location.pathname;
@@ -19,6 +21,11 @@ const Sidebar: React.FC = () => {
     else if (path === "/allocate") setActiveIcon("allocate");
     else setActiveIcon("");
   }, [location.pathname]);
+
+  const signOut = () => {
+    auth.signOut();
+    navigate("/login");
+  };
 
   return (
     <div className="sidebar-wrapper">
@@ -58,7 +65,7 @@ const Sidebar: React.FC = () => {
       </div>
       <div
         className={`logout ${activeIcon === "logout" ? "active" : ""}`}
-        onClick={() => setActiveIcon("logout")}
+        onClick={() => signOut()}
       >
         <LogoutIcon />
         <h5>Log Out</h5>

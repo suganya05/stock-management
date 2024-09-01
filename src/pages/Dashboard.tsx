@@ -9,7 +9,7 @@ import StockDistribution from "../components/StockDistribution";
 
 const Dashboard: React.FC = () => {
   return (
-    <Layout className="dashboard">
+    <Layout className="dashboard" monthValue="2024-08">
       <div className="component">
         <StockAssigned />
         <StockDistribution />

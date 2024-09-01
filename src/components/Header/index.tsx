@@ -1,12 +1,71 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import PlusIcon from "../../assets/icons/plus-icon.png";
 import Profile from "../../assets/icons/profile.png";
-import Date from "../../assets/icons/Date.png";
+import DateImg from "../../assets/icons/Date.png";
 import "./Header.scss";
+import useAuthStore from "../../context/userStore";
+import { backend_url } from "../../constants/backend";
+import axios from "axios";
 
-const Header: React.FC = () => {
+interface IHeader {
+  monthValue?: string;
+}
+
+const Header: React.FC<IHeader> = ({ monthValue }) => {
   const location = useLocation();
+  const { user, loading } = useAuthStore();
+  const [name, setName] = useState<string>();
+  const [role, setRole] = useState<string>();
+  const [day, setDay] = useState<string>();
+  const [month, setMonth] = useState<string>();
+
+  const getUserData = async () => {
+    const url = `${backend_url}admin/super-users`;
+    const idToken = await user?.getIdToken();
+    const headers = {
+      Authorization: `Bearer ${idToken}`,
+    };
+    const res = await axios.get(url, { headers });
+    if (res.status === 200) {
+      setName(res.data.name ? res.data.name : "User");
+      setRole(res.data.role ? res.data.role : "Employee");
+    } else {
+      console.log("error occured on getting data");
+      setName("User");
+      setRole("Employee");
+    }
+  };
+
+  const getDate = () => {
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const date = new Date();
+    const day = days[date.getDay()];
+    const month = months[date.getMonth()];
+
+    setDay(day);
+    setMonth(month);
+  };
+
+  useEffect(() => {
+    getUserData();
+    getDate();
+  }, []);
 
   return (
     <>
@@ -18,27 +77,27 @@ const Header: React.FC = () => {
         </div>
         <div className="header-container">
           <div className="header-content-two">
-            <div className="plus-icon">
+            {/* <div className="plus-icon">
               <img src={PlusIcon} alt="" />
-            </div>
+            </div> */}
             <div className="profile-content">
               <div className="profile">
                 <img src={Profile} alt="" />
               </div>
               <div className="content">
-                <h4>William Smith</h4>
-                <h5>CEO Assistant</h5>
+                <h4>{name}</h4>
+                <h5>{role}</h5>
               </div>
             </div>
           </div>
 
           <div className="month">
             <div className="date">
-              <img src={Date} alt="" />
+              <img src={DateImg} alt="" />
             </div>
             <div className="month-content">
-              <h4>Tue,</h4>
-              <h5>December</h5>
+              <h4>{day},</h4>
+              <h5>{month}</h5>
             </div>
           </div>
         </div>
@@ -47,22 +106,22 @@ const Header: React.FC = () => {
         <div className="dashboard-container">
           <div className="heading">
             <h4>
-              Welcome, <span>Smith</span>
+              Welcome, <span>{name}</span>
             </h4>
           </div>
 
           <div className="month-input">
             <form action="">
-              <input type="month" />
+              <input type="month" value={monthValue} />
             </form>
           </div>
         </div>
       )}
-      {location.pathname === "/report" && (
+      {/* {location.pathname === "/report" && (
         <div className="dashboard-container">
           <div className="heading">
             <h4>
-              Welcome, <span>Smith</span>
+              Welcome, <span>{name}</span>
             </h4>
           </div>
           <div className="month-input">
@@ -71,7 +130,7 @@ const Header: React.FC = () => {
             </form>
           </div>
         </div>
-      )}
+      )} */}
     </>
   );
 };
