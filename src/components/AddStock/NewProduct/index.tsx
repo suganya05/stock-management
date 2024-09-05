@@ -1,5 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Formik, Form, Field, ErrorMessage, useFormik } from "formik";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Formik,
+  Form,
+  Field,
+  ErrorMessage,
+  useFormik,
+  FastField,
+} from "formik";
 import * as Yup from "yup";
 import ArrowRight from "../../../assets/icons/arrow-right.png";
 import PlusIcon from "../../../assets/icons/plus.png";
@@ -9,123 +16,161 @@ import PreviewChanges from "../../ModalComponents/PreviewChanges";
 import LayoutModule from "../../LayoutModal";
 import "./NewProduct.scss";
 import AllProductList from "../../AllProductList";
-import { backend_url } from "../../../constants/backend";
-import axios from "axios";
 import useAuthStore from "../../../context/userStore";
-
-interface AddNewProductForm {
-  name: string;
-  unitOfMesurment: string;
-  wholesalePrice: string;
-  retailPrice: string;
-}
+import SampleCsv from "../../ModalComponents/SampleCSV";
+import {
+  createProduct,
+  deleteProduct,
+  editProduct,
+  getProduct,
+  parseAndUploadCSV,
+  uploadImageToFirebase,
+} from "./NewProduct";
+import { AddNewProductForm, IProduct } from "../../../types/types";
+import EditProductModel from "../../ModalComponents/EditProduct";
 
 const initialValues: AddNewProductForm = {
   name: "",
   unitOfMesurment: "",
   wholesalePrice: "",
   retailPrice: "",
+  imgUrl: undefined,
 };
+
+const CSVColumns = ["Product Name", "Wholesale Price", "Retail Price", "Unit"];
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   unitOfMesurment: Yup.string().required("Unit Of Mesurment is required"),
   wholesalePrice: Yup.string().required("? Price per unit"),
   retailPrice: Yup.string().required("Retail Price is required"),
+  imgUrl: Yup.string().optional(),
 });
 
 const NewProducts: React.FC = () => {
-  const [selectedImage, setSelectedImage] = useState<
-    string | ArrayBuffer | null
-  >(null);
-  const [active, setIsActive] = useState(false);
+  // const [selectedImage, setSelectedImage] = useState<
+  //   string | ArrayBuffer | null
+  // >(null);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
   const [products, setProducts] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const limit = 10;
   const [hasMore, setHasMore] = useState(true);
   const user = useAuthStore((state) => state.user);
   const [errorStatus, setErrorStatus] = useState<string>();
+  const [showSampleCSV, setSampleCSV] = useState<boolean>(false);
+  // const [showChanges, setShowChanges] = useState<boolean>(false);
+  const [showEditor, setEditor] = useState<boolean>(false);
+  const [productToEdit, setProductToEdit] = useState<IProduct>();
+  const showFileRef = useRef<HTMLInputElement | null>(null);
+  const [disabled, setDisabled] = useState(false);
+  const [editError, setEditError] = useState<string>();
 
   useEffect(() => {
-    getProducts(page, limit);
+    handleGetProducts(page, limit);
   }, [page]);
 
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasMore]);
+
   const handleOpenToggle = () => {
-    setIsActive(true);
+    setSampleCSV(true);
   };
 
   const handleCloseToggle = () => {
-    setIsActive(false);
+    setSampleCSV(false);
   };
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+  const handleCloseChanges = () => {};
+
+  const handleCloseEditor = () => {
+    setEditor(false);
+  };
+
+  const resetProdList = async () => {
+    try {
+      setProducts([]);
+      setPage(1);
+      setHasMore(true);
+
+      const data = await getProduct(user, 1, limit);
+      if (data.length < limit) {
+        setHasMore(false);
+      }
+      setProducts(data);
+    } catch (error) {
+      console.error("Error resetting product list:", error);
     }
   };
 
-  const handleAddProduct = async (values: AddNewProductForm) => {
+  const handleImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     try {
-      const url = `${backend_url}admin/products`;
-      const idToken = await user?.getIdToken();
-      const headers = {
-        Authorization: `Bearer ${idToken}`,
-      };
-      const ProductData = {
-        name: values.name,
-        unit: values.unitOfMesurment,
-        actualPrice: parseInt(values.wholesalePrice),
-        retailPrice: parseInt(values.retailPrice),
-      };
-      const res = await axios.post(url, ProductData, { headers });
-
-      if (res.status === 201) {
-        console.log("Successfully created product");
-        formik.setValues({
-          name: "",
-          unitOfMesurment: "",
-          wholesalePrice: "",
-          retailPrice: "",
-        });
-
-        setProducts([]);
-        setPage(1);
-        setHasMore(true);
-      } else {
-        console.log("Error occurred while creating the product");
+      if (event.target.files && event.target.files[0]) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        // reader.onloadend = () => {
+        //   setSelectedImage(reader.result);
+        // };
+        setIsUploading(true);
+        setDisabled(true);
+        const imgUrl = await uploadImageToFirebase(file);
+        formik.setFieldValue("imgUrl", imgUrl);
+        reader.readAsDataURL(file);
+        setIsUploading(false);
+        setDisabled(false);
       }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCreateProduct = async (values: AddNewProductForm) => {
+    try {
+      await createProduct(user, values);
+      formik.resetForm();
+      resetProdList();
     } catch (error) {
       console.log(error);
       setErrorStatus("Error occurred");
     }
   };
 
-  let callCount = 0;
-  const getProducts = async (page: number, limit: number) => {
-    callCount++;
-    console.log(`getProducts called ${callCount} time(s)`);
+  const handleGetProducts = async (page: number, limit: number) => {
     try {
-      const url = `${backend_url}admin/products/${page}/${limit}`;
-      const idToken = await user?.getIdToken();
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${idToken}`,
-      };
-      const response = await axios.get(url, { headers });
-      console.log(response.data);
-
-      if (response.data.length < limit) {
+      const data = await getProduct(user, page, limit);
+      if (data.length < limit) {
         setHasMore(false);
       }
-
-      setProducts((prevProducts) => [...prevProducts, ...response.data]);
+      setProducts((prevProducts) => [...prevProducts, ...data]);
     } catch (error) {
       console.error("Error fetching products:", error);
+    }
+  };
+
+  const handleProductDelete = async (id: string) => {
+    try {
+      await deleteProduct(user, id);
+      console.log("Product deleted successfully");
+      setProducts((prevProducts) =>
+        prevProducts.filter((product) => product._id !== id)
+      );
+    } catch (error) {
+      console.log("Error deleting product:", error);
+    }
+  };
+
+  const handleCSVUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      await parseAndUploadCSV(user, file);
+      setSampleCSV(false);
+      resetProdList();
     }
   };
 
@@ -146,85 +191,32 @@ const NewProducts: React.FC = () => {
     setPage((prevPage) => prevPage + 1);
   };
 
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasMore]);
-
-  const handleProductDelete = async (id: string) => {
-    try {
-      const url = `${backend_url}admin/products/${id}`;
-      const idToken = await user?.getIdToken();
-      const headers = {
-        Authorization: `Bearer ${idToken}`,
-      };
-
-      const response = await axios.delete(url, { headers });
-
-      if (response.status === 200) {
-        console.log("Product deleted successfully");
-        setProducts((prevProducts) =>
-          prevProducts.filter((product) => product.id !== id)
-        );
-      } else {
-        console.error("Error occurred while deleting the product");
-      }
-    } catch (error) {
-      console.log("Error deleting product:", error);
-    }
-  };
-  const editProduct = async (
+  const onEditPress = async (
     id: string,
     updatedProductData: AddNewProductForm
   ) => {
     try {
-      const url = `${backend_url}admin/products/${id}`;
-      const idToken = await user?.getIdToken();
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${idToken}`,
-      };
-
-      const ProductData = {
-        name: updatedProductData.name,
-        unit: updatedProductData.unitOfMesurment,
-        actualPrice: parseInt(updatedProductData.wholesalePrice),
-        retailPrice: parseInt(updatedProductData.retailPrice),
-      };
-
-      const response = await axios.put(url, ProductData, { headers });
-
-      if (response.status === 200) {
-        console.log("Product edited successfully");
-        setProducts((prevProducts) =>
-          prevProducts.map((product) =>
-            product.id === id ? { ...product, ...ProductData } : product
-          )
-        );
-      } else {
-        console.error("Error occurred while editing the product");
-      }
+      await editProduct(user, id, updatedProductData);
+      resetProdList();
+      setEditor(false);
     } catch (error) {
+      setEditError("Error occured");
       console.log("Error editing product:", error);
     }
   };
 
   const handleProductEdit = (id: string) => {
-    const productToEdit = products.find((product) => product._id === id);
-    // if (productToEdit) {
-    //   formik.setValues({
-    //     name: productToEdit.name,
-    //     unitOfMesurment: productToEdit.unit,
-    //     wholesalePrice: productToEdit.actualPrice,
-    //     retailPrice: productToEdit.retailPrice,
-    //   });
-    // }
+    const prod = products.find((product) => product._id === id);
+    if (prod) {
+      setProductToEdit(prod);
+      setEditor(true);
+    }
   };
 
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
-    onSubmit: handleAddProduct,
+    onSubmit: handleCreateProduct,
   });
 
   return (
@@ -239,12 +231,46 @@ const NewProducts: React.FC = () => {
           >
             Upload CSV
           </Button>
-          {active && (
+          {showSampleCSV && (
             <LayoutModule
               handleToggle={handleCloseToggle}
               className="layout-module"
             >
+              <SampleCsv
+                onPickFile={() => {
+                  if (showFileRef.current) {
+                    showFileRef.current.click();
+                  }
+                }}
+                columns={CSVColumns}
+              />
+              <input
+                type="file"
+                ref={showFileRef}
+                style={{ display: "none" }}
+                onChange={handleCSVUpload}
+                accept=".csv"
+              />
+            </LayoutModule>
+          )}
+          {/* {showChanges && (
+            <LayoutModule
+              handleToggle={handleCloseChanges}
+              className="layout-module"
+            >
               <PreviewChanges />
+            </LayoutModule>
+          )} */}
+          {showEditor && (
+            <LayoutModule
+              handleToggle={handleCloseEditor}
+              className="layout-module"
+            >
+              <EditProductModel
+                errorStatus={editError}
+                productData={productToEdit}
+                onSubmit={(id, updatedProds) => onEditPress(id, updatedProds)}
+              />
             </LayoutModule>
           )}
         </div>
@@ -348,9 +374,16 @@ const NewProducts: React.FC = () => {
                   onChange={handleImageChange}
                 />
                 <label htmlFor="upload-input" className="upload-label">
-                  {selectedImage ? (
+                  {isUploading ? (
+                    <div className="upload">
+                      <h4>
+                        Uploading <br />
+                        Please wait
+                      </h4>
+                    </div>
+                  ) : formik.values.imgUrl ? (
                     <img
-                      src={selectedImage as string}
+                      src={formik.values.imgUrl}
                       alt="Uploaded"
                       className="uploaded-image"
                     />
@@ -376,6 +409,10 @@ const NewProducts: React.FC = () => {
                   varient="primary"
                   type="submit"
                   rightIcon={<img src={ArrowRight} alt="plus" />}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    formik.handleSubmit();
+                  }}
                 >
                   Add Product
                 </Button>
@@ -391,7 +428,11 @@ const NewProducts: React.FC = () => {
           onEdit={handleProductEdit}
         />
         {hasMore && (
-          <Button varient="secondary" onClick={handleLoadMore}>
+          <Button
+            varient="secondary"
+            onClick={handleLoadMore}
+            disabled={disabled}
+          >
             Load More
           </Button>
         )}

@@ -1,52 +1,65 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ImgOne from "../../../assets/images/img-3.png";
 import Send from "../../../assets/icons/send.svg";
 import "./SharingQRCodeViaEmail.scss";
 import Button from "../../Button";
-
-const data = [
-  {
-    img: ImgOne,
-    title: "Vasantha Bhavan",
-  },
-  {
-    img: ImgOne,
-    title: "Vasantha Bhavan",
-  },
-  {
-    img: ImgOne,
-    title: "Vasantha Bhavan",
-  },
-  {
-    img: ImgOne,
-    title: "Vasantha Bhavan",
-  },
-  {
-    img: ImgOne,
-    title: "Vasantha Bhavan",
-  },
-  {
-    img: ImgOne,
-    title: "Vasantha Bhavan",
-  },
-  {
-    img: ImgOne,
-    title: "Vasantha Bhavan",
-  },
-];
+import { IOutlet } from "../../../types/types";
+import { getAllOulets } from "../../AddStock/AddOutletList/Addoutlet";
+import useAuthStore from "../../../context/userStore";
 
 const SharingQRCodeViaEmail: React.FC = () => {
-  const [selectedItems, setSelectedItems] = useState<boolean[]>(
-    Array(data.length).fill(false)
-  );
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const user = useAuthStore((state) => state.user);
+  const [outlets, setOutlets] = useState<IOutlet[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
 
-  const handleCheckboxChange = (index: number) => {
-    const updatedSelectedItems = [...selectedItems];
-    updatedSelectedItems[index] = !updatedSelectedItems[index];
-    setSelectedItems(updatedSelectedItems);
+  // Load outlets
+  const loadOutlets = async (page: number, limit: number) => {
+    try {
+      const data = await getAllOulets(user, page, limit);
+      setOutlets((prevOutlets) => [...prevOutlets, ...data]);
+    } catch (error) {
+      console.error("Error loading outlets:", error);
+    }
   };
 
-  const selectedCount = selectedItems.filter(Boolean).length;
+  const handleCheckboxChange = (outletId: string) => {
+    setSelectedItems((prevSelected) => {
+      if (prevSelected.includes(outletId)) {
+        // If already selected, remove it
+        return prevSelected.filter((id) => id !== outletId);
+      } else {
+        // If not selected, add it
+        return [...prevSelected, outletId];
+      }
+    });
+  };
+
+  // Handle scrolling and pagination
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop !==
+        document.documentElement.offsetHeight ||
+      !hasMore
+    )
+      return;
+    setPage((prevPage) => prevPage + 1);
+  };
+
+  useEffect(() => {
+    loadOutlets(page, 10);
+  }, [page]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasMore]);
+
+  const handleSendPress = async () => {
+    console.log("Selected Items:", selectedItems);
+    // Add logic to handle sending selected QR codes via email
+  };
 
   return (
     <div className="sharing-qr-code-wrapper">
@@ -55,21 +68,23 @@ const SharingQRCodeViaEmail: React.FC = () => {
       </div>
       <div className="head">
         <h3>Send to</h3>
-        <p>Select all({selectedCount})</p>
+        <p>Select all({selectedItems.length})</p>
       </div>
       <div className="sharing-qr-code-container">
-        {data.map((f, index) => {
+        {outlets.map((outlet) => {
           return (
-            <div key={index} className="sharing-qr-code-content">
+            <div key={outlet._id} className="sharing-qr-code-content">
               <div className="names">
-                <img src={f.img} alt="" />
-                <p>{f.title}</p>
+                <img src={outlet.photoUrl} alt={outlet.outletName} />
+                <p>{outlet.outletName}</p>
               </div>
               <div className="check-input">
                 <input
                   type="checkbox"
-                  checked={selectedItems[index]}
-                  onChange={() => handleCheckboxChange(index)}
+                  //@ts-ignore
+                  checked={selectedItems.includes(outlet._id)}
+                  //@ts-ignore
+                  onChange={() => handleCheckboxChange(outlet._id)}
                 />
               </div>
             </div>
@@ -77,7 +92,11 @@ const SharingQRCodeViaEmail: React.FC = () => {
         })}
       </div>
       <div className="send-btn">
-        <Button varient="primary" leftIcon={<img src={Send} alt="plus" />}>
+        <Button
+          varient="primary"
+          leftIcon={<img src={Send} alt="plus" />}
+          onClick={handleSendPress}
+        >
           Send
         </Button>
       </div>

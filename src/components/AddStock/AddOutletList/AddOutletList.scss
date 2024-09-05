@@ -1,6 +1,15 @@
 .add-outlet-list-wrapper {
   display: grid;
   grid-template-columns: 0.9fr 1fr;
+  .outlet-list-content {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .outlet-list-content.selected {
+    background-color: #e0f7fa; /* Highlight color for the selected outlet */
+    border: 1px solid #00838f; /* Border to distinguish the selected outlet */
+  }
   .add-outlet-list-content {
     margin-left: 40px;
     border-left: 1px solid #d9d8d8;
@@ -9,8 +18,10 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
+      gap: 20px;
+      cursor: pointer;
       h4 {
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 500;
         color: #ffbb64;
       }
@@ -89,5 +100,11 @@
         }
       }
     }
+  }
+  .not-selected{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
   }
 }

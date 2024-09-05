@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
 import "./Layout.scss";
+import useAuthStore from "../../context/userStore";
+import { useNavigate } from "react-router-dom";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -14,6 +16,13 @@ const Layout: React.FC<ILayoutProps> = ({
   className,
   monthValue,
 }) => {
+  const user = useAuthStore((state) => state.user);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user]);
   return (
     <>
       <div>
