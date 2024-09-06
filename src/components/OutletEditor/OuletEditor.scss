@@ -1,5 +1,5 @@
-.add-sales-representative-wrapper {
-  .add-sales-representative-head {
+.add-outlet-modal-wrapper {
+  .add-outlet-modal-heading {
     margin-bottom: 24px;
     h4 {
       font-size: 21px;
@@ -10,11 +10,7 @@
     .form-wrapper {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
       .form-flex-item {
-        display: flex;
-        flex-direction: column;
-        gap: 16px; // Adds spacing between form groups
         .form-group {
           label {
             p {
@@ -24,8 +20,8 @@
           }
         }
         .input {
-          input,
-          textarea {
+          margin-top: 14px;
+          input {
             margin-top: 5px;
             width: 300px;
             padding: 8px 16px;
@@ -35,6 +31,16 @@
             &::placeholder {
               color: #c4bdbd;
             }
+          }
+          textarea {
+            margin-top: 5px;
+            width: 300px;
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: 1px solid #b5b3b3;
+            outline: none;
+            resize: vertical;
+            font-family: "Inter", sans-serif;
           }
         }
       }
@@ -75,6 +81,42 @@
         }
       }
     }
+    .flex-input {
+      display: flex;
+      gap: 35px;
+      .form-group {
+        label {
+          p {
+            font-size: 15px;
+            color: #6a6969;
+          }
+        }
+      }
+      .input {
+        margin-top: 14px;
+        input {
+          margin-top: 5px;
+          width: 280px;
+          padding: 8px 16px;
+          border-radius: 10px;
+          border: 1px solid #b5b3b3;
+          outline: none;
+          &::placeholder {
+            color: #c4bdbd;
+          }
+        }
+        textarea {
+          margin-top: 5px;
+          width: 300px;
+          padding: 8px 16px;
+          border-radius: 10px;
+          border: 1px solid #b5b3b3;
+          outline: none;
+          resize: vertical;
+          font-family: "Inter", sans-serif;
+        }
+      }
+    }
     .form-group {
       label {
         p {
@@ -111,7 +153,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: 16px;
+      margin-top: 12px;
       button {
         padding: 6px 52px;
       }

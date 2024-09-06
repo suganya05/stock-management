@@ -1,6 +1,12 @@
 .add-sales-person-wrapper {
   display: grid;
   grid-template-columns: 0.9fr 1fr;
+  .not-selected{
+    display: flex;
+    align-items:center;
+    justify-content: center;
+    height: 100%;
+  }
   .add-sales-person-content {
     padding: 0px 16px;
     border-right: 1px solid #d9d8d8;
@@ -53,6 +59,12 @@
         border-radius: 10px;
         padding: 8px 20px;
         margin: 0 24px 5px 12px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        &.selected {
+          background-color: #f0f0f0; // Highlight color for selected salesperson
+          border: 1px solid #ffbb64;
+        }
         .profile-img {
           display: flex;
           align-items: center;
@@ -81,10 +93,21 @@
   }
   .salesperson-details-wrapper {
     .salesperson-details-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       h4 {
         font-size: 25px;
         font-weight: 500;
         margin-left: 28px;
+      }
+      h3 {
+        font-size: 16px;
+        font-weight: 500;
+        margin-left: 28px;
+        padding-left: 30px;
+        cursor: pointer;
+        color: #ffbb64;
       }
     }
     .profile-wrapper {
@@ -143,6 +166,14 @@
               margin-bottom: 20px;
             }
           }
+          .inactive {
+            h3 {
+              color: red;
+              font-weight: 500;
+              font-size: 16px;
+              margin-bottom: 20px;
+            }
+          }
         }
       }
       .btns {
@@ -167,4 +198,5 @@
       }
     }
   }
+  
 }

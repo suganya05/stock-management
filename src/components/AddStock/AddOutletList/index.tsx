@@ -18,10 +18,12 @@ import {
   deleteOutlet,
   getAllOulets,
   parseAndUploadCSV,
+  updateOutlet,
 } from "./Addoutlet";
 import useAuthStore from "../../../context/userStore";
 import { User } from "firebase/auth";
 import SampleCsv from "../../ModalComponents/SampleCSV";
+import OutletEditor from "../../OutletEditor";
 
 const CSVColumns = [
   "Outlet Name",
@@ -180,6 +182,16 @@ const AddOutletList: React.FC = () => {
     }
   };
 
+  const handleUpdateOutlet = async (data: IOutlet) => {
+    try {
+      if (selectedOutletId) await updateOutlet(user, selectedOutletId, data);
+      await resetOutlets();
+      handleEditorClose();
+    } catch (error) {
+      // handle error
+    }
+  };
+
   return (
     <div className="add-outlet-list-wrapper">
       <div className="outlet-list-wrapper">
@@ -201,12 +213,16 @@ const AddOutletList: React.FC = () => {
                 <SharingQRCodeViaEmail />
               </LayoutModule>
             )}
-            {showEditor && (
+            {showEditor && selectedOutletId && (
               <LayoutModule
-                handleToggle={handleCloseSharing}
+                handleToggle={handleEditorClose}
                 className="layout-module"
               >
-                <SharingQRCodeViaEmail />
+                <OutletEditor
+                  onSubmit={(values) => handleUpdateOutlet(values)}
+                  selectedId={selectedOutletId}
+                  data={outlets}
+                />
               </LayoutModule>
             )}
             {showSampleCsv && (
@@ -289,6 +305,7 @@ const AddOutletList: React.FC = () => {
         onDelete={() => {
           handleDeleteOutlet();
         }}
+        onEdit={handleEditorOpen}
       />
     </div>
   );

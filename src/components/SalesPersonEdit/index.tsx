@@ -1,19 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import PlusIcon from "../../../assets/icons/plus.png";
-import BlackPlusIcon from "../../../assets/images/plus.svg";
-import Button from "../../Button";
-import "./AddSalesRepresentative.scss";
-import { ISalesPerson } from "../../../types/types";
-import { uploadImageToFirebase } from "../../AddStock/NewProduct/NewProduct";
-
-const initialValues: ISalesPerson = {
-  name: "",
-  email: "",
-  photoUrl: undefined,
-  phoneNumber: "",
-};
+import PlusIcon from "../../assets/icons/plus.png";
+import BlackPlusIcon from "../../assets/images/plus.svg";
+import Button from "../Button";
+import "./SalesPersonEditor.scss";
+import { ISalesPerson } from "../../types/types";
+import { uploadImageToFirebase } from "../AddStock/NewProduct/NewProduct";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -26,20 +19,29 @@ const validationSchema = Yup.object().shape({
   photoUrl: Yup.string().optional(),
 });
 
-interface IAddSalesRepresentative {
+interface IUpdateSalesRepresentative {
+  selectedSalesPerson: ISalesPerson;
   onSubmit: (data: ISalesPerson) => void;
   error: string | undefined;
 }
 
-const AddSalesRepresentative: React.FC<IAddSalesRepresentative> = ({
+const SalesPersonEditor: React.FC<IUpdateSalesRepresentative> = ({
   onSubmit,
   error,
+  selectedSalesPerson,
 }) => {
   const [uploading, setUploading] = useState(false);
 
   const handleSubmit = (values: ISalesPerson) => {
     console.log(values);
     onSubmit(values);
+  };
+
+  const initialValues: ISalesPerson = {
+    name: selectedSalesPerson.name,
+    email: selectedSalesPerson.email,
+    photoUrl: selectedSalesPerson.photoUrl,
+    phoneNumber: selectedSalesPerson.phoneNumber,
   };
 
   const formik = useFormik({
@@ -63,7 +65,7 @@ const AddSalesRepresentative: React.FC<IAddSalesRepresentative> = ({
   return (
     <div className="add-sales-representative-wrapper">
       <div className="add-sales-representative-head">
-        <h4>Add Sales Representative</h4>
+        <h4>Update Sales Representative</h4>
       </div>
       <div className="form">
         <div className="form-wrapper">
@@ -169,4 +171,4 @@ const AddSalesRepresentative: React.FC<IAddSalesRepresentative> = ({
   );
 };
 
-export default AddSalesRepresentative;
+export default SalesPersonEditor;

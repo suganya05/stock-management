@@ -10,12 +10,14 @@ interface IOutletData {
   data: IOutlet[];
   selelectedId: string | null;
   onDelete: () => void;
+  onEdit: () => void;
 }
 
 const OutletData: React.FC<IOutletData> = ({
   data,
   selelectedId,
   onDelete,
+  onEdit,
 }) => {
   const [selectedData, setSelectedData] = useState<IOutlet>();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -55,9 +57,9 @@ const OutletData: React.FC<IOutletData> = ({
     <div>
       {selectedData ? (
         <div className="add-outlet-list-content">
-          <div className="head" onClick={() => printQr(selectedData)}>
-            <h4>Print QR</h4>
-            <h4>Edit</h4>
+          <div className="head">
+            <h4 onClick={() => printQr(selectedData)}>Print QR</h4>
+            <h4 onClick={() => onEdit()}>Edit</h4>
           </div>
           <div className="logo">
             <img src={selectedData?.photoUrl} alt="" />

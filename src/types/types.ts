@@ -32,3 +32,13 @@ export interface IOutlet {
   customPricingId?: string;
   qrcode?: string;
 }
+
+export interface ISalesPerson {
+  _id?: string;
+  name: string;
+  email: string;
+  photoUrl?: string;
+  phoneNumber: string;
+  createdBy?: string;
+  isActive?: boolean;
+}
