@@ -8,7 +8,7 @@ const CustomPricing: React.FC = () => {
   const [outlets, setOutlets] = useState<IOutlet[]>([]);
 
   return (
-    <div className="custom-pricing-wrapper">
+    <div>
       <OutletList />
       <AllProductList />
     </div>
