@@ -9,41 +9,6 @@ import "./AllProductList.scss";
 import Button from "../Button";
 import { IAllProducts } from "../../types/types";
 
-const data = [
-  {
-    img: ImgOne,
-    name: "Nandini Milk 1 Litre",
-  },
-  {
-    img: ImgTwo,
-    name: "Nandini Curd 500 Litre",
-  },
-  {
-    img: ImgOne,
-    name: "Doddla Gold 1 Litre",
-  },
-  {
-    img: ImgTwo,
-    name: "Nandini Kova  1 Kg",
-  },
-  {
-    img: ImgOne,
-    name: "Doddla ButterMilk ",
-  },
-  {
-    img: ImgTwo,
-    name: "Nandini Curd 500 Litre",
-  },
-  {
-    img: ImgOne,
-    name: "Nandini Milk 1 Litre",
-  },
-  {
-    img: ImgTwo,
-    name: "Nandini Curd 500 Litre",
-  },
-];
-
 const AllProductList: React.FC<IAllProducts> = ({
   prodList,
   onDelete,

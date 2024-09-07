@@ -24,6 +24,7 @@ import useAuthStore from "../../../context/userStore";
 import { User } from "firebase/auth";
 import SampleCsv from "../../ModalComponents/SampleCSV";
 import OutletEditor from "../../OutletEditor";
+import useProductStore from "../../../context/productStore";
 
 const CSVColumns = [
   "Outlet Name",

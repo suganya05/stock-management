@@ -54,6 +54,8 @@ const AddProducts: React.FC = () => {
     }
   };
 
+  const loadProducts = async () => {};
+
   return (
     <div className="add-product-wrapper">
       <div className="add-product-content">

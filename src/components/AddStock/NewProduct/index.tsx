@@ -28,6 +28,7 @@ import {
 } from "./NewProduct";
 import { AddNewProductForm, IProduct } from "../../../types/types";
 import EditProductModel from "../../ModalComponents/EditProduct";
+import useProductStore from "../../../context/productStore";
 
 const initialValues: AddNewProductForm = {
   name: "",
@@ -48,9 +49,6 @@ const validationSchema = Yup.object().shape({
 });
 
 const NewProducts: React.FC = () => {
-  // const [selectedImage, setSelectedImage] = useState<
-  //   string | ArrayBuffer | null
-  // >(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [products, setProducts] = useState<any[]>([]);
   const [page, setPage] = useState(1);
@@ -59,7 +57,6 @@ const NewProducts: React.FC = () => {
   const user = useAuthStore((state) => state.user);
   const [errorStatus, setErrorStatus] = useState<string>();
   const [showSampleCSV, setSampleCSV] = useState<boolean>(false);
-  // const [showChanges, setShowChanges] = useState<boolean>(false);
   const [showEditor, setEditor] = useState<boolean>(false);
   const [productToEdit, setProductToEdit] = useState<IProduct>();
   const showFileRef = useRef<HTMLInputElement | null>(null);
