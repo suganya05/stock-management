@@ -1,7 +1,7 @@
 import QRCode from "qrcode";
 import { IOutlet } from "../../types/types";
 
-export const printQr = async (selectedData: IOutlet | undefined) => {
+export const printQr = async (selectedData: Partial<IOutlet> | undefined) => {
   if (!selectedData || !selectedData.qrcode) {
     console.error("No QR code available for the selected outlet.");
     return;

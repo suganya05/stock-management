@@ -2,6 +2,7 @@ import { Auth, User } from "firebase/auth";
 import { backend_url } from "../constants/backend";
 import axios from "axios";
 import { AddNewProductForm, IProduct } from "../types/types";
+import Papa from "papaparse";
 
 export const getProducts = async (user: User | null) => {
   if (!user) {
@@ -17,7 +18,10 @@ export const getProducts = async (user: User | null) => {
   return response.data;
 };
 
-export const createProduct = async (user: User | null, values: IProduct) => {
+export const createProduct = async (
+  user: User | null,
+  values: Partial<IProduct>
+) => {
   try {
     const url = `${backend_url}admin/products`;
     const idToken = await user?.getIdToken();
@@ -83,4 +87,38 @@ export const updateProductBck = async (
     console.log(error);
     throw error;
   }
+};
+
+const convertCsvToJson = (data: any[]) => {
+  return data.map((row: any) => {
+    return {
+      name: row["Product Name"] as string,
+      actualPrice: row["Wholesale Price"] as number,
+      retailPrice: row["Retail Price"] as number,
+      unit: row["Unit"] as string,
+    };
+  });
+};
+
+export const parseAndUploadCSV = async (user: User | null, file: File) => {
+  return new Promise<void>((resolve, reject) => {
+    Papa.parse(file, {
+      complete: async (result) => {
+        const jsonData = convertCsvToJson(result.data);
+        try {
+          await Promise.all(
+            jsonData.map(async (product) => {
+              await createProduct(user, product);
+            })
+          );
+          resolve();
+        } catch (error) {
+          console.error("Failed to upload product:", error);
+          reject(error);
+        }
+      },
+      header: true,
+      skipEmptyLines: true,
+    });
+  });
 };

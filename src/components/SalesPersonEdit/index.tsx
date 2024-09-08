@@ -6,7 +6,7 @@ import BlackPlusIcon from "../../assets/images/plus.svg";
 import Button from "../Button";
 import "./SalesPersonEditor.scss";
 import { ISalesPerson } from "../../types/types";
-import { uploadImageToFirebase } from "../AddStock/NewProduct/NewProduct";
+import { uploadImageToFirebase } from "../../helpers/firebase";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -20,8 +20,8 @@ const validationSchema = Yup.object().shape({
 });
 
 interface IUpdateSalesRepresentative {
-  selectedSalesPerson: ISalesPerson;
-  onSubmit: (data: ISalesPerson) => void;
+  selectedSalesPerson: Partial<ISalesPerson>;
+  onSubmit: (data: Partial<ISalesPerson>) => void;
   error: string | undefined;
 }
 
@@ -32,12 +32,12 @@ const SalesPersonEditor: React.FC<IUpdateSalesRepresentative> = ({
 }) => {
   const [uploading, setUploading] = useState(false);
 
-  const handleSubmit = (values: ISalesPerson) => {
+  const handleSubmit = (values: Partial<ISalesPerson>) => {
     console.log(values);
     onSubmit(values);
   };
 
-  const initialValues: ISalesPerson = {
+  const initialValues: Partial<ISalesPerson> = {
     name: selectedSalesPerson.name,
     email: selectedSalesPerson.email,
     photoUrl: selectedSalesPerson.photoUrl,

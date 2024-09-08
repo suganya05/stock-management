@@ -1,16 +1,12 @@
-import { TwitterAuthProvider, User } from "firebase/auth";
-import { backend_url } from "../../../constants/backend";
+import { User } from "firebase/auth";
+import { IOutlet } from "../types/types";
+import { backend_url } from "../constants/backend";
 import axios from "axios";
-import { IOutlet } from "../../../types/types";
 import Papa from "papaparse";
 
-export const getAllOulets = async (
-  user: User | null,
-  page: number,
-  limit: number
-) => {
+export const getOutlets = async (user: User | null) => {
   try {
-    const url = `${backend_url}admin/outlets/${page}/${limit}`;
+    const url = `${backend_url}admin/outlets`;
     const idToken = await user?.getIdToken();
     const headers = {
       Authorization: `Bearer ${idToken}`,
@@ -26,43 +22,23 @@ export const getAllOulets = async (
   }
 };
 
-export const createOutlet = async (user: User | null, outletData: IOutlet) => {
+export const createOutlet = async (
+  user: User | null,
+  outlet: Partial<IOutlet>
+) => {
   try {
     const url = `${backend_url}admin/outlets`;
     const idToken = await user?.getIdToken();
     const headers = {
       Authorization: `Bearer ${idToken}`,
     };
-    const res = await axios.post(url, outletData, { headers });
+    const res = await axios.post(url, outlet, { headers });
     if (res.status != 201) {
       throw Error(
         `Error occured while creating outlet with error code ${res.status}`
       );
     }
-    return;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-};
-
-export const updateOutlet = async (
-  user: User | null,
-  outletId: string,
-  updatedData: IOutlet
-) => {
-  try {
-    const url = `${backend_url}admin/outlets/${outletId}`;
-    const idToken = await user?.getIdToken();
-    const headers = {
-      Authorization: `Bearer ${idToken}`,
-    };
-    const res = await axios.put(url, updatedData, { headers });
-
-    if (res.status != 200) {
-      throw Error(`Error occured with error code ${res.status}`);
-    }
-    return;
+    return res.data;
   } catch (error) {
     console.log(error);
     throw error;
@@ -87,27 +63,51 @@ export const deleteOutlet = async (user: User | null, outletId: string) => {
   }
 };
 
-export const parseAndUploadCSV = async (user: User | null, file: File) => {
-  return new Promise<void>((resolve, reject) => {
+export const updateOutletBck = async (
+  user: User | null,
+  outletId: string,
+  updatedOutlet: Partial<IOutlet>
+) => {
+  try {
+    const url = `${backend_url}admin/outlets/${outletId}`;
+    const idToken = await user?.getIdToken();
+    const headers = {
+      Authorization: `Bearer ${idToken}`,
+    };
+    const res = await axios.put(url, updatedOutlet, { headers });
+
+    if (res.status != 200) {
+      throw Error(`Error occured with error code ${res.status}`);
+    }
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const parseAndUploadOutletCSV = async (
+  user: User | null,
+  file: File
+): Promise<Partial<IOutlet>[]> => {
+  return new Promise<IOutlet[]>((resolve, reject) => {
     Papa.parse(file, {
       complete: async (result) => {
-        console.log("Parsed CSV data:", result.data);
-
         const jsonData = convertCsvToJson(result.data);
-        console.log("JSON data:", jsonData);
 
-        for (const outlet of jsonData) {
-          try {
-            await createOutlet(user, outlet);
-            console.log("Product uploaded successfully:", outlet);
-          } catch (error) {
-            console.error("Failed to upload product:", outlet, error);
-            reject(error);
-            return;
-          }
+        try {
+          const createdOutlets = await Promise.all(
+            jsonData.map(async (product) => {
+              const newOutlet = await createOutlet(user, product); // this returns newly created data
+              return newOutlet.newOutlet; // Collect the newly created outlet
+            })
+          );
+
+          resolve(createdOutlets); // Resolve with the array of newly created outlets
+        } catch (error) {
+          console.error("Failed to upload product:", error);
+          reject(error);
         }
-
-        resolve();
       },
       header: true,
       skipEmptyLines: true,

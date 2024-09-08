@@ -11,15 +11,12 @@ import RupeeImg from "../../../assets/icons/Rupee.png";
 import PlusIcon from "../../../assets/icons/plus.png";
 import Button from "../../Button";
 import ArrowRight from "../../../assets/icons/arrow-right.png";
-import {
-  editProduct,
-  uploadImageToFirebase,
-} from "../../AddStock/NewProduct/NewProduct";
 import { User } from "firebase/auth";
+import { uploadImageToFirebase } from "../../../helpers/firebase";
 
 interface IEditModel {
-  productData?: IProduct;
-  onSubmit: (id: string, updatedProduct: AddNewProductForm) => void;
+  productData?: Partial<IProduct>;
+  onSubmit: (id: string, updatedProduct: IProduct) => void;
   errorStatus: string | undefined;
 }
 
@@ -28,40 +25,37 @@ const EditProductModel: React.FC<IEditModel> = ({
   onSubmit,
   errorStatus,
 }) => {
-  const [selectedImage, setSelectedImage] = useState<
-    string | ArrayBuffer | null
-  >(null);
   const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     if (productData)
       formik.setValues({
         name: productData.name,
-        unitOfMesurment: productData.unit,
-        wholesalePrice: productData.actualPrice.toString(),
-        retailPrice: productData.retailPrice.toString(),
-        imgUrl: productData.photoUrl,
+        unit: productData.unit,
+        actualPrice: productData.actualPrice,
+        retailPrice: productData.retailPrice,
+        photoUrl: productData.photoUrl,
       });
   }, [productData]);
 
-  const initialValues: AddNewProductForm = {
+  const initialValues: Partial<IProduct> = {
     name: "",
-    unitOfMesurment: "",
-    wholesalePrice: "",
-    retailPrice: "",
-    imgUrl: "",
+    unit: "",
+    actualPrice: 0,
+    retailPrice: 0,
+    photoUrl: "",
   };
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
-    unitOfMesurment: Yup.string().required("Unit Of Mesurment is required"),
-    wholesalePrice: Yup.string().required("? Price per unit"),
+    unit: Yup.string().required("Unit Of Mesurment is required"),
+    actualPrice: Yup.string().required("? Price per unit"),
     retailPrice: Yup.string().required("Retail Price is required"),
     imgUrl: Yup.string().optional(),
   });
 
   const handleSubmit = (values: any) => {
-    if (productData) onSubmit(productData._id, values);
+    if (productData && productData._id) onSubmit(productData._id, values);
   };
 
   const formik = useFormik({
@@ -76,12 +70,9 @@ const EditProductModel: React.FC<IEditModel> = ({
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result);
-      };
       setIsUploading(true);
       const imgUrl = await uploadImageToFirebase(file);
-      formik.setFieldValue("imgUrl", imgUrl);
+      formik.setFieldValue("photoUrl", imgUrl);
       reader.readAsDataURL(file);
       setIsUploading(false);
     }
@@ -114,9 +105,9 @@ const EditProductModel: React.FC<IEditModel> = ({
                 <p>Unit Of Mesurment</p>
               </label>
               <select
-                id="unitOfMesurment"
-                name="unitOfMesurment"
-                value={formik.values.unitOfMesurment}
+                id="unit"
+                name="unit"
+                value={formik.values.unit}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               >
@@ -128,9 +119,8 @@ const EditProductModel: React.FC<IEditModel> = ({
                 <option value="nos">No(s)</option>
                 <option value="dozens">Dozens</option>
               </select>
-              {formik.touched.unitOfMesurment &&
-              formik.errors.unitOfMesurment ? (
-                <div className="error">{formik.errors.unitOfMesurment}</div>
+              {formik.touched.unit && formik.errors.unit ? (
+                <div className="error">{formik.errors.unit}</div>
               ) : null}
             </div>
             <div className="flex-input">
@@ -142,17 +132,16 @@ const EditProductModel: React.FC<IEditModel> = ({
                   <img src={RupeeImg} alt="" />
                   <input
                     type="text"
-                    id="wholesalePrice"
-                    name="wholesalePrice"
+                    id="actualPrice"
+                    name="actualPrice"
                     placeholder="Rs"
-                    value={formik.values.wholesalePrice}
+                    value={formik.values.actualPrice}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   />
                 </div>
-                {formik.touched.wholesalePrice &&
-                formik.errors.wholesalePrice ? (
-                  <div className="error">{formik.errors.wholesalePrice}</div>
+                {formik.touched.actualPrice && formik.errors.actualPrice ? (
+                  <div className="error">{formik.errors.actualPrice}</div>
                 ) : null}
               </div>
               <div className="Wholesale-input">
@@ -193,9 +182,9 @@ const EditProductModel: React.FC<IEditModel> = ({
                     Please wait
                   </h4>
                 </div>
-              ) : formik.values.imgUrl ? (
+              ) : formik.values.photoUrl ? (
                 <img
-                  src={formik.values.imgUrl}
+                  src={formik.values.photoUrl}
                   alt="Uploaded"
                   className="uploaded-image"
                 />

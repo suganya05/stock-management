@@ -18,59 +18,41 @@ import "./NewProduct.scss";
 import AllProductList from "../../AllProductList";
 import useAuthStore from "../../../context/userStore";
 import SampleCsv from "../../ModalComponents/SampleCSV";
-import {
-  createProduct,
-  deleteProduct,
-  editProduct,
-  getProduct,
-  parseAndUploadCSV,
-  uploadImageToFirebase,
-} from "./NewProduct";
-import { AddNewProductForm, IProduct } from "../../../types/types";
+import { IProduct } from "../../../types/types";
 import EditProductModel from "../../ModalComponents/EditProduct";
 import useProductStore from "../../../context/productStore";
+import { uploadImageToFirebase } from "../../../helpers/firebase";
 
-const initialValues: AddNewProductForm = {
+const initialValues: Partial<IProduct> = {
   name: "",
-  unitOfMesurment: "",
-  wholesalePrice: "",
-  retailPrice: "",
-  imgUrl: undefined,
+  unit: "",
+  actualPrice: 0,
+  retailPrice: 0,
+  photoUrl: undefined,
 };
 
 const CSVColumns = ["Product Name", "Wholesale Price", "Retail Price", "Unit"];
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
-  unitOfMesurment: Yup.string().required("Unit Of Mesurment is required"),
-  wholesalePrice: Yup.string().required("? Price per unit"),
-  retailPrice: Yup.string().required("Retail Price is required"),
-  imgUrl: Yup.string().optional(),
+  unit: Yup.string().required("Unit Of Mesurment is required"),
+  actualPrice: Yup.number().required("? Price per unit").min(1),
+  retailPrice: Yup.number().required("Retail Price is required").min(1),
+  photoUrl: Yup.string().optional(),
 });
 
 const NewProducts: React.FC = () => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
-  const [products, setProducts] = useState<any[]>([]);
-  const [page, setPage] = useState(1);
-  const limit = 10;
-  const [hasMore, setHasMore] = useState(true);
   const user = useAuthStore((state) => state.user);
   const [errorStatus, setErrorStatus] = useState<string>();
   const [showSampleCSV, setSampleCSV] = useState<boolean>(false);
   const [showEditor, setEditor] = useState<boolean>(false);
-  const [productToEdit, setProductToEdit] = useState<IProduct>();
+  const [productToEdit, setProductToEdit] = useState<Partial<IProduct>>();
   const showFileRef = useRef<HTMLInputElement | null>(null);
   const [disabled, setDisabled] = useState(false);
   const [editError, setEditError] = useState<string>();
-
-  useEffect(() => {
-    handleGetProducts(page, limit);
-  }, [page]);
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasMore]);
+  const { products, updateProduct, removeProduct, addProduct, uploadCSV } =
+    useProductStore();
 
   const handleOpenToggle = () => {
     setSampleCSV(true);
@@ -80,26 +62,8 @@ const NewProducts: React.FC = () => {
     setSampleCSV(false);
   };
 
-  const handleCloseChanges = () => {};
-
   const handleCloseEditor = () => {
     setEditor(false);
-  };
-
-  const resetProdList = async () => {
-    try {
-      setProducts([]);
-      setPage(1);
-      setHasMore(true);
-
-      const data = await getProduct(user, 1, limit);
-      if (data.length < limit) {
-        setHasMore(false);
-      }
-      setProducts(data);
-    } catch (error) {
-      console.error("Error resetting product list:", error);
-    }
   };
 
   const handleImageChange = async (
@@ -109,13 +73,10 @@ const NewProducts: React.FC = () => {
       if (event.target.files && event.target.files[0]) {
         const file = event.target.files[0];
         const reader = new FileReader();
-        // reader.onloadend = () => {
-        //   setSelectedImage(reader.result);
-        // };
         setIsUploading(true);
         setDisabled(true);
         const imgUrl = await uploadImageToFirebase(file);
-        formik.setFieldValue("imgUrl", imgUrl);
+        formik.setFieldValue("photoUrl", imgUrl);
         reader.readAsDataURL(file);
         setIsUploading(false);
         setDisabled(false);
@@ -125,39 +86,41 @@ const NewProducts: React.FC = () => {
     }
   };
 
-  const handleCreateProduct = async (values: AddNewProductForm) => {
+  const handleCreateProduct = async (values: Partial<IProduct>) => {
     try {
-      await createProduct(user, values);
-      formik.resetForm();
-      resetProdList();
+      addProduct(user, values);
+      formik.setValues(initialValues);
     } catch (error) {
-      console.log(error);
-      setErrorStatus("Error occurred");
+      // handle error
     }
   };
 
-  const handleGetProducts = async (page: number, limit: number) => {
+  const handleProductDelete = async (id: string | undefined) => {
     try {
-      const data = await getProduct(user, page, limit);
-      if (data.length < limit) {
-        setHasMore(false);
+      if (id) {
+        removeProduct(user, id);
+      } else {
+        console.log("id not found");
       }
-      setProducts((prevProducts) => [...prevProducts, ...data]);
-    } catch (error) {
-      console.error("Error fetching products:", error);
+    } catch (e) {
+      console.log(e);
     }
   };
 
-  const handleProductDelete = async (id: string) => {
+  const onEditPress = async (id: string, updatedProductData: IProduct) => {
     try {
-      await deleteProduct(user, id);
-      console.log("Product deleted successfully");
-      setProducts((prevProducts) =>
-        prevProducts.filter((product) => product._id !== id)
-      );
-    } catch (error) {
-      console.log("Error deleting product:", error);
+      console.log("asda", id, updatedProductData);
+      updateProduct(user, id, updatedProductData);
+      setEditor(false);
+    } catch (e) {
+      console.log(e);
     }
+  };
+
+  const handleProductEdit = (id: string | undefined) => {
+    const prod = products.find((product) => product._id === id);
+    setProductToEdit(prod);
+    setEditor(true);
   };
 
   const handleCSVUpload = async (
@@ -165,48 +128,8 @@ const NewProducts: React.FC = () => {
   ) => {
     const file = event.target.files?.[0];
     if (file) {
-      await parseAndUploadCSV(user, file);
+      uploadCSV(user, file);
       setSampleCSV(false);
-      resetProdList();
-    }
-  };
-
-  const handleLoadMore = () => {
-    if (hasMore) {
-      setPage((prevPage) => prevPage + 1);
-    }
-  };
-
-  const handleScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop !==
-        document.documentElement.offsetHeight ||
-      !hasMore
-    )
-      return;
-
-    setPage((prevPage) => prevPage + 1);
-  };
-
-  const onEditPress = async (
-    id: string,
-    updatedProductData: AddNewProductForm
-  ) => {
-    try {
-      await editProduct(user, id, updatedProductData);
-      resetProdList();
-      setEditor(false);
-    } catch (error) {
-      setEditError("Error occured");
-      console.log("Error editing product:", error);
-    }
-  };
-
-  const handleProductEdit = (id: string) => {
-    const prod = products.find((product) => product._id === id);
-    if (prod) {
-      setProductToEdit(prod);
-      setEditor(true);
     }
   };
 
@@ -215,7 +138,6 @@ const NewProducts: React.FC = () => {
     validationSchema: validationSchema,
     onSubmit: handleCreateProduct,
   });
-
   return (
     <div className="new-products-wrapper">
       <div className="new-products-content">
@@ -297,9 +219,9 @@ const NewProducts: React.FC = () => {
                     <p>Unit Of Mesurment</p>
                   </label>
                   <select
-                    id="unitOfMesurment"
-                    name="unitOfMesurment"
-                    value={formik.values.unitOfMesurment}
+                    id="unit"
+                    name="unit"
+                    value={formik.values.unit}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   >
@@ -311,9 +233,8 @@ const NewProducts: React.FC = () => {
                     <option value="nos">No(s)</option>
                     <option value="dozens">Dozens</option>
                   </select>
-                  {formik.touched.unitOfMesurment &&
-                  formik.errors.unitOfMesurment ? (
-                    <div className="error">{formik.errors.unitOfMesurment}</div>
+                  {formik.touched.unit && formik.errors.unit ? (
+                    <div className="error">{formik.errors.unit}</div>
                   ) : null}
                 </div>
                 <div className="flex-input">
@@ -325,19 +246,16 @@ const NewProducts: React.FC = () => {
                       <img src={RupeeImg} alt="" />
                       <input
                         type="text"
-                        id="wholesalePrice"
-                        name="wholesalePrice"
+                        id="actualPrice"
+                        name="actualPrice"
                         placeholder="Rs"
-                        value={formik.values.wholesalePrice}
+                        value={formik.values.actualPrice}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                       />
                     </div>
-                    {formik.touched.wholesalePrice &&
-                    formik.errors.wholesalePrice ? (
-                      <div className="error">
-                        {formik.errors.wholesalePrice}
-                      </div>
+                    {formik.touched.actualPrice && formik.errors.actualPrice ? (
+                      <div className="error">{formik.errors.actualPrice}</div>
                     ) : null}
                   </div>
                   <div className="Wholesale-input">
@@ -378,9 +296,9 @@ const NewProducts: React.FC = () => {
                         Please wait
                       </h4>
                     </div>
-                  ) : formik.values.imgUrl ? (
+                  ) : formik.values.photoUrl ? (
                     <img
-                      src={formik.values.imgUrl}
+                      src={formik.values.photoUrl}
                       alt="Uploaded"
                       className="uploaded-image"
                     />
@@ -424,15 +342,6 @@ const NewProducts: React.FC = () => {
           onDelete={handleProductDelete}
           onEdit={handleProductEdit}
         />
-        {hasMore && (
-          <Button
-            varient="secondary"
-            onClick={handleLoadMore}
-            disabled={disabled}
-          >
-            Load More
-          </Button>
-        )}
       </div>
     </div>
   );

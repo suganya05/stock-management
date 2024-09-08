@@ -4,39 +4,43 @@ import {
   createProduct,
   deleteProduct,
   getProducts,
+  parseAndUploadCSV,
   updateProductBck,
 } from "../helpers/products";
 import { IProduct } from "../types/types";
 
 interface ProductStore {
-  products: IProduct[];
+  products: Partial<IProduct>[];
   fetchProduct: (user: User | null) => Promise<void>;
-  addProduct: (user: User | null, product: IProduct) => void;
+  addProduct: (user: User | null, product: Partial<IProduct>) => void;
   removeProduct: (user: User | null, productId: string) => void;
   updateProduct: (
     user: User | null,
     productId: string,
     updatedProduct: IProduct
   ) => void;
-  //   setProducts: (user: User | null, newProducts: IProduct[]) => void;
+  uploadCSV: (user: User | null, csvFile: File) => void;
 }
 
 const useProductStore = create<ProductStore>((set) => ({
   products: [],
 
   fetchProduct: async (user) => {
-    try {
-      const data = await getProducts(user);
-      set({ products: data });
-    } catch (error) {
-      console.log(error);
+    if (user) {
+      try {
+        const data = await getProducts(user);
+        set({ products: data });
+      } catch (error) {
+        console.log(error);
+      }
     }
   },
 
   addProduct: async (user, product) => {
     try {
       await createProduct(user, product);
-      set((state) => ({ products: [...state.products, product] }));
+      const data = await getProducts(user);
+      set({ products: data });
     } catch (error) {
       console.log(error);
     }
@@ -66,7 +70,16 @@ const useProductStore = create<ProductStore>((set) => ({
       console.log(error);
     }
   },
-  //   setProducts: (user, newProducts) => set(() => ({ products: newProducts })),
+  uploadCSV: async (user, file) => {
+    try {
+      await parseAndUploadCSV(user, file);
+      const data = await getProducts(user);
+      set({ products: data });
+      console.log("new data", data);
+    } catch (error) {
+      console.log(error);
+    }
+  },
 }));
 
 export default useProductStore;

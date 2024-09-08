@@ -1,16 +1,16 @@
 export interface IProduct {
-  photoUrl?: string;
+  photoUrl?: string | undefined;
+  _id: string;
   name: string;
   actualPrice: number;
   retailPrice: number;
-  _id: string;
   unit: string;
 }
 
 export interface IAllProducts {
-  prodList?: IProduct[];
-  onDelete?: (id: string) => void;
-  onEdit?: (id: string) => void;
+  prodList?: Partial<IProduct>[];
+  onDelete?: (id: string | undefined) => void;
+  onEdit?: (id: string | undefined) => void;
 }
 
 export interface AddNewProductForm {

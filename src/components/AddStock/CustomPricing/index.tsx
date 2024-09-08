@@ -4,44 +4,18 @@ import AllProductList from "../../AllProductList";
 import { IOutlet } from "../../../types/types";
 import { ReactComponent as SearchIcon } from "../../../assets/icons/search.svg";
 import RightArrow from "../../../assets/icons/right.svg";
-import { getAllOulets } from "../AddOutletList/Addoutlet";
 import useAuthStore from "../../../context/userStore";
+import useOutletStore from "../../../context/outletStore";
 
 const CustomPricing: React.FC = () => {
   const user = useAuthStore((state) => state.user);
-  const [outlets, setOutlets] = useState<IOutlet[]>([]);
   const [selectedOutletId, setSelectedOutletId] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
-  const limit = 1;
-  const [hasMore, setHasMore] = useState(true);
-
-  useEffect(() => {
-    loadOutlets(page, limit);
-  }, [page]);
+  const { outlets } = useOutletStore();
 
   const handleSelectOutlet = (id: string | undefined) => {
     if (id) {
       setSelectedOutletId(id);
       console.log("id", id);
-    }
-  };
-
-  const loadOutlets = async (page: number, limit: number) => {
-    try {
-      const data = await getAllOulets(user, page, limit);
-      setOutlets((prev) => [...prev, ...data]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const resetOulets = () => {
-    setOutlets([]);
-    setHasMore(true);
-    if (page !== 1) {
-      setPage(1);
-      return;
-    } else {
     }
   };
 

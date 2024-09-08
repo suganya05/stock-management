@@ -11,49 +11,23 @@ import LayoutModule from "../../LayoutModal";
 import AddSalesRepresentative from "../../ModalComponents/AddSalesRepresentative";
 import { ISalesPerson } from "../../../types/types";
 import useAuthStore from "../../../context/userStore";
-import {
-  createSalesPersons,
-  deleteSalesPerson,
-  getSalesPersons,
-  toggleSalesPerson,
-  updateSalesPerson,
-} from "./AddSalesPerson";
 import SalesPersonEditor from "../../SalesPersonEdit";
+import useSalesRepStore from "../../../context/salesRepStore";
 
 const AddSalesperson: React.FC = () => {
   const [showAddRep, setShowRep] = useState(false);
   const user = useAuthStore((state) => state.user);
-  const [salesReps, setSalesReps] = useState<ISalesPerson[]>([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(false);
   const [addRepErr, setAddRepErr] = useState<string>();
-  const [selectedRep, setSelectedRep] = useState<ISalesPerson>();
+  const [selectedRep, setSelectedRep] = useState<Partial<ISalesPerson>>();
   const [showEditor, setShowEditor] = useState(false);
   const [editorErr, setEditorErr] = useState<string>();
-  const limit = 10;
-
-  useEffect(() => {
-    loadSalesReps(page, limit);
-  }, [page]);
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasMore]);
-
-  const handleScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop !==
-        document.documentElement.offsetHeight ||
-      !hasMore
-    )
-      return;
-    setPage((prevPage) => prevPage + 1);
-  };
+  const { salesReps, createSalesRep, updateSalesRep, removeSalesRep } =
+    useSalesRepStore();
 
   const handleCloseAdd = () => {
     setShowRep(false);
   };
+
   const handleOpenAdd = () => {
     setShowRep(true);
   };
@@ -61,95 +35,60 @@ const AddSalesperson: React.FC = () => {
   const handleCloseEditor = () => {
     setShowEditor(false);
   };
+
   const handleOpenEditor = () => {
     setShowEditor(true);
   };
 
-  const resetReps = async () => {
-    setSalesReps([]);
-    if (page !== 1) {
-      setPage(1);
-      return;
-    }
-    loadSalesReps(1, 10);
-  };
-
   const handleCreateRep = async (data: ISalesPerson) => {
     try {
-      await createSalesPersons(user, data);
-      handleCloseAdd();
-      resetReps();
+      await createSalesRep(user, data);
+      setShowRep(false);
       setAddRepErr(undefined);
     } catch (error) {
-      setAddRepErr("Error occured. Please try again");
-    }
-  };
-
-  const loadSalesReps = async (page: number, limit: number) => {
-    try {
-      const reps = await getSalesPersons(user, page, limit);
-      setSalesReps((prev) => [...prev, ...reps["salesPerson"]]);
-      if (parseInt(reps["total"]) > salesReps.length) {
-        setHasMore(true);
-      } else {
-        setHasMore(false);
-      }
-      console.log(reps);
-    } catch (error) {
-      // handle error
+      setAddRepErr("Error occured while creating salesperson");
     }
   };
 
   const deleteSalesReps = async () => {
     try {
-      if (selectedRep?._id) {
-        await deleteSalesPerson(user, selectedRep._id);
-        setSalesReps((prev) => prev.filter((f) => f._id !== selectedRep._id));
+      if (selectedRep && selectedRep._id) {
+        removeSalesRep(user, selectedRep?._id);
         setSelectedRep(undefined);
       }
-      return;
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleUpdateRep = async (updatedRepData: ISalesPerson) => {
+  const handleUpdateRep = async (updatedRepData: Partial<ISalesPerson>) => {
     try {
-      if (selectedRep?._id) {
-        await updateSalesPerson(user, selectedRep?._id, updatedRepData);
-        resetReps();
+      if (selectedRep && selectedRep._id) {
+        const newData = await updateSalesRep(
+          user,
+          selectedRep?._id,
+          updatedRepData
+        );
+        console.log(newData.salesRep);
+        setSelectedRep(newData.salesRep);
         setShowEditor(false);
       }
     } catch (error) {
-      setEditorErr("Error occured");
+      // handle error
     }
   };
 
-  const handleSelectRep = (data: ISalesPerson | undefined) => {
+  const handleSelectRep = (data: Partial<ISalesPerson> | undefined) => {
     setSelectedRep(data);
   };
 
   const handleToggleActive = async () => {
-    try {
-      if (selectedRep && selectedRep._id) {
-        const updateActiveState = !selectedRep.isActive;
-        await toggleSalesPerson(user, selectedRep._id, updateActiveState);
-        setSelectedRep((prev) =>
-          prev ? { ...prev, isActive: updateActiveState } : prev
-        );
-
-        setSalesReps((prevReps) =>
-          prevReps.map((rep) =>
-            rep._id === selectedRep._id
-              ? { ...rep, isActive: updateActiveState }
-              : rep
-          )
-        );
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    // update
   };
+
+  useEffect(() => {
+    console.log("sales reps", salesReps);
+  }, []);
 
   return (
     <div className="add-sales-person-wrapper">

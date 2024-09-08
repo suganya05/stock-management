@@ -6,7 +6,7 @@ import BlackPlusIcon from "../../assets/images/plus.svg";
 import "./OuletEditor.scss";
 import Button from "../Button";
 import { IOutlet } from "../../types/types";
-import { uploadImageToFirebase } from "../AddStock/NewProduct/NewProduct";
+import { uploadImageToFirebase } from "../../helpers/firebase";
 
 const validationSchema = Yup.object().shape({
   outletName: Yup.string().required("Name is required"),
@@ -18,39 +18,30 @@ const validationSchema = Yup.object().shape({
 });
 
 interface IOutletEditor {
-  onSubmit: (data: IOutlet) => void;
-  selectedId: string;
-  data: IOutlet[];
+  onSubmit: (data: Partial<IOutlet>) => void;
   error?: string | undefined;
+  selectedOutlet: Partial<IOutlet>;
 }
 
 const OutletEditor: React.FC<IOutletEditor> = ({
   onSubmit,
   error,
-  selectedId,
-  data,
+  selectedOutlet,
 }) => {
   const [isBtnDisabled, setBtnDisabled] = useState(false);
-  const [outlet, setOutlet] = useState<IOutlet>();
 
   useEffect(() => {
-    if (data) {
-      const filteredOutlet = data.find((d) => d._id == selectedId);
-      setOutlet(filteredOutlet);
-      console.log("i am ");
-      formik.setValues({
-        outletName: filteredOutlet ? filteredOutlet.outletName : "",
-        ownerName: filteredOutlet ? filteredOutlet.ownerName : "",
-        address: filteredOutlet ? filteredOutlet.address : "",
-        email: filteredOutlet ? filteredOutlet.email : "",
-        phoneNumber: filteredOutlet ? filteredOutlet.phoneNumber : "",
-        photoUrl: filteredOutlet ? filteredOutlet.photoUrl : undefined,
-      });
-    }
-    console.log("i am running");
-  }, [selectedId]);
+    formik.setValues({
+      outletName: selectedOutlet.outletName,
+      ownerName: selectedOutlet.ownerName,
+      address: selectedOutlet.address,
+      email: selectedOutlet.email,
+      phoneNumber: selectedOutlet.phoneNumber,
+      photoUrl: selectedOutlet.photoUrl,
+    });
+  }, [selectedOutlet]);
 
-  const handleSubmit = (values: IOutlet) => {
+  const handleSubmit = (values: Partial<IOutlet>) => {
     console.log(values);
     onSubmit(values);
   };
@@ -69,13 +60,13 @@ const OutletEditor: React.FC<IOutletEditor> = ({
     }
   };
 
-  const initialValues: IOutlet = {
-    outletName: outlet ? outlet.outletName : "",
-    ownerName: outlet ? outlet.ownerName : "",
-    address: outlet ? outlet.address : "",
-    email: outlet ? outlet.email : "",
-    phoneNumber: outlet ? outlet.phoneNumber : "",
-    photoUrl: outlet ? outlet.photoUrl : undefined,
+  const initialValues: Partial<IOutlet> = {
+    outletName: "",
+    ownerName: "",
+    address: "",
+    email: "",
+    phoneNumber: "",
+    photoUrl: undefined,
   };
 
   const formik = useFormik({

@@ -6,7 +6,7 @@ import BlackPlusIcon from "../../../assets/images/plus.svg";
 import "./AddOutletModal.scss";
 import Button from "../../Button";
 import { IOutlet } from "../../../types/types";
-import { uploadImageToFirebase } from "../../AddStock/NewProduct/NewProduct";
+import { uploadImageToFirebase } from "../../../helpers/firebase";
 
 const initialValues: IOutlet = {
   outletName: "",

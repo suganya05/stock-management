@@ -4,65 +4,30 @@ import DeleteIcon from "../../assets/images/delete.svg";
 import { IOutlet } from "../../types/types";
 import "./OutletData.scss";
 import { printQr } from "./OutletData";
-import { uploadImageToFirebase } from "../AddStock/NewProduct/NewProduct";
 
 interface IOutletData {
-  data: IOutlet[];
-  selelectedId: string | null;
+  data: Partial<IOutlet>[];
+  selelectedOutlet: Partial<IOutlet> | undefined;
   onDelete: () => void;
   onEdit: () => void;
 }
 
 const OutletData: React.FC<IOutletData> = ({
   data,
-  selelectedId,
+  selelectedOutlet,
   onDelete,
   onEdit,
 }) => {
-  const [selectedData, setSelectedData] = useState<IOutlet>();
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  useEffect(() => {
-    setSelectedData(data.find((f) => f._id === selelectedId));
-  }, [selelectedId]);
-
-  // const handleFileChange = async (
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   try {
-  //     const file = event.target.files?.[0];
-  //     if (!file || !selectedData) return;
-
-  //     const url = await uploadImageToFirebase(file);
-  //     setSelectedData((prevData) => {
-  //       if (!prevData) return prevData;
-  //       return { ...prevData, photoUrl: url };
-  //     });
-
-  //     if (fileInputRef.current) {
-  //       fileInputRef.current.value = "";
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // const handleEditClick = () => {
-  //   if (fileInputRef.current) {
-  //     fileInputRef.current.click();
-  //   }
-  // };
-
   return (
     <div>
-      {selectedData ? (
+      {selelectedOutlet ? (
         <div className="add-outlet-list-content">
           <div className="head">
-            <h4 onClick={() => printQr(selectedData)}>Print QR</h4>
+            <h4 onClick={() => printQr(selelectedOutlet)}>Print QR</h4>
             <h4 onClick={() => onEdit()}>Edit</h4>
           </div>
           <div className="logo">
-            <img src={selectedData?.photoUrl} alt="" />
+            <img src={selelectedOutlet?.photoUrl} alt="" />
             {/* <div className="edit-icon" onClick={handleEditClick}>
               <img src={EditIcon} alt="" />
             </div> */}
@@ -102,12 +67,12 @@ const OutletData: React.FC<IOutletData> = ({
               </div>
             </div>
             <div className="ans">
-              <p>{selectedData.outletName}</p>
-              <p>{selectedData.ownerName}</p>
-              <p>{selectedData.email}</p>
-              <p>{selectedData.phoneNumber}</p>
-              <p>{selectedData.address}</p>
-              {selectedData.customPricingId ? (
+              <p>{selelectedOutlet.outletName}</p>
+              <p>{selelectedOutlet.ownerName}</p>
+              <p>{selelectedOutlet.email}</p>
+              <p>{selelectedOutlet.phoneNumber}</p>
+              <p>{selelectedOutlet.address}</p>
+              {selelectedOutlet.customPricingId ? (
                 <div className="enabled">
                   <div>
                     <p>Enabled.</p>

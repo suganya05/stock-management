@@ -13,18 +13,12 @@ import LayoutModule from "../../LayoutModal";
 import AddOutletModal from "../../ModalComponents/AddOutlet";
 import SharingQRCodeViaEmail from "../../ModalComponents/SharingQRcodeViaEmail";
 import PreviewChangesModal from "../../ModalComponents/PreviewChangesModal";
-import {
-  createOutlet,
-  deleteOutlet,
-  getAllOulets,
-  parseAndUploadCSV,
-  updateOutlet,
-} from "./Addoutlet";
 import useAuthStore from "../../../context/userStore";
 import { User } from "firebase/auth";
 import SampleCsv from "../../ModalComponents/SampleCSV";
 import OutletEditor from "../../OutletEditor";
 import useProductStore from "../../../context/productStore";
+import useOutletStore from "../../../context/outletStore";
 
 const CSVColumns = [
   "Outlet Name",
@@ -36,41 +30,19 @@ const CSVColumns = [
 
 const AddOutletList: React.FC = () => {
   const user = useAuthStore((state) => state.user);
-  const [outlets, setOutlets] = useState<IOutlet[]>([]);
-  const [selectedOutletId, setSelectedOutletId] = useState<string | null>(null);
+  const [selectedOutlet, setSelectedOutlet] = useState<Partial<IOutlet>>();
   const [addOutlet, setAddOutlet] = useState(false);
   const [sharingActive, setSharingActive] = useState(false);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
   const [outletError, setOutletError] = useState<string>();
   const [showSampleCsv, setShowSampleCsv] = useState(false);
   const [showEditor, setShowEditor] = useState<boolean>(false);
   const showFileRef = useRef<HTMLInputElement | null>(null);
+  const { createOutlet, updateOutlet, removeOutlet, uploadCSV, outlets } =
+    useOutletStore();
 
   useEffect(() => {
-    loadOutlets(page, 10);
-  }, [page]);
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasMore]);
-
-  const handleScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop !==
-        document.documentElement.offsetHeight ||
-      !hasMore
-    )
-      return;
-    setPage((prevPage) => prevPage + 1);
-  };
-
-  const handleLoadMore = () => {
-    if (hasMore) {
-      setPage((prevPage) => prevPage + 1);
-    }
-  };
+    console.log("outlets", outlets);
+  }, [outlets]);
 
   const handleCloseOutlet = () => {
     setAddOutlet(false);
@@ -100,76 +72,28 @@ const AddOutletList: React.FC = () => {
     setShowEditor(false);
   };
 
-  const resetOutlets = async () => {
-    setOutlets([]);
-    setPage(1);
-    setHasMore(true);
-
-    try {
-      const data = await getAllOulets(user, 1, 10);
-      if (data.length < 10) {
-        setHasMore(false);
-      }
-      setOutlets(data);
-      if (data.length > 0) {
-        setSelectedOutletId(data[0].id); // Select the first outlet by default
-      }
-    } catch (error) {
-      console.error("Error resetting outlet list:", error);
-    }
-  };
-
-  const loadOutlets = async (page: number, limit: number) => {
-    try {
-      console.log("loading");
-      const data = await getAllOulets(user, page, limit);
-      setOutlets(data);
-      if (data.length > 0 && !selectedOutletId) {
-        setSelectedOutletId(data[0].id); // Select the first outlet if none is selected
-      }
-    } catch (error) {
-      console.error("Error loading outlets:", error);
-    }
-  };
-
   const handleCreateOutlet = async (outletData: IOutlet) => {
     try {
-      await createOutlet(user, outletData);
-      resetOutlets();
-      handleCloseOutlet();
-      setOutletError(undefined);
+      createOutlet(user, outletData);
+      setAddOutlet(false);
     } catch (error) {
-      setOutletError(`Error occurred`);
+      // handle error
     }
   };
 
   const handleDeleteOutlet = async () => {
     try {
-      if (!selectedOutletId) return;
-      const indexDeleted = outlets.findIndex(
-        (outlet) => outlet._id === selectedOutletId
-      );
-      await deleteOutlet(user, selectedOutletId);
-      setOutlets((preValue) => {
-        return preValue.filter((f) => f._id !== selectedOutletId);
-      });
-      if (indexDeleted != 0) {
-        const id = outlets[indexDeleted - 1]._id;
-        if (id) {
-          setSelectedOutletId(id);
-        }
-      } else {
-        setSelectedOutletId(null);
+      if (selectedOutlet?._id) {
+        removeOutlet(user, selectedOutlet?._id);
+        setSelectedOutlet(undefined);
       }
     } catch (error) {
       // handle error
     }
   };
 
-  const handleSelectOutlet = (id: string | undefined) => {
-    if (id) {
-      setSelectedOutletId(id);
-    }
+  const handleSelectOutlet = (outlet: Partial<IOutlet>) => {
+    setSelectedOutlet(outlet);
   };
 
   const handleCSVUpload = async (
@@ -177,19 +101,17 @@ const AddOutletList: React.FC = () => {
   ) => {
     const file = event.target.files?.[0];
     if (file) {
-      await parseAndUploadCSV(user, file);
-      handleCSVUploadClose();
-      resetOutlets();
+      uploadCSV(user, file);
+      setShowSampleCsv(false);
     }
   };
 
-  const handleUpdateOutlet = async (data: IOutlet) => {
-    try {
-      if (selectedOutletId) await updateOutlet(user, selectedOutletId, data);
-      await resetOutlets();
-      handleEditorClose();
-    } catch (error) {
-      // handle error
+  const handleUpdateOutlet = async (data: Partial<IOutlet>) => {
+    if (selectedOutlet?._id) {
+      const upOutlet = await updateOutlet(user, selectedOutlet._id, data);
+      setShowEditor(false);
+      // const id = selectedOutlet._id;
+      setSelectedOutlet(upOutlet);
     }
   };
 
@@ -214,15 +136,14 @@ const AddOutletList: React.FC = () => {
                 <SharingQRCodeViaEmail />
               </LayoutModule>
             )}
-            {showEditor && selectedOutletId && (
+            {showEditor && selectedOutlet && (
               <LayoutModule
                 handleToggle={handleEditorClose}
                 className="layout-module"
               >
                 <OutletEditor
                   onSubmit={(values) => handleUpdateOutlet(values)}
-                  selectedId={selectedOutletId}
-                  data={outlets}
+                  selectedOutlet={selectedOutlet}
                 />
               </LayoutModule>
             )}
@@ -256,9 +177,9 @@ const AddOutletList: React.FC = () => {
               <div
                 key={outlet._id}
                 className={`outlet-list-content ${
-                  selectedOutletId === outlet._id ? "selected" : ""
+                  selectedOutlet?._id === outlet._id ? "selected" : ""
                 }`}
-                onClick={() => handleSelectOutlet(outlet._id)}
+                onClick={() => handleSelectOutlet(outlet)}
               >
                 <div className="flex-item">
                   <img src={outlet.photoUrl} alt="" />
@@ -302,7 +223,7 @@ const AddOutletList: React.FC = () => {
       </div>
       <OutletData
         data={outlets}
-        selelectedId={selectedOutletId}
+        selelectedOutlet={selectedOutlet}
         onDelete={() => {
           handleDeleteOutlet();
         }}

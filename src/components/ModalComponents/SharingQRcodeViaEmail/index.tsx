@@ -4,25 +4,13 @@ import Send from "../../../assets/icons/send.svg";
 import "./SharingQRCodeViaEmail.scss";
 import Button from "../../Button";
 import { IOutlet } from "../../../types/types";
-import { getAllOulets } from "../../AddStock/AddOutletList/Addoutlet";
 import useAuthStore from "../../../context/userStore";
+import useOutletStore from "../../../context/outletStore";
 
 const SharingQRCodeViaEmail: React.FC = () => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const user = useAuthStore((state) => state.user);
-  const [outlets, setOutlets] = useState<IOutlet[]>([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1);
-
-  // Load outlets
-  const loadOutlets = async (page: number, limit: number) => {
-    try {
-      const data = await getAllOulets(user, page, limit);
-      setOutlets((prevOutlets) => [...prevOutlets, ...data]);
-    } catch (error) {
-      console.error("Error loading outlets:", error);
-    }
-  };
+  const { outlets } = useOutletStore();
 
   const handleCheckboxChange = (outletId: string) => {
     setSelectedItems((prevSelected) => {
@@ -35,26 +23,6 @@ const SharingQRCodeViaEmail: React.FC = () => {
       }
     });
   };
-
-  // Handle scrolling and pagination
-  const handleScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop !==
-        document.documentElement.offsetHeight ||
-      !hasMore
-    )
-      return;
-    setPage((prevPage) => prevPage + 1);
-  };
-
-  useEffect(() => {
-    loadOutlets(page, 10);
-  }, [page]);
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasMore]);
 
   const handleSendPress = async () => {
     console.log("Selected Items:", selectedItems);

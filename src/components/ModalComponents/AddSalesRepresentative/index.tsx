@@ -6,7 +6,7 @@ import BlackPlusIcon from "../../../assets/images/plus.svg";
 import Button from "../../Button";
 import "./AddSalesRepresentative.scss";
 import { ISalesPerson } from "../../../types/types";
-import { uploadImageToFirebase } from "../../AddStock/NewProduct/NewProduct";
+import { uploadImageToFirebase } from "../../../helpers/firebase";
 
 const initialValues: ISalesPerson = {
   name: "",

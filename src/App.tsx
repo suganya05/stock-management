@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Allocate from "./pages/Allocate";
@@ -13,9 +13,20 @@ import Inventory from "./pages/Inventory";
 import ExploreOutletsDetails from "./components/Report/ExploreOutletsDetails";
 import LoginScreen from "./pages/login";
 import useAuthStore from "./context/userStore";
+import useProductStore from "./context/productStore";
+import useOutletStore from "./context/outletStore";
+import useSalesRepStore from "./context/salesRepStore";
 
 const App: React.FC = () => {
   const { user, loading } = useAuthStore();
+  const { fetchProduct } = useProductStore();
+  const { fetchOutlets } = useOutletStore();
+  const { fetchSalesReps } = useSalesRepStore();
+  useEffect(() => {
+    fetchProduct(user);
+    fetchOutlets(user);
+    fetchSalesReps(user);
+  }, [loading]);
   return (
     <>
       {loading ? (
