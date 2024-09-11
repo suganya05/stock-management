@@ -16,16 +16,19 @@ import useAuthStore from "./context/userStore";
 import useProductStore from "./context/productStore";
 import useOutletStore from "./context/outletStore";
 import useSalesRepStore from "./context/salesRepStore";
+import useStockStore from "./context/stockStore";
 
 const App: React.FC = () => {
   const { user, loading } = useAuthStore();
   const { fetchProduct } = useProductStore();
   const { fetchOutlets } = useOutletStore();
   const { fetchSalesReps } = useSalesRepStore();
+  const { fetchStocks } = useStockStore();
   useEffect(() => {
     fetchProduct(user);
     fetchOutlets(user);
     fetchSalesReps(user);
+    fetchStocks(user);
   }, [loading]);
   return (
     <>

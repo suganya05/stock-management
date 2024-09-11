@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import React, { useEffect, useState } from "react";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import PlusIcon from "../../assets/icons/plus.png";
 import BlackPlusIcon from "../../assets/images/plus.svg";
@@ -9,27 +9,39 @@ import StockList from "../StockList";
 import LayoutModule from "../LayoutModal";
 import PreviewChanges from "../ModalComponents/PreviewChanges";
 import "./AddStock.scss";
+import useStockStore from "../../context/stockStore";
+import useAuthStore from "../../context/userStore";
+import { IStockItem } from "../../types/types";
+import useProductStore from "../../context/productStore";
 
-interface FormValues {
-  productName: string;
-  quantity: string;
-}
+// interface FormValues {
+//   productId: string;
+//   quantity: string;
+// }
 
-const initialValues: FormValues = {
-  productName: "",
-  quantity: "",
+const initialValues: IStockItem = {
+  productId: "",
+  quantity: 0,
 };
 
 const validationSchema = Yup.object().shape({
-  productName: Yup.string().required("Product Name is required"),
-  quantity: Yup.string().required("Quantity is required"),
+  productId: Yup.string().required("Product Name is required"),
+  quantity: Yup.number()
+    .required("Quantity is required")
+    .min(1, "Quantity should be minimum 1"),
 });
 
 const AddProducts: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<
-    string | ArrayBuffer | null
-  >(null);
+    string | ArrayBuffer | undefined
+  >(undefined);
   const [active, setIsActive] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const user = useAuthStore((state) => state.user);
+  const { addStock, removeStock, updateStock, getStockForDay, stocks } =
+    useStockStore();
+  const { products } = useProductStore();
+  const [unit, setUnit] = useState<string>();
 
   const handleOpenToggle = () => {
     setIsActive(true);
@@ -39,22 +51,69 @@ const AddProducts: React.FC = () => {
     setIsActive(false);
   };
 
-  const handleSubmit = (values: FormValues) => {
+  const handleSubmit = (values: IStockItem) => {
     console.log(values);
+    addStock(user, values, date);
+    formik.resetForm();
+    setSelectedImage(undefined);
   };
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: handleSubmit,
+  });
+
+  const units = {
+    lt: "Litre",
+    ml: "Milli Litre",
+    kgs: "Kilo",
+    gms: "Gram",
+    nos: "No(s)",
+    dozens: "Dozens",
+  };
+
+  useEffect(() => {
+    if (formik.values.productId) {
+      const selectedProduct = products.find(
+        (f) => f._id === formik.values.productId
+      );
+      const photoUrl = selectedProduct?.photoUrl;
+      const unit = selectedProduct?.unit as
+        | "lt"
+        | "ml"
+        | "kgs"
+        | "gms"
+        | "nos"
+        | "dozens";
+      if (unit) {
+        setUnit(units[unit]);
+      }
+      setSelectedImage(photoUrl);
     }
+  }, [formik.values.productId]);
+
+  const fetchData = async () => {
+    const data = await getStockForDay(user, date);
+    // console.log("fresh data", data);
   };
 
-  const loadProducts = async () => {};
+  useEffect(() => {
+    fetchData();
+    // console.log("stocks", stocks);
+  }, [date, stocks]);
+
+  // useEffect(() => {
+  //   addStock(user, stockData, new Date());
+  // }, []);
+
+  const handleDelete = async (id: string) => {
+    removeStock(user, id, date);
+  };
+
+  const handleEdit = (id: string, updatedStock: IStockItem) => {
+    updateStock(user, updatedStock, date);
+  };
 
   return (
     <div className="add-product-wrapper">
@@ -85,93 +144,98 @@ const AddProducts: React.FC = () => {
             </Button>
           </div>
         </div>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
-          {() => (
-            <Form className="form">
-              <div className="flex-end-content">
-                <div className="addProduct">
-                  <div>
-                    <div className="form-group name-input">
-                      <label htmlFor="productName">
-                        <p>Name</p>
-                      </label>
-                      <Field as="select" id="productName" name="productName">
-                        <option value="">-Select Product -</option>
-                        <option value="product1">Product 1</option>
-                        <option value="product2">Product 2</option>
-                        <option value="product3">Product 3</option>
-                      </Field>
-                      <ErrorMessage
-                        name="productName"
-                        component="div"
-                        className="error"
-                      />
-                    </div>
-                    <div className="form-group input">
-                      <label htmlFor="quantity">
-                        <p>Quantity</p>
-                      </label>
-                      <Field
-                        type="text"
-                        id="quantity"
-                        name="quantity"
-                        placeholder="Litre"
-                      />
-                      <ErrorMessage
-                        name="quantity"
-                        component="div"
-                        className="error"
-                      />
-                    </div>
-                  </div>
-                  <div className="upload-image-box">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      style={{ display: "none" }}
-                      id="upload-input"
-                      onChange={handleImageChange}
-                    />
-                    <label htmlFor="upload-input" className="upload-label">
-                      {selectedImage ? (
-                        <img
-                          src={selectedImage as string}
-                          alt="Uploaded"
-                          className="uploaded-image"
-                        />
-                      ) : (
-                        <div className="upload">
-                          <h4>Image</h4>
-                        </div>
-                      )}
-                    </label>
-                  </div>
+        <div className="form">
+          <div className="flex-end-content">
+            <div className="addProduct">
+              <div>
+                <div className="form-group name-input">
+                  <label htmlFor="productName">
+                    <p>Name</p>
+                  </label>
+                  <select
+                    id="productId"
+                    name="productId"
+                    value={formik.values.productId}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  >
+                    <option value="">-Select Product -</option>
+                    {products.map((f, i) => (
+                      <option value={f._id} key={f._id}>
+                        {f.name}
+                      </option>
+                    ))}
+                  </select>
+                  {formik.touched.productId && formik.errors.productId ? (
+                    <div className="error">{formik.errors.productId}</div>
+                  ) : null}
                 </div>
-
-                <div className="stock-content">
-                  <div className="cancel-btn">
-                    <h5>Cancel</h5>
-                  </div>
-                  <div>
-                    <Button
-                      varient="primary"
-                      type="submit"
-                      rightIcon={<img src={ArrowRight} alt="plus" />}
-                    >
-                      Add Stock
-                    </Button>
-                  </div>
+                <div className="form-group input">
+                  <label htmlFor="quantity">
+                    <p>Quantity</p>
+                  </label>
+                  <input
+                    type="number"
+                    id="quantity"
+                    name="quantity"
+                    placeholder={unit ? unit : "unit "}
+                    value={formik.values.quantity}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  {formik.touched.quantity && formik.errors.quantity ? (
+                    <div className="error">{formik.errors.quantity}</div>
+                  ) : null}
                 </div>
               </div>
-            </Form>
-          )}
-        </Formik>
+              <div className="upload-image-box">
+                {/* <input
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  id="upload-input"
+                  onChange={handleImageChange}
+                /> */}
+                <label htmlFor="upload-input" className="upload-label">
+                  {selectedImage ? (
+                    <img
+                      src={selectedImage as string}
+                      alt="Uploaded"
+                      className="uploaded-image"
+                    />
+                  ) : (
+                    <div className="upload">
+                      <h4>Image</h4>
+                    </div>
+                  )}
+                </label>
+              </div>
+            </div>
+
+            <div className="stock-content">
+              <div className="cancel-btn">
+                <h5>Cancel</h5>
+              </div>
+              <div>
+                <Button
+                  varient="primary"
+                  type="submit"
+                  rightIcon={<img src={ArrowRight} alt="plus" />}
+                  onClick={() => formik.handleSubmit()}
+                >
+                  Add Stock
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <StockList />
+      <StockList
+        date={date}
+        onChange={(date) => setDate(date)}
+        onDelete={handleDelete}
+        onEdit={(id, updatedStock) => handleEdit(id, updatedStock)}
+      />
     </div>
   );
 };

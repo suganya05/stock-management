@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import ProfileImg from "../../assets/images/profile-img.jpg";
@@ -28,6 +28,7 @@ const PersonPage: React.FC = () => {
   const handleSubmit = (values: FormValues) => {
     console.log(values);
   };
+  const [date, setDate] = useState(new Date());
   return (
     <Layout className="person-page">
       <div className="person-page-wrapper">
@@ -118,7 +119,12 @@ const PersonPage: React.FC = () => {
             )}
           </Formik>
           <div>
-            <StockList />
+            <StockList
+              date={date}
+              onChange={(date) => setDate(date)}
+              onDelete={() => {}}
+              onEdit={() => {}}
+            />
           </div>
         </div>
       </div>

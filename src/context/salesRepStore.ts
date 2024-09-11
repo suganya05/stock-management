@@ -73,12 +73,6 @@ const useSalesRepStore = create<SalesRepStore>((set) => ({
         salesRepId,
         updatedSalesRep
       );
-      console.log(
-        "updated",
-        fetchedSalesRep.salesRep,
-        updatedSalesRep,
-        salesRepId
-      );
       set((state) => ({
         salesReps: state.salesReps.map((rep) =>
           rep._id === salesRepId ? { ...fetchedSalesRep.salesRep } : rep

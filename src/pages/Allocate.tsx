@@ -8,33 +8,12 @@ import "../styles/Allocate.scss";
 import AllocatedList from "../components/Allocatedlist";
 import useAuthStore from "../context/userStore";
 import { ISalesPerson } from "../types/types";
-import { getSalesPersons } from "../components/AddStock/AddSalesperson/AddSalesPerson";
+import useSalesRepStore from "../context/salesRepStore";
+// import { getSalesPersons } from "../components/AddStock/AddSalesperson/AddSalesPerson";
 
 const Allocate: React.FC = () => {
   const user = useAuthStore((state) => state.user);
-  const [salesReps, setSalesReps] = useState<ISalesPerson[]>([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1);
-  const limit = 10;
-
-  useEffect(() => {
-    loadSalesReps(page, limit);
-  }, [page]);
-
-  const loadSalesReps = async (page: number, limit: number) => {
-    try {
-      const reps = await getSalesPersons(user, page, limit);
-      setSalesReps((prev) => [...prev, ...reps["salesPerson"]]);
-      if (parseInt(reps["total"]) > salesReps.length) {
-        setHasMore(true);
-      } else {
-        setHasMore(false);
-      }
-      console.log(reps["salesPerson"]);
-    } catch (error) {
-      // handle error
-    }
-  };
+  const { salesReps } = useSalesRepStore();
   return (
     <Layout className="allocate">
       <div className="allocate-head">

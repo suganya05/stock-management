@@ -1,136 +1,130 @@
-import React, { useState } from "react";
-import ImgOne from "../../assets/images/img-1.jpg";
-import ImgTwo from "../../assets/images/img-2.png";
+import React, { useState, useEffect } from "react";
 import EditIcon from "../../assets/icons/edit.svg";
 import DeleteIcon from "../../assets/icons/delete.png";
 import "./StockList.scss";
 import { Modal } from "../Modal";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import useStockStore from "../../context/stockStore";
+import { IGetStock, IProduct, IStock, IStockItem } from "../../types/types";
+import useAuthStore from "../../context/userStore";
 
-const data = [
-  {
-    img: ImgOne,
-    name: "Nandini Milk 1 Litre",
-    downCount: 45,
-    topCount: 53,
-    count: 300,
-    litre: "litre",
-  },
-  {
-    img: ImgTwo,
-    name: "Nandini Curd 500 Litre",
-    downCount: 35,
-    topCount: 40,
-    count: 50,
-    litre: "litre",
-  },
-  {
-    img: ImgOne,
-    name: "Nandini Milk 1 Litre",
-    downCount: 45,
-    topCount: 53,
-    count: 300,
-    litre: "litre",
-  },
-  {
-    img: ImgTwo,
-    name: "Nandini Curd 500 Litre",
-    downCount: 35,
-    topCount: 40,
-    count: 50,
-    litre: "litre",
-  },
-  {
-    img: ImgOne,
-    name: "Nandini Milk 1 Litre",
-    downCount: 45,
-    topCount: 53,
-    count: 300,
-    litre: "litre",
-  },
-  {
-    img: ImgTwo,
-    name: "Nandini Curd 500 Litre",
-    downCount: 35,
-    topCount: 40,
-    count: 50,
-    litre: "litre",
-  },
-  {
-    img: ImgOne,
-    name: "Nandini Milk 1 Litre",
-    downCount: 45,
-    topCount: 53,
-    count: 300,
-    litre: "litre",
-  },
-  {
-    img: ImgTwo,
-    name: "Nandini Curd 500 Litre",
-    downCount: 35,
-    topCount: 40,
-    count: 50,
-    litre: "litre",
-  },
-];
+interface StockListProps {
+  date: Date;
+  onChange: (newDate: Date) => void;
+  onDelete: (productId: string) => void;
+  onEdit: (id: string, updatedStock: IStockItem) => void;
+}
 
-const StockList: React.FC = () => {
-  const [selectedOption, setSelectedOption] = useState("");
+const StockList: React.FC<StockListProps> = ({
+  date,
+  onChange,
+  onDelete,
+  onEdit,
+}) => {
   const [isModalOpen, setModalState] = useState(false);
+  const [todayStock, setStock] = useState<Partial<IGetStock>>();
+  const { getStockForDay, stocks } = useStockStore();
+  const { user } = useAuthStore();
+
+  const fetchData = async () => {
+    const data = await getStockForDay(user, date);
+    setStock(data);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [date, stocks]);
 
   const toggleModal = () => setModalState(!isModalOpen);
 
-  const handleChange = (event: any) => {
-    setSelectedOption(event.target.value);
+  const handleDateChange = (newDate: Date | null) => {
+    if (newDate) onChange(newDate);
   };
+
+  const units = {
+    lt: "Litre",
+    ml: "Milli Litre",
+    kgs: "Kilo",
+    gms: "Gram",
+    nos: "No(s)",
+    dozens: "Dozens",
+  };
+
+  const getUnit = (unit: any) => {
+    //@ts-ignore
+    return units[unit] ? units[unit] : "Unit";
+  };
+
+  const handleDelete = (id: string) => {
+    onDelete(id);
+  };
+
   return (
     <div className="stockList-wrapper">
       <div className="stock-list-content">
         <div className="stock-head">
           <h4>Stock List</h4>
         </div>
-        <div className="drop-down-list">
-          <select value={selectedOption} onChange={handleChange}>
-            <option value="">16,June Today</option>
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
-            <option value="option4">Option 4</option>
-          </select>
-        </div>
+        <DatePicker
+          selected={date}
+          onChange={(date) => handleDateChange(date)}
+          dateFormat="dd-MM-yyyy"
+          className="month-picker"
+          placeholderText="Select Month"
+        />
       </div>
       <div className="data-content">
-        {data.map((f, index) => {
-          return (
-            <div className="box" key={index}>
-              <div className="flex-box">
-                <div className="img">
-                  <img src={f.img} alt="" />
+        {todayStock && todayStock.stocks ? (
+          todayStock.stocks.map((item, i) => {
+            // console.log("this is the item", item);
+            return (
+              <div className="box" key={i}>
+                <div className="flex-box">
+                  <div className="img">
+                    <img
+                      src={item.productId.photoUrl}
+                      alt={item.productId.name}
+                    />
+                  </div>
+                  <div className="para">
+                    <h5>{item.productId.name}</h5>
+                  </div>
                 </div>
-                <div className="para">
-                  <h5>{f.name}</h5>
+                <div className="add-delete-content">
+                  <div className="litre">
+                    <p>
+                      {item.quantity}
+                      <span>{getUnit(item.productId.unit)}</span>
+                    </p>
+                  </div>
+                  <div className="edit-icon" onClick={toggleModal}>
+                    <img src={EditIcon} alt="Edit" />
+                  </div>
+                  <div
+                    className="delete-icon"
+                    onClick={() => handleDelete(item.productId._id)}
+                  >
+                    <img src={DeleteIcon} alt="Delete" />
+                  </div>
                 </div>
               </div>
-              <div className="add-delete-content">
-                <div className="litre">
-                  <p>
-                    {f.count} <span>{f.litre}</span>
-                  </p>
-                </div>
-                <div className="edit-icon" onClick={toggleModal}>
-                  <img src={EditIcon} alt="" />
-                </div>
-                <div className="delete-icon" onClick={toggleModal}>
-                  <img src={DeleteIcon} alt="" />
-                </div>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })
+        ) : (
+          <div>No products found</div>
+        )}
       </div>
       <div className="clear">
         <p>Clear All</p>
       </div>
-      <Modal isOpen={isModalOpen} onClose={toggleModal}></Modal>
+      <Modal isOpen={isModalOpen} onClose={toggleModal} title="Edit Stock">
+        <div>
+          <form>
+            <input name="productId" />
+          </form>
+        </div>
+      </Modal>
     </div>
   );
 };

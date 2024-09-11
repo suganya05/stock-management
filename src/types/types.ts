@@ -42,3 +42,24 @@ export interface ISalesPerson {
   createdBy?: string;
   isActive?: boolean;
 }
+
+export interface IStockItem {
+  productId: string;
+  quantity: number;
+}
+export interface IStock {
+  _id: string;
+  allotedDate: Date;
+  stocks: IStockItem[];
+}
+
+export interface IGetStockItem {
+  productId: IProduct;
+  quantity: number;
+}
+
+export interface IGetStock {
+  _id: string;
+  allotedDate: Date;
+  stocks: IGetStockItem[];
+}

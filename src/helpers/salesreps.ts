@@ -36,7 +36,6 @@ export const getSalesReps = async (user: User | null) => {
     if (res.status != 200) {
       throw Error(`Error occured with status code ${res.status}`);
     }
-    console.log("data", res.data);
     return res.data;
   } catch (error) {
     console.log(error);
