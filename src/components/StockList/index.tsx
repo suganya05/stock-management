@@ -22,6 +22,9 @@ const StockList: React.FC<StockListProps> = ({
   onDelete,
   onEdit,
 }) => {
+  const [isOpen, setIsOpen] = useState(false); // Toggle calendar visibility
+  const [selectedDate, setSelectedDate] = useState<string>(""); // For selected date display
+  const [currentDate, setCurrentDate] = useState(new Date()); // Current date
   const [isModalOpen, setModalState] = useState(false);
   const [todayStock, setStock] = useState<Partial<IGetStock>>();
   const { getStockForDay, stocks } = useStockStore();
@@ -35,6 +38,34 @@ const StockList: React.FC<StockListProps> = ({
   useEffect(() => {
     fetchData();
   }, [date, stocks]);
+
+  const daysInMonth = (month: number, year: number) =>
+    new Date(year, month + 1, 0).getDate();
+
+  // Handle day click to select a date
+  const handleDayClick = (day: number) => {
+    const selected = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      day
+    );
+    setSelectedDate(selected.toLocaleDateString("en-US"));
+    setIsOpen(false); // Close calendar on date selection
+  };
+
+  // Handle navigation to the previous month
+  const handlePrevMonth = () => {
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+    );
+  };
+
+  // Handle navigation to the next month
+  const handleNextMonth = () => {
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+    );
+  };
 
   const toggleModal = () => setModalState(!isModalOpen);
 
@@ -58,6 +89,22 @@ const StockList: React.FC<StockListProps> = ({
 
   const handleDelete = (id: string) => {
     onDelete(id);
+  };
+
+  const renderDays = () => {
+    const totalDays = daysInMonth(
+      currentDate.getMonth(),
+      currentDate.getFullYear()
+    );
+    const days = [];
+    for (let day = 1; day <= totalDays; day++) {
+      days.push(
+        <div key={day} className="day" onClick={() => handleDayClick(day)}>
+          {day}
+        </div>
+      );
+    }
+    return days;
   };
 
   return (
@@ -114,6 +161,27 @@ const StockList: React.FC<StockListProps> = ({
         ) : (
           <div>No products found</div>
         )}
+        <div className="calendar-box">
+          <input
+            type="text"
+            value={selectedDate ? selectedDate : "Select Date"}
+            onClick={() => setIsOpen(!isOpen)}
+            readOnly
+          />
+          {isOpen && (
+            <div className="calendar">
+              <div className="header">
+                <button onClick={handlePrevMonth}>{"<"}</button>
+                <h2>
+                  {currentDate.toLocaleString("default", { month: "long" })}{" "}
+                  {currentDate.getFullYear()}
+                </h2>
+                <button onClick={handleNextMonth}>{">"}</button>
+              </div>
+              <div className="days-grid">{renderDays()}</div>
+            </div>
+          )}
+        </div>
       </div>
       <div className="clear">
         <p>Clear All</p>

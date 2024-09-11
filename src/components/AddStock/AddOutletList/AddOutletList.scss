@@ -101,7 +101,7 @@
       }
     }
   }
-  .not-selected{
+  .not-selected {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -109,8 +109,9 @@
   }
 }
 
-
 .outlet-list-wrapper {
+  border-right: 1px solid #d9d8d8;
+  padding-right: 25px;
   .outlet-list-head {
     display: flex;
     align-items: center;
