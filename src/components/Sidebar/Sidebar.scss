@@ -18,6 +18,7 @@
 
       svg {
         transition: fill 0.3s;
+        fill: #6a6969;
       }
 
       h5 {
@@ -28,9 +29,9 @@
       }
 
       &.active {
-        // svg {
-        //   fill: #ffbb64;
-        // }
+        svg {
+          fill: #ffbb64;
+        }
 
         h5 {
           color: #ffbb64;

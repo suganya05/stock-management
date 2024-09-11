@@ -7,6 +7,7 @@ import "./StockList.scss";
 import { Modal } from "../Modal";
 
 const data = [
+  // Your stock data remains the same
   {
     img: ImgOne,
     name: "Nandini Milk 1 Litre",
@@ -15,117 +16,115 @@ const data = [
     count: 300,
     litre: "litre",
   },
-  {
-    img: ImgTwo,
-    name: "Nandini Curd 500 Litre",
-    downCount: 35,
-    topCount: 40,
-    count: 50,
-    litre: "litre",
-  },
-  {
-    img: ImgOne,
-    name: "Nandini Milk 1 Litre",
-    downCount: 45,
-    topCount: 53,
-    count: 300,
-    litre: "litre",
-  },
-  {
-    img: ImgTwo,
-    name: "Nandini Curd 500 Litre",
-    downCount: 35,
-    topCount: 40,
-    count: 50,
-    litre: "litre",
-  },
-  {
-    img: ImgOne,
-    name: "Nandini Milk 1 Litre",
-    downCount: 45,
-    topCount: 53,
-    count: 300,
-    litre: "litre",
-  },
-  {
-    img: ImgTwo,
-    name: "Nandini Curd 500 Litre",
-    downCount: 35,
-    topCount: 40,
-    count: 50,
-    litre: "litre",
-  },
-  {
-    img: ImgOne,
-    name: "Nandini Milk 1 Litre",
-    downCount: 45,
-    topCount: 53,
-    count: 300,
-    litre: "litre",
-  },
-  {
-    img: ImgTwo,
-    name: "Nandini Curd 500 Litre",
-    downCount: 35,
-    topCount: 40,
-    count: 50,
-    litre: "litre",
-  },
+  // More stock data...
 ];
 
 const StockList: React.FC = () => {
-  const [selectedOption, setSelectedOption] = useState("");
+  const [isOpen, setIsOpen] = useState(false); // Toggle calendar visibility
+  const [selectedDate, setSelectedDate] = useState<string>(""); // For selected date display
+  const [currentDate, setCurrentDate] = useState(new Date()); // Current date
   const [isModalOpen, setModalState] = useState(false);
+
+  const daysInMonth = (month: number, year: number) =>
+    new Date(year, month + 1, 0).getDate();
+
+  // Handle day click to select a date
+  const handleDayClick = (day: number) => {
+    const selected = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      day
+    );
+    setSelectedDate(selected.toLocaleDateString("en-US"));
+    setIsOpen(false); // Close calendar on date selection
+  };
+
+  // Handle navigation to the previous month
+  const handlePrevMonth = () => {
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+    );
+  };
+
+  // Handle navigation to the next month
+  const handleNextMonth = () => {
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+    );
+  };
 
   const toggleModal = () => setModalState(!isModalOpen);
 
-  const handleChange = (event: any) => {
-    setSelectedOption(event.target.value);
+  const renderDays = () => {
+    const totalDays = daysInMonth(
+      currentDate.getMonth(),
+      currentDate.getFullYear()
+    );
+    const days = [];
+    for (let day = 1; day <= totalDays; day++) {
+      days.push(
+        <div key={day} className="day" onClick={() => handleDayClick(day)}>
+          {day}
+        </div>
+      );
+    }
+    return days;
   };
+
   return (
     <div className="stockList-wrapper">
       <div className="stock-list-content">
         <div className="stock-head">
           <h4>Stock List</h4>
         </div>
-        <div className="drop-down-list">
-          <select value={selectedOption} onChange={handleChange}>
-            <option value="">16,June Today</option>
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
-            <option value="option4">Option 4</option>
-          </select>
+        <div className="calendar-box">
+          <input
+            type="text"
+            value={selectedDate ? selectedDate : "Select Date"}
+            onClick={() => setIsOpen(!isOpen)}
+            readOnly
+          />
+          {isOpen && (
+            <div className="calendar">
+              <div className="header">
+                <button onClick={handlePrevMonth}>{"<"}</button>
+                <h2>
+                  {currentDate.toLocaleString("default", { month: "long" })}{" "}
+                  {currentDate.getFullYear()}
+                </h2>
+                <button onClick={handleNextMonth}>{">"}</button>
+              </div>
+              <div className="days-grid">{renderDays()}</div>
+            </div>
+          )}
         </div>
       </div>
       <div className="data-content">
-        {data.map((f, index) => {
-          return (
-            <div className="box" key={index}>
-              <div className="flex-box">
-                <div className="img">
-                  <img src={f.img} alt="" />
-                </div>
-                <div className="para">
-                  <h5>{f.name}</h5>
-                </div>
+        {data.map((f, index) => (
+          <div className="box" key={index}>
+            <div className="flex-box">
+              <div className="img">
+                <img src={f.img} alt={f.name} />
               </div>
-              <div className="add-delete-content">
-                <div className="litre">
-                  <p>
-                    {f.count} <span>{f.litre}</span>
-                  </p>
-                </div>
-                <div className="edit-icon" onClick={toggleModal}>
-                  <img src={EditIcon} alt="" />
-                </div>
-                <div className="delete-icon" onClick={toggleModal}>
-                  <img src={DeleteIcon} alt="" />
-                </div>
+              <div className="para">
+                <h5>{f.name}</h5>
               </div>
             </div>
-          );
-        })}
+            <div className="add-delete-content">
+              <div className="litre">
+                <p>
+                  {f.count} <span>{f.litre}</span>
+                </p>
+              </div>
+              <div className="edit-icon" onClick={toggleModal}>
+                <img src={EditIcon} alt="Edit" />
+              </div>
+              <div className="delete-icon" onClick={toggleModal}>
+                <img src={DeleteIcon} alt="Delete" />
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
       <div className="clear">
         <p>Clear All</p>
