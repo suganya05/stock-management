@@ -1,8 +1,10 @@
 import React from "react";
 import "./ManageRep.scss";
 import Button from "../../Button";
+import useSalesRepStore from "../../../context/salesRepStore";
 
 const ManageRep: React.FC = () => {
+  const { salesReps } = useSalesRepStore();
   return (
     <div className="manage-rep-wrapper">
       <div className="manage-rep-head">

@@ -21,7 +21,7 @@ const SampleCsv: React.FC<ISampleCsv> = ({ onPickFile, columns }) => {
         </thead>
         <tbody>
           {columns.map((d, i) => (
-            <tr>
+            <tr key={i}>
               <td>{i + 1}</td>
               <td>{d}</td>
             </tr>

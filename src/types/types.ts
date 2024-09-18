@@ -63,3 +63,17 @@ export interface IGetStock {
   allotedDate: Date;
   stocks: IGetStockItem[];
 }
+
+export interface IRepAllocation {
+  _id: string;
+  salesPersonId: string;
+  allotedDate: Date;
+  allocatedItems: IGetStockItem[];
+  soldItem: IGetStockItem[] | IStockItem[];
+}
+
+export interface IAllocate {
+  _id?: string;
+  allotedDate: Date;
+  allocations: Partial<IRepAllocation>[];
+}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ReactComponent as CloseIcon } from "../../assets/icons/close.svg";
 import "./LayoutModal.scss";
 
@@ -13,6 +13,9 @@ const LayoutModule: React.FC<ILayoutModule> = ({
   handleToggle,
   className,
 }) => {
+  useEffect(() => {
+    console.log("model opened");
+  }, []);
   return (
     <div className="mx">
       <div className="product-detail">

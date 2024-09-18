@@ -14,8 +14,7 @@ const Sidebar: React.FC = () => {
   useEffect(() => {
     const path = location.pathname;
     if (path === "/dashboard") setActiveIcon("dashboard");
-    else if (path === "/report" || path === "/explore-outlet-details")
-      setActiveIcon("report");
+    else if (path.startsWith("/report")) setActiveIcon("report");
     else if (path === "/inventory") setActiveIcon("inventory");
     else if (path === "/allocate") setActiveIcon("allocate");
     else setActiveIcon("");

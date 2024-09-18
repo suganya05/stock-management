@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import PlusIcon from "../../assets/icons/plus.png";
@@ -13,12 +13,14 @@ import useStockStore from "../../context/stockStore";
 import useAuthStore from "../../context/userStore";
 import { IStockItem } from "../../types/types";
 import useProductStore from "../../context/productStore";
+import EditStock from "../ModalComponents/EditStock";
+import SampleCsv from "../ModalComponents/SampleCSV";
 
 // interface FormValues {
 //   productId: string;
 //   quantity: string;
 // }
-
+const AddStockColumn = ["Product ID", "Quantity"];
 const initialValues: IStockItem = {
   productId: "",
   quantity: 0,
@@ -35,25 +37,32 @@ const AddProducts: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<
     string | ArrayBuffer | undefined
   >(undefined);
-  const [active, setIsActive] = useState(false);
-  const [date, setDate] = useState(new Date());
+  // const [date, setDate] = useState(new Date());
   const user = useAuthStore((state) => state.user);
-  const { addStock, removeStock, updateStock, getStockForDay, stocks } =
-    useStockStore();
+  const {
+    addStock,
+    removeStock,
+    updateStock,
+    date,
+    setDate,
+    uploadCSV,
+    existingStock,
+  } = useStockStore();
   const { products } = useProductStore();
   const [unit, setUnit] = useState<string>();
+  const [showSampleCsv, setShowSampleCsv] = useState(false);
+  const showFileRef = useRef<HTMLInputElement | null>(null);
 
-  const handleOpenToggle = () => {
-    setIsActive(true);
+  const handleSampleCsvOpen = () => {
+    setShowSampleCsv(true);
   };
-
-  const handleCloseToggle = () => {
-    setIsActive(false);
+  const handleSampleCsvClose = () => {
+    setShowSampleCsv(false);
   };
 
   const handleSubmit = (values: IStockItem) => {
     console.log(values);
-    addStock(user, values, date);
+    addStock(user, values);
     formik.resetForm();
     setSelectedImage(undefined);
   };
@@ -94,27 +103,30 @@ const AddProducts: React.FC = () => {
   }, [formik.values.productId]);
 
   const fetchData = async () => {
-    const data = await getStockForDay(user, date);
-    // console.log("fresh data", data);
+    console.log("fetching");
   };
-
-  useEffect(() => {
-    fetchData();
-    // console.log("stocks", stocks);
-  }, [date, stocks]);
-
-  // useEffect(() => {
-  //   addStock(user, stockData, new Date());
-  // }, []);
 
   const handleDelete = async (id: string) => {
-    removeStock(user, id, date);
+    removeStock(user, id);
   };
 
-  const handleEdit = (id: string, updatedStock: IStockItem) => {
-    updateStock(user, updatedStock, date);
+  const handleEdit = (updatedStock: IStockItem) => {
+    updateStock(user, updatedStock);
   };
 
+  const handleCSVUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      uploadCSV(user, file);
+      setShowSampleCsv(false);
+    }
+  };
+
+  const handleExistingStock = async () => {
+    existingStock(user);
+  };
   return (
     <div className="add-product-wrapper">
       <div className="add-product-content">
@@ -124,24 +136,27 @@ const AddProducts: React.FC = () => {
             <Button
               varient="primary"
               leftIcon={<img src={BlackPlusIcon} alt="plus" />}
-              onClick={handleOpenToggle}
+              onClick={handleSampleCsvOpen}
             >
               Upload csv
             </Button>
-            {active && (
+            {/* {active && (
               <LayoutModule
                 handleToggle={handleCloseToggle}
                 className="layout-module"
               >
                 <PreviewChanges />
               </LayoutModule>
+            )} */}
+            {date && date.toDateString() === new Date().toDateString() && (
+              <Button
+                varient="secondary"
+                leftIcon={<img src={PlusIcon} alt="plus" />}
+                onClick={handleExistingStock}
+              >
+                Use Existing Stock
+              </Button>
             )}
-            <Button
-              varient="secondary"
-              leftIcon={<img src={PlusIcon} alt="plus" />}
-            >
-              Use Existing Stock
-            </Button>
           </div>
         </div>
         <div className="form">
@@ -232,10 +247,30 @@ const AddProducts: React.FC = () => {
       </div>
       <StockList
         date={date}
-        onChange={(date) => setDate(date)}
+        onChange={(date) => setDate(user, date)}
         onDelete={handleDelete}
-        onEdit={(id, updatedStock) => handleEdit(id, updatedStock)}
+        // onEdit={(id, updatedStock) => handleEdit(id, updatedStock)}
+        onEdit={(data) => handleEdit(data)}
       />
+      {showSampleCsv && (
+        <LayoutModule handleToggle={handleSampleCsvClose}>
+          <SampleCsv
+            columns={AddStockColumn}
+            onPickFile={() => {
+              if (showFileRef.current) {
+                showFileRef.current.click();
+              }
+            }}
+          />
+          <input
+            type="file"
+            ref={showFileRef}
+            style={{ display: "none" }}
+            onChange={handleCSVUpload}
+            accept=".csv"
+          />
+        </LayoutModule>
+      )}
     </div>
   );
 };

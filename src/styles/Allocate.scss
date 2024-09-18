@@ -35,6 +35,10 @@
         &::-webkit-scrollbar {
           width: 0;
         }
+        .add-sales.selected {
+            // background-color: #e0f7fa; 
+            border: 1px solid #ffbb64; 
+        }
         .add-sales {
           display: flex;
           align-items: center;

@@ -6,14 +6,22 @@ import { Modal } from "../Modal";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import useStockStore from "../../context/stockStore";
-import { IGetStock, IProduct, IStock, IStockItem } from "../../types/types";
+import {
+  IGetStock,
+  IGetStockItem,
+  IProduct,
+  IStock,
+  IStockItem,
+} from "../../types/types";
 import useAuthStore from "../../context/userStore";
+import EditStock from "../ModalComponents/EditStock";
+import LayoutModule from "../LayoutModal";
 
 interface StockListProps {
-  date: Date;
+  date: Date | undefined;
   onChange: (newDate: Date) => void;
   onDelete: (productId: string) => void;
-  onEdit: (id: string, updatedStock: IStockItem) => void;
+  onEdit: (updatedStock: IStockItem) => void;
 }
 
 const StockList: React.FC<StockListProps> = ({
@@ -22,52 +30,23 @@ const StockList: React.FC<StockListProps> = ({
   onDelete,
   onEdit,
 }) => {
-  const [isOpen, setIsOpen] = useState(false); // Toggle calendar visibility
-  const [selectedDate, setSelectedDate] = useState<string>(""); // For selected date display
-  const [currentDate, setCurrentDate] = useState(new Date()); // Current date
-  const [isModalOpen, setModalState] = useState(false);
-  const [todayStock, setStock] = useState<Partial<IGetStock>>();
-  const { getStockForDay, stocks } = useStockStore();
+  const [showEdit, setShowEdit] = useState(false);
+  const { stocks, clearAllStock } = useStockStore();
+  const [editData, setEditData] = useState<{
+    quantity: number;
+    unit: string;
+  }>();
+  const [selectedId, setSelectedId] = useState<string>();
   const { user } = useAuthStore();
 
   const fetchData = async () => {
-    const data = await getStockForDay(user, date);
-    setStock(data);
+    // const data = await getStockForDay(user, date);
+    // setStock(data);
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [date, stocks]);
-
-  const daysInMonth = (month: number, year: number) =>
-    new Date(year, month + 1, 0).getDate();
-
-  // Handle day click to select a date
-  const handleDayClick = (day: number) => {
-    const selected = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      day
-    );
-    setSelectedDate(selected.toLocaleDateString("en-US"));
-    setIsOpen(false); // Close calendar on date selection
-  };
-
-  // Handle navigation to the previous month
-  const handlePrevMonth = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
-    );
-  };
-
-  // Handle navigation to the next month
-  const handleNextMonth = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
-    );
-  };
-
-  const toggleModal = () => setModalState(!isModalOpen);
+  // useEffect(() => {
+  //   fetchData();
+  // }, [date]);
 
   const handleDateChange = (newDate: Date | null) => {
     if (newDate) onChange(newDate);
@@ -91,20 +70,31 @@ const StockList: React.FC<StockListProps> = ({
     onDelete(id);
   };
 
-  const renderDays = () => {
-    const totalDays = daysInMonth(
-      currentDate.getMonth(),
-      currentDate.getFullYear()
-    );
-    const days = [];
-    for (let day = 1; day <= totalDays; day++) {
-      days.push(
-        <div key={day} className="day" onClick={() => handleDayClick(day)}>
-          {day}
-        </div>
-      );
+  const handleEditClose = () => {
+    setShowEdit(false);
+  };
+
+  const handleEdit = (values: { quantity: number }) => {
+    if (selectedId) {
+      onEdit({
+        productId: selectedId,
+        quantity: values.quantity,
+      });
+      setShowEdit(false);
     }
-    return days;
+  };
+
+  const handleModelOpen = (data: IGetStockItem) => {
+    setEditData({
+      quantity: data.quantity,
+      unit: getUnit(data.productId.unit),
+    });
+    setSelectedId(data.productId._id);
+    setShowEdit(true);
+  };
+
+  const deleteAll = () => {
+    clearAllStock(user);
   };
 
   return (
@@ -122,8 +112,8 @@ const StockList: React.FC<StockListProps> = ({
         />
       </div>
       <div className="data-content">
-        {todayStock && todayStock.stocks ? (
-          todayStock.stocks.map((item, i) => {
+        {stocks && stocks.stocks && stocks.stocks.length > 0 ? (
+          stocks.stocks.map((item, i) => {
             // console.log("this is the item", item);
             return (
               <div className="box" key={i}>
@@ -145,7 +135,10 @@ const StockList: React.FC<StockListProps> = ({
                       <span>{getUnit(item.productId.unit)}</span>
                     </p>
                   </div>
-                  <div className="edit-icon" onClick={toggleModal}>
+                  <div
+                    className="edit-icon"
+                    onClick={() => handleModelOpen(item)}
+                  >
                     <img src={EditIcon} alt="Edit" />
                   </div>
                   <div
@@ -161,38 +154,15 @@ const StockList: React.FC<StockListProps> = ({
         ) : (
           <div>No products found</div>
         )}
-        <div className="calendar-box">
-          <input
-            type="text"
-            value={selectedDate ? selectedDate : "Select Date"}
-            onClick={() => setIsOpen(!isOpen)}
-            readOnly
-          />
-          {isOpen && (
-            <div className="calendar">
-              <div className="header">
-                <button onClick={handlePrevMonth}>{"<"}</button>
-                <h2>
-                  {currentDate.toLocaleString("default", { month: "long" })}{" "}
-                  {currentDate.getFullYear()}
-                </h2>
-                <button onClick={handleNextMonth}>{">"}</button>
-              </div>
-              <div className="days-grid">{renderDays()}</div>
-            </div>
-          )}
-        </div>
       </div>
-      <div className="clear">
+      <div className="clear" onClick={deleteAll}>
         <p>Clear All</p>
       </div>
-      <Modal isOpen={isModalOpen} onClose={toggleModal} title="Edit Stock">
-        <div>
-          <form>
-            <input name="productId" />
-          </form>
-        </div>
-      </Modal>
+      {showEdit && (
+        <LayoutModule handleToggle={handleEditClose}>
+          <EditStock editableData={editData} onSubmit={handleEdit} />
+        </LayoutModule>
+      )}
     </div>
   );
 };

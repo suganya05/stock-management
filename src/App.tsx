@@ -17,18 +17,24 @@ import useProductStore from "./context/productStore";
 import useOutletStore from "./context/outletStore";
 import useSalesRepStore from "./context/salesRepStore";
 import useStockStore from "./context/stockStore";
+import useAllocationsStore from "./context/allocationStore";
 
 const App: React.FC = () => {
   const { user, loading } = useAuthStore();
   const { fetchProduct } = useProductStore();
   const { fetchOutlets } = useOutletStore();
   const { fetchSalesReps } = useSalesRepStore();
-  const { fetchStocks } = useStockStore();
+  const { setDate } = useStockStore();
+  const { fetchAllocations } = useAllocationsStore();
+
   useEffect(() => {
-    fetchProduct(user);
-    fetchOutlets(user);
-    fetchSalesReps(user);
-    fetchStocks(user);
+    if (user) {
+      fetchProduct(user);
+      fetchOutlets(user);
+      fetchSalesReps(user);
+      setDate(user, new Date());
+      fetchAllocations(user, new Date());
+    }
   }, [loading]);
   return (
     <>
@@ -41,16 +47,23 @@ const App: React.FC = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/allocate" element={<Allocate />} />
+
+          <Route path="/report" element={<Report />} />
+
           <Route path="/person-page" element={<PersonPage />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/confirm-stock-list" element={<ConfirmStockList />} />
           <Route path="/damage-product-view" element={<DamageProductView />} />
-          <Route path="/company-details" element={<CompanyDetails />} />
+          {/* <Route path="/company-details" element={<CompanyDetails />} /> */}
           <Route
-            path="/explore-outlet-details"
+            path="report/explore-outlet-details/company-details"
+            element={<CompanyDetails />}
+          />
+
+          <Route
+            path="/report/explore-outlet-details"
             element={<ExploreOutletsDetails />}
           />
-          <Route path="/report" element={<Report />} />
           <Route
             path="/transaction-history-details"
             element={<TransactionHistoryDetails />}
