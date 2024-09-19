@@ -1,7 +1,7 @@
 import React from "react";
 import ImgOne from "../../../assets/images/img-3.png";
 import RightArrow from "../../../assets/icons/right.svg";
-import { Link, useNavigate, useNavigation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Explore.scss";
 import useOutletStore from "../../../context/outletStore";
 

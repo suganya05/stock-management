@@ -160,7 +160,7 @@ const AllocatedList: React.FC<IAllocateList> = ({
     <div className="allocated-list-wrapper">
       <div className="allocated-list-head">
         <h4>Allocated list</h4>
-        <div className="drop-down-list">
+        <div>
           <DatePicker
             selected={date}
             onChange={(date) => handleDateChange(date)}

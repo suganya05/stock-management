@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import LeftArrow from "../../../assets/icons/arrow-left.png";
-import ImgOne from "../../../assets/images/img-3.png";
 import Layout from "../../Layout";
 import "./ExploreOutletDetails.scss";
 import Button from "../../Button";

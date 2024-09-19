@@ -15,89 +15,9 @@
         font-weight: 500;
       }
     }
-    .calendar-box {
-      position: relative;
-      width: 100px;
-      margin-top: 10px;
-      margin-right: 20px;
-
-      input {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        cursor: pointer;
-        outline: none;
-        font-size: 12px;
-        letter-spacing: 1px;
-        font-family: "Inter", sans-serif;
-      }
-
-      .calendar {
-        position: absolute;
-        top: 100%;
-        right: 0;
-        background: white;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
-        padding: 10px;
-        z-index: 10;
-
-        .header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          background-color: #ffbb64;
-          color: white;
-          padding: 10px;
-          border-radius: 10px;
-
-          h2 {
-            margin: 0;
-            font-size: 14px;
-          }
-
-          button {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-          }
-        }
-
-        .days-grid {
-          display: grid;
-          grid-template-columns: repeat(7, 1fr);
-          gap: 5px;
-          padding: 10px;
-          font-size: 12px;
-
-          .day {
-            text-align: center;
-            padding: 4px;
-            border-radius: 5px;
-            cursor: pointer;
-            &:hover {
-              background-color: #6a6969;
-              color: #fff;
-            }
-          }
-        }
-      }
+    .date-picker {
+      padding-right: 40px;
     }
-
-    // .drop-down-list {
-    //   select {
-    //     border: 1px solid #ffbb64;
-    //     outline: none;
-    //     background: #f6f6f6;
-    //     border-radius: 10px;
-    //     padding: 6px 8px;
-    //     color: #ffbb64;
-    //     cursor: pointer;
-    //   }
-    // }
   }
   .data-content {
     height: 349px;
@@ -154,6 +74,12 @@
           cursor: pointer;
         }
       }
+    }
+    .center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 300px;
     }
   }
   .clear {

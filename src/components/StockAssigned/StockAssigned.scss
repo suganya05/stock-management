@@ -23,6 +23,12 @@
     &::-webkit-scrollbar {
       width: 0;
     }
+    .center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 200px;
+    }
     .stock-assigned-content {
       display: flex;
       align-items: center;

@@ -10,31 +10,19 @@
       font-size: 25px;
       font-weight: 500;
     }
-    .drop-down-list {
-      select {
-        border: 1px solid #ffbb64;
-        outline: none;
-        background: #f6f6f6;
-        border-radius: 10px;
-        padding: 6px 8px;
-        color: #ffbb64;
-        cursor: pointer;
-      }
-    }
   }
   .data-content {
     height: 280px;
     overflow-y: auto;
-    
+
     &::-webkit-scrollbar {
       width: 1px;
     }
-    .centered{
+    .centered {
       display: flex;
       align-items: center;
-      justify-items: center;
-      height: 100%;
-      width: 100%;
+      justify-content: center;
+      height: 300px;
     }
     .box {
       background: #e3e1e1;

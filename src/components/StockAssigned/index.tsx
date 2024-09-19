@@ -50,7 +50,7 @@ const StockAssigned: React.FC = () => {
             );
           })
         ) : (
-          <div>Stocks not assigned yet</div>
+          <div className="center">Stocks not assigned yet</div>
         )}
       </div>
     </div>

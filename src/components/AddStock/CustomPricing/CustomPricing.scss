@@ -1,8 +1,16 @@
 .custom-pricing-wrapper {
-    display: grid;
-    grid-template-columns: 0.9fr 1fr;
+  display: grid;
+  grid-template-columns: 0.9fr 1fr;
+  .outlet-list-container {
+    .not-selected {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 300px;
+    }
+  }
 }
 .outlet-list-content.selected {
-    background-color: #e0f7fa; /* Highlight color for the selected outlet */
-    border: 1px solid #ffbb64; /* Border to distinguish the selected outlet */
+  background-color: #e0f7fa; /* Highlight color for the selected outlet */
+  border: 1px solid #ffbb64; /* Border to distinguish the selected outlet */
 }

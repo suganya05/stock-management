@@ -19,6 +19,7 @@ import useSalesRepStore from "./context/salesRepStore";
 import useStockStore from "./context/stockStore";
 import useAllocationsStore from "./context/allocationStore";
 import ManageRep from "./components/Report/ManageRep";
+import ManageRepDetails from "./components/Report/ManageRepDetails";
 
 const App: React.FC = () => {
   const { user, loading } = useAuthStore();
@@ -58,6 +59,10 @@ const App: React.FC = () => {
           <Route
             path="/report/explore-outlets"
             element={<ExploreOutletsDetails />}
+          />
+          <Route
+            path="/report/manage-rep-details"
+            element={<ManageRepDetails />}
           />
           <Route
             path="/report/explore-outlets/:companyId/damage-product-view"

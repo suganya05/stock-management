@@ -103,13 +103,15 @@ const StockList: React.FC<StockListProps> = ({
         <div className="stock-head">
           <h4>Stock List</h4>
         </div>
-        <DatePicker
-          selected={date}
-          onChange={(date) => handleDateChange(date)}
-          dateFormat="dd-MM-yyyy"
-          className="month-picker"
-          placeholderText="Select Month"
-        />
+        <div className="date-picker">
+          <DatePicker
+            selected={date}
+            onChange={(date) => handleDateChange(date)}
+            dateFormat="dd-MM-yyyy"
+            className="month-picker"
+            placeholderText="Select Month"
+          />
+        </div>
       </div>
       <div className="data-content">
         {stocks && stocks.stocks && stocks.stocks.length > 0 ? (
@@ -152,7 +154,7 @@ const StockList: React.FC<StockListProps> = ({
             );
           })
         ) : (
-          <div>No products found</div>
+          <div className="center">No products found</div>
         )}
       </div>
       <div className="clear" onClick={deleteAll}>

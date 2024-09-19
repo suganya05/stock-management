@@ -7,13 +7,11 @@ import ArrowRight from "../../assets/icons/arrow-right.png";
 import Button from "../../components/Button";
 import StockList from "../StockList";
 import LayoutModule from "../LayoutModal";
-import PreviewChanges from "../ModalComponents/PreviewChanges";
 import "./AddStock.scss";
 import useStockStore from "../../context/stockStore";
 import useAuthStore from "../../context/userStore";
 import { IStockItem } from "../../types/types";
 import useProductStore from "../../context/productStore";
-import EditStock from "../ModalComponents/EditStock";
 import SampleCsv from "../ModalComponents/SampleCSV";
 
 // interface FormValues {
