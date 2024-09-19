@@ -5,6 +5,8 @@ import ProfileImg from "../../assets/images/profile-img.jpg";
 import LeftArrow from "../../assets/images/arrow-left.svg";
 import ImgOne from "../../assets/images/img-3.png";
 import "./StockDistribution.scss";
+import useSalesRepStore from "../../context/salesRepStore";
+import useAllocationsStore from "../../context/allocationStore";
 
 const data = [
   {
@@ -44,13 +46,15 @@ const data = [
 const StockDistribution: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const sliderRef = useRef<Slider>(null);
+  const { salesReps } = useSalesRepStore();
+  const { allocations } = useAllocationsStore();
 
   const settings = {
     dots: false,
     infinite: true,
     speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 3,
+    slidesToShow: 2,
+    slidesToScroll: 1,
   };
 
   const handleNextClick = () => {
@@ -76,7 +80,7 @@ const StockDistribution: React.FC = () => {
               <img src={LeftArrow} alt="Previous" />
             </div>
           )}
-          {currentIndex < data.length / 3 - 1 && (
+          {currentIndex < salesReps.length && (
             <div className="flex-item" onClick={handleNextClick}>
               <img src={RightArrow} alt="Next" />
             </div>
@@ -85,13 +89,13 @@ const StockDistribution: React.FC = () => {
       </div>
 
       <Slider ref={sliderRef} {...settings} className="slider-wrapper">
-        {data.map((f, index) => {
+        {salesReps.map((f, index) => {
           return (
             <div key={index} className="persons-wrapper">
               <div className="person-head">
-                <img src={f.img} alt="" />
+                <img src={f.photoUrl} alt="" />
                 <div className="heading">
-                  <p>{f.heading}</p>
+                  <p>{f.name}</p>
                   <div className="dot"></div>
                 </div>
               </div>
@@ -102,22 +106,28 @@ const StockDistribution: React.FC = () => {
                   <p>Price</p>
                 </div>
                 <div className="table-content">
-                  {[...Array(10)].map((_, i) => (
-                    <div key={i.toString()} className="table-body">
-                      <div className="company-img">
-                        <img src={ImgOne} alt="" />
-                        <h4 className="vasanth-bavan" title="vasanth Bavan">
-                          Vasanth Bavan
-                        </h4>
-                      </div>
-                      <div className="product">
-                        <p>5</p>
-                      </div>
-                      <div className="price">
-                        <h3>1500</h3>
-                      </div>
-                    </div>
-                  ))}
+                  {allocations && allocations.allocations ? (
+                    allocations.allocations
+                      .filter((allocate) => allocate.salesPersonId === f._id)
+                      .map((allocate, i) => (
+                        <div key={i.toString()} className="table-body">
+                          <div className="company-img">
+                            <img src={ImgOne} alt="" />
+                            <h4 className="vasanth-bavan" title="vasanth Bavan">
+                              Vasanth Bavan
+                            </h4>
+                          </div>
+                          <div className="product">
+                            <p>{allocate.allocatedItems?.length}</p>
+                          </div>
+                          <div className="price">
+                            <h3>1500</h3>
+                          </div>
+                        </div>
+                      ))
+                  ) : (
+                    <div></div>
+                  )}
                 </div>
               </div>
               <div className="total">

@@ -5,61 +5,16 @@ import ImgOne from "../../../assets/images/img-3.png";
 import Layout from "../../Layout";
 import "./ExploreOutletDetails.scss";
 import Button from "../../Button";
-
-const data = [
-  {
-    logo: ImgOne,
-    heading: "Vasantha Bhavan",
-    address: "20,Main Road Area Vallioor, tirunelveli",
-  },
-  {
-    logo: ImgOne,
-    heading: "Vasantha Bhavan",
-    address: "20,Main Road Area Vallioor, tirunelveli",
-  },
-  {
-    logo: ImgOne,
-    heading: "Vasantha Bhavan",
-    address: "20,Main Road Area Vallioor, tirunelveli",
-  },
-  {
-    logo: ImgOne,
-    heading: "Vasantha Bhavan",
-    address: "20,Main Road Area Vallioor, tirunelveli",
-  },
-  {
-    logo: ImgOne,
-    heading: "Vasantha Bhavan",
-    address: "20,Main Road Area Vallioor, tirunelveli",
-  },
-  {
-    logo: ImgOne,
-    heading: "Vasantha Bhavan",
-    address: "20,Main Road Area Vallioor, tirunelveli",
-  },
-  {
-    logo: ImgOne,
-    heading: "Vasantha Bhavan",
-    address: "20,Main Road Area Vallioor, tirunelveli",
-  },
-  {
-    logo: ImgOne,
-    heading: "Vasantha Bhavan",
-    address: "20,Main Road Area Vallioor, tirunelveli",
-  },
-  {
-    logo: ImgOne,
-    heading: "Vasantha Bhavan",
-    address: "20,Main Road Area Vallioor, tirunelveli",
-  },
-];
+import useOutletStore from "../../../context/outletStore";
 
 const ExploreOutletsDetails: React.FC = () => {
+  const { outlets } = useOutletStore();
   const navigate = useNavigate();
 
   const handleGoBack = () => {
     navigate(-1);
   };
+
   return (
     <Layout className="explore-outlets-details">
       <div className="explore-outlets-details-wrapper">
@@ -68,16 +23,16 @@ const ExploreOutletsDetails: React.FC = () => {
           <h4>Explore Outlets</h4>
         </div>
         <div className="explore-outlets-details-container">
-          {data.map((f, index) => {
+          {outlets.map((f, index) => {
             return (
-              <Link key={index} to="/company-details">
+              <Link key={index} to={`/report/explore-outlets/${f._id}`}>
                 <div className="explore-outlets-details-content">
                   <div className="logo">
-                    <img src={f.logo} alt="" />
+                    <img src={f.photoUrl} alt="" />
                   </div>
                   <div className="content">
                     <div className="texts">
-                      <h3>{f.heading}</h3>
+                      <h3>{f.outletName}</h3>
                       <p>{f.address}</p>
                     </div>
                     <div className="explore-btn">

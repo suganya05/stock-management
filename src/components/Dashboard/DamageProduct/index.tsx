@@ -13,7 +13,7 @@ const DamageProduct: React.FC = () => {
     <div className="damage-product-wrapper">
       <div className="damage-product-head">
         <h4>Damaged Product</h4>
-        <Link to="/damage-product-view">
+        <Link to="/dashboard/damage-product-view">
           <p>View All</p>
         </Link>
       </div>

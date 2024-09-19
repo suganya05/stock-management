@@ -18,6 +18,7 @@ import useOutletStore from "./context/outletStore";
 import useSalesRepStore from "./context/salesRepStore";
 import useStockStore from "./context/stockStore";
 import useAllocationsStore from "./context/allocationStore";
+import ManageRep from "./components/Report/ManageRep";
 
 const App: React.FC = () => {
   const { user, loading } = useAuthStore();
@@ -53,19 +54,26 @@ const App: React.FC = () => {
           <Route path="/person-page" element={<PersonPage />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/confirm-stock-list" element={<ConfirmStockList />} />
-          <Route path="/damage-product-view" element={<DamageProductView />} />
           {/* <Route path="/company-details" element={<CompanyDetails />} /> */}
           <Route
-            path="report/explore-outlet-details/company-details"
+            path="/report/explore-outlets"
+            element={<ExploreOutletsDetails />}
+          />
+          <Route
+            path="/report/explore-outlets/:companyId/damage-product-view"
+            element={<DamageProductView />}
+          />
+          <Route
+            path="/dashboard/damage-product-view"
+            element={<DamageProductView />}
+          />
+          <Route
+            path="/report/explore-outlets/:companyId" // add dynacmic url
             element={<CompanyDetails />}
           />
 
           <Route
-            path="/report/explore-outlet-details"
-            element={<ExploreOutletsDetails />}
-          />
-          <Route
-            path="/transaction-history-details"
+            path="/report/explore-outlets/:companyId/transaction-history-details"
             element={<TransactionHistoryDetails />}
           />
         </Routes>

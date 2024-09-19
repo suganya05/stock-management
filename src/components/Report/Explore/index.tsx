@@ -12,14 +12,12 @@ const ExploreOutlets: React.FC = () => {
     <div className="explore-wrapper">
       <div className="explore-head">
         <h4>Explore Outlets</h4>
-        <p onClick={() => navigate("/report/explore-outlet-details")}>
-          View All
-        </p>
+        <p onClick={() => navigate("/report/explore-outlets")}>View All</p>
       </div>
       <div className="explore-container">
         {outlets.map((f, index) => {
           return (
-            <Link to="/report/explore-outlet-details" key={index}>
+            <Link to={`/report/explore-outlets/${f._id}`} key={index}>
               <div className="explore-content">
                 <div className="explore-box">
                   <div className="img">

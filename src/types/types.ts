@@ -69,7 +69,7 @@ export interface IRepAllocation {
   salesPersonId: string;
   allotedDate: Date;
   allocatedItems: IGetStockItem[];
-  soldItem: IGetStockItem[] | IStockItem[];
+  soldItem: IGetStockItem[];
 }
 
 export interface IAllocate {
