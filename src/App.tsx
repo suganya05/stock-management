@@ -20,6 +20,7 @@ import useStockStore from "./context/stockStore";
 import useAllocationsStore from "./context/allocationStore";
 import ManageRep from "./components/Report/ManageRep";
 import ManageRepDetails from "./components/Report/ManageRepDetails";
+import ForgotPasswordScreen from "./pages/ForgotPassword";
 
 const App: React.FC = () => {
   const { user, loading } = useAuthStore();
@@ -46,6 +47,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<LoginScreen />} />
+          <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/allocate" element={<Allocate />} />

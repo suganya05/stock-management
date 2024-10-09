@@ -80,7 +80,12 @@ const ManageRep: React.FC = () => {
         </table>
       </div>
       <div className="more-details-btn">
-        <Button varient="primary">More details</Button>
+        <Button
+          varient="primary"
+          onClick={() => navigate("/report/manage-rep-details")}
+        >
+          More details
+        </Button>
       </div>
       {showDenomination && (
         <LayoutModule

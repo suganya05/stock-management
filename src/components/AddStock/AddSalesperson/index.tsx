@@ -13,6 +13,7 @@ import { ISalesPerson } from "../../../types/types";
 import useAuthStore from "../../../context/userStore";
 import SalesPersonEditor from "../../SalesPersonEdit";
 import useSalesRepStore from "../../../context/salesRepStore";
+import ShowPassword from "../../ModalComponents/ShowPassword";
 
 const AddSalesperson: React.FC = () => {
   const [showAddRep, setShowRep] = useState(false);
@@ -23,6 +24,7 @@ const AddSalesperson: React.FC = () => {
   const [editorErr, setEditorErr] = useState<string>();
   const { salesReps, createSalesRep, updateSalesRep, removeSalesRep } =
     useSalesRepStore();
+  const [showPassword, setShowPassword] = useState<string>();
 
   const handleCloseAdd = () => {
     setShowRep(false);
@@ -40,9 +42,19 @@ const AddSalesperson: React.FC = () => {
     setShowEditor(true);
   };
 
+  const handleOpenPassword = (password: string) => {
+    setShowPassword(password);
+  };
+
+  const handleClosePassword = () => {
+    setShowPassword(undefined);
+  };
+
   const handleCreateRep = async (data: ISalesPerson) => {
     try {
-      await createSalesRep(user, data);
+      const password = await createSalesRep(user, data);
+      console.log("password for newly created user is", password);
+      setShowPassword(password);
       setShowRep(false);
       setAddRepErr(undefined);
     } catch (error) {
@@ -140,6 +152,11 @@ const AddSalesperson: React.FC = () => {
               error={editorErr}
               selectedSalesPerson={selectedRep}
             />
+          </LayoutModule>
+        )}
+        {showPassword && (
+          <LayoutModule handleToggle={handleClosePassword}>
+            <ShowPassword password={showPassword} />
           </LayoutModule>
         )}
       </div>

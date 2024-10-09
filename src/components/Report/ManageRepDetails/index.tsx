@@ -33,6 +33,9 @@ const ManageRepDetails: React.FC = () => {
                 <th>
                   <span>Handovers</span>
                 </th>
+                <th>
+                  <span>Balance</span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -54,6 +57,7 @@ const ManageRepDetails: React.FC = () => {
                       <span>Check</span>
                     </div>
                   </td>
+                  <td>₹ 200</td>
                 </tr>
               ))}
             </tbody>

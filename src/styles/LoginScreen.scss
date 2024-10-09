@@ -11,6 +11,18 @@
     margin-bottom: 20px;
   }
 
+  .forgot-password-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    p,a {
+      font-size: 13px;
+    }
+    a {
+      color: #8b4513;
+    }
+  }
+
   .entry-boxes {
     display: flex;
     flex-direction: column;

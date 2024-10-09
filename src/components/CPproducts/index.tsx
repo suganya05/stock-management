@@ -2,20 +2,13 @@ import React from "react";
 import { ReactComponent as SearchIcon } from "../../assets/icons/search.svg";
 import EditIcon from "../../assets/icons/edit.svg";
 import DeleteIcon from "../../assets/icons/delete.png";
-import ImgTwo from "../../assets/images/img-2.png";
-import ImgOne from "../../assets/images/img-1.jpg";
 import RupeeImg from "../../assets/icons/Rupee.png";
-import "./AllProductList.scss";
-import Button from "../Button";
+import "./CPproducts.scss";
 import { IAllProducts } from "../../types/types";
 
-const AllProductList: React.FC<IAllProducts> = ({
-  prodList,
-  onDelete,
-  onEdit,
-}) => {
+const CProducts: React.FC<IAllProducts> = ({ prodList, onDelete, onEdit }) => {
   return (
-    <div className="product-list-content">
+    <div className="custom-product-list-content">
       <div className="head">
         <h4>All Product List</h4>
         <div className="search-input">
@@ -73,4 +66,4 @@ const AllProductList: React.FC<IAllProducts> = ({
   );
 };
 
-export default AllProductList;
+export default CProducts;

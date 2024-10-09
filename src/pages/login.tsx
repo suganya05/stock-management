@@ -86,6 +86,10 @@ const LoginScreen: React.FC = () => {
           ) : null}
           {error && <div className="error">{error}</div>}
         </div>
+        <div className="forgot-password-container">
+          <p>Forgot your password?</p>
+          <a href="/forgot-password">Click here</a>
+        </div>
         <button type="submit" className="login-button">
           Login
         </button>

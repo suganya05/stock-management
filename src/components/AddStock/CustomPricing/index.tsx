@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./CustomPricing.scss";
-import AllProductList from "../../AllProductList";
 import { IOutlet } from "../../../types/types";
 import { ReactComponent as SearchIcon } from "../../../assets/icons/search.svg";
 import RightArrow from "../../../assets/icons/right.svg";
 import useAuthStore from "../../../context/userStore";
 import useOutletStore from "../../../context/outletStore";
+import CProducts from "../../CPproducts";
 
 const CustomPricing: React.FC = () => {
   const user = useAuthStore((state) => state.user);
@@ -57,7 +57,7 @@ const CustomPricing: React.FC = () => {
           )}
         </div>
       </div>
-      <AllProductList prodList={[]} />
+      <CProducts prodList={[]} />
     </div>
   );
 };

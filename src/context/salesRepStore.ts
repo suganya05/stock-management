@@ -20,7 +20,7 @@ interface SalesRepStore {
   createSalesRep: (
     user: User | null,
     salesRep: Partial<ISalesPerson>
-  ) => Promise<void>;
+  ) => Promise<string>;
   removeSalesRep: (user: User | null, salesRepId: string) => void;
   updateSalesRep: (
     user: User | null,
@@ -49,6 +49,7 @@ const useSalesRepStore = create<SalesRepStore>((set) => ({
       set((state) => ({
         salesReps: [...state.salesReps, newSalesRep.newSalesPerson],
       }));
+      return newSalesRep.password;
     } catch (error) {
       console.log(error);
       throw error;
