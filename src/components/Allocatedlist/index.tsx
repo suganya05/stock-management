@@ -13,6 +13,7 @@ import useAllocationsStore from "../../context/allocationStore";
 import useAuthStore from "../../context/userStore";
 import EditStock from "../ModalComponents/EditStock";
 import useStockStore from "../../context/stockStore";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface IAllocateList {
   selectedRepId: string | undefined;
@@ -165,7 +166,7 @@ const AllocatedList: React.FC<IAllocateList> = ({
             selected={date}
             onChange={(date) => handleDateChange(date)}
             dateFormat="dd-MM-yyyy"
-            className="month-picker"
+            // className="month-picker"
             placeholderText="Select Month"
           />
         </div>

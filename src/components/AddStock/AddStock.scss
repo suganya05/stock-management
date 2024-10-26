@@ -1,6 +1,30 @@
 .add-product-wrapper {
   display: grid;
   grid-template-columns: 0.9fr 1fr;
+  .react-datepicker__input-container {
+    input {
+      width: 150px;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      border: 1px solid #dcdcdc;
+      border-radius: 8px;
+      background-color: #fff;
+      color: #333;
+      text-align: center;
+      cursor: pointer;
+      transition: border 0.3s ease;
+
+      &:focus {
+        outline: none;
+        border-color: #ffbb64; /* Custom focus color */
+      }
+
+      &::placeholder {
+        color: #aaa;
+      }
+    }
+  }
   .add-product-content {
     margin-left: 14px;
     .head {

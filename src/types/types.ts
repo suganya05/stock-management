@@ -13,6 +13,13 @@ export interface IAllProducts {
   onEdit?: (id: string | undefined) => void;
 }
 
+export interface ICustomProduct {
+  selectedId: string | null;
+  prodList?: Partial<IProduct>[];
+  onDelete?: (id: string | undefined) => void;
+  onEdit?: (id: string | undefined) => void;
+}
+
 export interface AddNewProductForm {
   name: string;
   unitOfMesurment: string;

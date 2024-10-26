@@ -96,7 +96,7 @@ const Allocate: React.FC = () => {
                 <div className="text">
                   <p>
                     {d.isActive ? (
-                      <div className="allocate">Allocated</div>
+                      <div className="allocate">Active</div>
                     ) : (
                       <div className="deactivate">Deactive</div>
                     )}

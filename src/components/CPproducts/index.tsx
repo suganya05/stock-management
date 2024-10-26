@@ -1,40 +1,81 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ReactComponent as SearchIcon } from "../../assets/icons/search.svg";
 import EditIcon from "../../assets/icons/edit.svg";
 import DeleteIcon from "../../assets/icons/delete.png";
 import RupeeImg from "../../assets/icons/Rupee.png";
 import "./CPproducts.scss";
-import { IAllProducts } from "../../types/types";
+import { IAllProducts, ICustomProduct } from "../../types/types";
+import Button from "../Button";
+import LayoutModule from "../LayoutModal";
+import AddProduct from "../ModalComponents/AddProduct";
+import AddCustomProduct from "../ModalComponents/AddCustomPricing";
+import { backend_url } from "../../constants/backend";
+import { getCustomPricingProduct } from "../../helpers/customPricing";
+import useAuthStore from "../../context/userStore";
 
-const CProducts: React.FC<IAllProducts> = ({ prodList, onDelete, onEdit }) => {
+const CProducts: React.FC<ICustomProduct> = ({
+  prodList,
+  onDelete,
+  onEdit,
+  selectedId,
+}) => {
+  const [showAddModel, setShowAddModel] = useState(false);
+  const [products, setProducts] = useState<any[]>([]);
+  const { user } = useAuthStore();
+  const handleAddModelOpen = () => {
+    setShowAddModel(true);
+  };
+  const handleAddModelClose = () => {
+    setShowAddModel(false);
+  };
+
+  const getProducts = async () => {
+    if (selectedId) {
+      const prods = await getCustomPricingProduct(user, selectedId);
+      if (prods) {
+        setProducts(prods.products);
+      } else {
+        setProducts([]);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, [selectedId, showAddModel]);
   return (
     <div className="custom-product-list-content">
       <div className="head">
-        <h4>All Product List</h4>
+        <h4>All Product Price List</h4>
         <div className="search-input">
           <SearchIcon />
           <input type="search" placeholder="Search" />
         </div>
       </div>
       <div className="data-content">
-        {prodList && prodList.length >= 1 ? (
-          prodList.map((f, index) => {
+        {products && products.length >= 1 ? (
+          products.map((f, index) => {
             return (
               <div className="box" key={index}>
                 <div className="flex-box">
                   <div className="img">
-                    <img src={f.photoUrl} alt="" />
+                    <img src={f.productId.photoUrl} alt="" />
                   </div>
                   <div className="para">
-                    <h5>{f.name}</h5>
+                    <h5>{f.productId.name}</h5>
                     <div className="flex-item">
                       <div className="flex">
                         <h3>Wholesale</h3>
                         <img src={RupeeImg} alt="" />
-                        <p>{f.actualPrice}</p>
+                        <p>{f.productId.actualPrice}</p>
                       </div>
                       <div className="flex">
                         <h4>Retail</h4>
+                        <img src={RupeeImg} alt="" />
+                        <p>{f.productId.retailPrice}</p>
+                      </div>
+                      <div className="flex">
+                        <h4>custom price</h4>
                         <img src={RupeeImg} alt="" />
                         <p>{f.retailPrice}</p>
                       </div>
@@ -62,6 +103,21 @@ const CProducts: React.FC<IAllProducts> = ({ prodList, onDelete, onEdit }) => {
           <div className="no-data">No products</div>
         )}
       </div>
+      {selectedId && (
+        <div className="btn-container">
+          <Button varient="primary" onClick={() => handleAddModelOpen()}>
+            Add Products
+          </Button>
+        </div>
+      )}
+      {selectedId && showAddModel && (
+        <LayoutModule handleToggle={handleAddModelClose}>
+          <AddCustomProduct
+            onSubmit={handleAddModelClose}
+            selectedId={selectedId}
+          />
+        </LayoutModule>
+      )}
     </div>
   );
 };
