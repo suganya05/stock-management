@@ -205,7 +205,7 @@ const OutletEditor: React.FC<IOutletEditor> = ({
             disabled={isBtnDisabled}
             onClick={() => formik.handleSubmit()}
           >
-            Add
+            Update
           </Button>
         </div>
       </div>

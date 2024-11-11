@@ -8,56 +8,28 @@ import {
   getStocks,
   parseAndUploadCSV,
   updateStockBck,
-} from "../helpers/addStock";
-import { IGetStock, IGetStockItem, IStock, IStockItem } from "../types/types";
+} from "../helpers/StockUtils";
+import { IGetStockItem, IStock, IStockItem } from "../types/types";
 
 interface StockStore {
-  stocks: Partial<IGetStock>;
-  date: Date | undefined;
-  setDate: (user: User | null, date: Date) => void;
+  stocks: IGetStockItem[];
   fetchStocks: (user: User | null) => Promise<void>;
   addStock: (user: User | null, stock: IStockItem) => void;
   removeStock: (user: User | null, productId: string) => void;
   updateStock: (user: User | null, updatedStock: IStockItem) => void;
   uploadCSV: (user: User | null, file: File) => void;
-  existingStock: (user: User | null) => void;
   clearAllStock: (user: User | null) => void;
 }
 
 const useStockStore = create<StockStore>((set, get) => ({
-  stocks: {},
-
-  date: undefined,
-
-  setDate: (user: User | null, date: Date) => {
-    if (!user) {
-      return;
-    }
-    set((state) => {
-      if (state.date?.toDateString() === date.toDateString()) {
-        return { date: state.date };
-      } else {
-        set({ date: date });
-        get().fetchStocks(user);
-        return { date: date };
-      }
-    });
-  },
+  stocks: [],
 
   fetchStocks: async (user) => {
     if (user) {
       try {
-        const date = get().date;
-        if (!date) {
-          return;
-        }
-        const result = await getStocks(user, date);
-
-        if (result) {
-          if (result.status === 200) {
-            set((state) => ({ stocks: result.data.stock }));
-          }
-        }
+        const result = await getStocks(user);
+        console.log("stocks", result.data);
+        set({ stocks: result.data });
       } catch (error) {
         console.log(error);
       }
@@ -66,15 +38,26 @@ const useStockStore = create<StockStore>((set, get) => ({
 
   addStock: async (user, stock) => {
     try {
-      const date = get().date;
-      if (date) {
-        const data = await createStock(user, date, stock);
-        if (data) {
-          if (data.status === 200 || 201) {
-            set((state) => ({ stocks: data.data }));
+      const data = await createStock(user, stock);
+      console.log(data.data.stocks);
+      set((state) => {
+        let updatedStock = [...state.stocks];
+        const newStock = updatedStock.map((item) => {
+          if (item.product._id == data.data.stocks.product._id) {
+            item.quantity = data.data.stocks.quantity;
           }
-        }
-      }
+          return item;
+        });
+
+        const productExists = newStock.some(
+          (f) => f.product._id == data.data.stocks.product._id
+        );
+
+        const finalStock = productExists
+          ? newStock
+          : [...newStock, data.data.stocks];
+        return { ...state, stocks: finalStock };
+      });
     } catch (error) {
       console.log(error);
     }
@@ -82,24 +65,17 @@ const useStockStore = create<StockStore>((set, get) => ({
 
   removeStock: async (user, productId) => {
     try {
-      const date = get().date;
-      if (!date) {
-        console.log("Date not set");
-        return;
-      }
-      const status = await deleteStock(user, productId, date);
-      if (status === 200) {
-        set((state) => {
-          if (state.stocks.stocks) {
-            const filter = state.stocks.stocks.filter((f) => {
-              return f.productId._id !== productId;
-            });
-            console.log(filter);
-            return { stocks: { ...state.stocks, stocks: filter } };
-          }
-          return { stocks: { ...state.stocks } };
-        });
-      }
+      await deleteStock(user, productId);
+      set((state) => {
+        if (state.stocks) {
+          const newStock = state.stocks.filter(
+            (f) => f.product._id != productId
+          );
+          return { ...state, stocks: newStock };
+        } else {
+          return state;
+        }
+      });
     } catch (error) {
       console.log(error);
     }
@@ -107,29 +83,16 @@ const useStockStore = create<StockStore>((set, get) => ({
 
   updateStock: async (user, updatedStockItem) => {
     try {
-      const date = get().date;
-      if (!date) {
-        console.log("Date not set");
-        return;
-      }
-      const updatedStockResponse = await updateStockBck(
-        user,
-        updatedStockItem,
-        date
-      );
-      if (updatedStockResponse && updatedStockResponse.status === 200) {
+      const updatedStockResponse = await updateStockBck(user, updatedStockItem);
+      if (updatedStockResponse.type === "sucess") {
         set((state) => {
-          if (state.stocks.stocks) {
-            const updatedStocks = state.stocks.stocks.map((stock) => {
-              if (stock.productId._id === updatedStockItem.productId) {
-                return { ...stock, quantity: updatedStockItem.quantity };
-              }
-              return stock;
-            });
-
-            return { stocks: { ...state.stocks, stocks: updatedStocks } };
-          }
-          return state;
+          const newStock = state.stocks.map((item) => {
+            if (item.product._id === updatedStockItem.productId) {
+              return { ...item, quantity: updatedStockItem.quantity };
+            }
+            return item;
+          });
+          return { ...state, stocks: newStock };
         });
       }
     } catch (error) {
@@ -138,36 +101,16 @@ const useStockStore = create<StockStore>((set, get) => ({
   },
   uploadCSV: async (user, file) => {
     try {
-      const date = get().date;
-      if (!date) {
-        console.log("date not set");
-        return;
-      }
-      const data = (await parseAndUploadCSV(user, file, date)) as any;
-      set({ stocks: data });
-    } catch (error) {
-      console.log(error);
-    }
-  },
-
-  existingStock: async (user) => {
-    try {
-      const data = await existingStockBck(user);
-      console.log("data from exisitng stock", data);
-      set({ stocks: data });
+      await parseAndUploadCSV(user, file);
+      get().fetchStocks(user);
     } catch (error) {
       console.log(error);
     }
   },
   clearAllStock: async (user) => {
     try {
-      const date = get().date;
-      if (!date) {
-        console.log("date not set");
-        return;
-      }
-      const status = await deleteAll(user, date);
-      if (status === 200) {
+      const res = await deleteAll(user);
+      if (res.type === "sucess") {
         set((state) => {
           return { stocks: { ...state.stocks, stocks: [] } };
         });

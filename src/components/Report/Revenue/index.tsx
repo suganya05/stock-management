@@ -1,46 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Rupee from "../../../assets/images/rupee.png";
 import Briefcase from "../../../assets/icons/briefcase.png";
 import Button from "../../Button";
 import "./Revenue.scss";
 import LayoutModule from "../../LayoutModal";
 import AddExpenses from "../../ModalComponents/AddExpenses";
-
-const data = [
-  {
-    title: "Total Revenue",
-    amount: "13,00,000",
-  },
-  {
-    title: "Total Expense",
-    amount: "13,00,000",
-  },
-  {
-    title: "Total Profit",
-    amount: "10,00,000",
-  },
-];
-
-const Data = [
-  {
-    img: Briefcase,
-    title: "Total Sales",
-    amount: "13,80,000",
-  },
-  {
-    img: Briefcase,
-    title: "Total Profit",
-    amount: "13,80,000",
-  },
-  {
-    img: Briefcase,
-    title: "Total Expense",
-    amount: "13,80,000",
-  },
-];
+import { getMonetoryStat } from "./RevenueUtils";
+import useAuthStore from "../../../context/userStore";
 
 const Revenue: React.FC = () => {
   const [active, setIsActive] = useState(false);
+  const { user } = useAuthStore();
+  const [totalRevenue, setTotalRevenue] = useState<number>();
+  const [totalProfit, setTotalProfit] = useState<number>();
+  const [totalExpense, setTotalExpense] = useState<number>();
   const handleOpenToggle = () => {
     setIsActive(true);
   };
@@ -48,6 +21,55 @@ const Revenue: React.FC = () => {
   const handleCloseToggle = () => {
     setIsActive(false);
   };
+
+  const Data = [
+    {
+      img: Briefcase,
+      title: "Total Sales",
+      amount: totalRevenue,
+    },
+    {
+      img: Briefcase,
+      title: "Total Profit",
+      amount: totalProfit,
+    },
+    {
+      img: Briefcase,
+      title: "Total Expense",
+      amount: totalExpense,
+    },
+  ];
+
+  const data = [
+    {
+      title: "Total Revenue",
+      amount: totalRevenue,
+    },
+    {
+      title: "Total Expense",
+      amount: totalExpense,
+    },
+    {
+      title: "Total Profit",
+      amount: totalProfit,
+    },
+  ];
+
+  const getMonetory = async () => {
+    try {
+      const metrics = await getMonetoryStat(user);
+      setTotalRevenue(metrics.data.totalRevenue);
+      setTotalProfit(metrics.data.totalProfit);
+      setTotalExpense(metrics.data.totalExpense);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getMonetory();
+  }, []);
+
   return (
     <div className="revenue-wrapper">
       <div className="flex-one">

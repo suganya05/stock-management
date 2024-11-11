@@ -6,30 +6,17 @@ import { Modal } from "../Modal";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import useStockStore from "../../context/stockStore";
-import {
-  IGetStock,
-  IGetStockItem,
-  IProduct,
-  IStock,
-  IStockItem,
-} from "../../types/types";
+import { IGetStockItem, IProduct, IStock, IStockItem } from "../../types/types";
 import useAuthStore from "../../context/userStore";
 import EditStock from "../ModalComponents/EditStock";
 import LayoutModule from "../LayoutModal";
 
 interface StockListProps {
-  date: Date | undefined;
-  onChange: (newDate: Date) => void;
   onDelete: (productId: string) => void;
   onEdit: (updatedStock: IStockItem) => void;
 }
 
-const StockList: React.FC<StockListProps> = ({
-  date,
-  onChange,
-  onDelete,
-  onEdit,
-}) => {
+const StockList: React.FC<StockListProps> = ({ onDelete, onEdit }) => {
   const [showEdit, setShowEdit] = useState(false);
   const { stocks, clearAllStock } = useStockStore();
   const [editData, setEditData] = useState<{
@@ -48,9 +35,9 @@ const StockList: React.FC<StockListProps> = ({
   //   fetchData();
   // }, [date]);
 
-  const handleDateChange = (newDate: Date | null) => {
-    if (newDate) onChange(newDate);
-  };
+  // const handleDateChange = (newDate: Date | null) => {
+  //   if (newDate) onChange(newDate);
+  // };
 
   const units = {
     lt: "Litre",
@@ -66,8 +53,8 @@ const StockList: React.FC<StockListProps> = ({
     return units[unit] ? units[unit] : "Unit";
   };
 
-  const handleDelete = (id: string) => {
-    onDelete(id);
+  const handleDelete = (id?: string) => {
+    id && onDelete(id);
   };
 
   const handleEditClose = () => {
@@ -87,9 +74,9 @@ const StockList: React.FC<StockListProps> = ({
   const handleModelOpen = (data: IGetStockItem) => {
     setEditData({
       quantity: data.quantity,
-      unit: getUnit(data.productId.unit),
+      unit: getUnit(data.product.unit),
     });
-    setSelectedId(data.productId._id);
+    setSelectedId(data.product._id);
     setShowEdit(true);
   };
 
@@ -103,7 +90,7 @@ const StockList: React.FC<StockListProps> = ({
         <div className="stock-head">
           <h4>Stock List</h4>
         </div>
-        <div className="date-picker">
+        {/* <div className="date-picker">
           <DatePicker
             selected={date}
             onChange={(date) => handleDateChange(date)}
@@ -111,30 +98,30 @@ const StockList: React.FC<StockListProps> = ({
             className="month-picker"
             placeholderText="Select Month"
           />
-        </div>
+        </div> */}
       </div>
       <div className="data-content">
-        {stocks && stocks.stocks && stocks.stocks.length > 0 ? (
-          stocks.stocks.map((item, i) => {
+        {stocks && stocks.length > 0 ? (
+          stocks.map((item, i) => {
             // console.log("this is the item", item);
             return (
               <div className="box" key={i}>
                 <div className="flex-box">
                   <div className="img">
                     <img
-                      src={item.productId.photoUrl}
-                      alt={item.productId.name}
+                      src={item.product?.photoUrl}
+                      alt={item.product?.name}
                     />
                   </div>
                   <div className="para">
-                    <h5>{item.productId.name}</h5>
+                    <h5>{item.product?.name}</h5>
                   </div>
                 </div>
                 <div className="add-delete-content">
                   <div className="litre">
                     <p>
                       {item.quantity}
-                      <span>{getUnit(item.productId.unit)}</span>
+                      <span>{getUnit(item.product?.unit)}</span>
                     </p>
                   </div>
                   <div
@@ -145,7 +132,7 @@ const StockList: React.FC<StockListProps> = ({
                   </div>
                   <div
                     className="delete-icon"
-                    onClick={() => handleDelete(item.productId._id)}
+                    onClick={() => handleDelete(item.product?._id)}
                   >
                     <img src={DeleteIcon} alt="Delete" />
                   </div>
@@ -170,3 +157,4 @@ const StockList: React.FC<StockListProps> = ({
 };
 
 export default StockList;
+  

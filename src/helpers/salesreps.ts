@@ -3,7 +3,7 @@ import { ISalesPerson } from "../types/types";
 import { backend_url } from "../constants/backend";
 import axios from "axios";
 
-const url = `${backend_url}admin/sales-persons`;
+const url = `${backend_url}/admin/sales-persons`;
 
 export const createSalesRep = async (
   user: User | null,

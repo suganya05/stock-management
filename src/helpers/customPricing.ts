@@ -7,7 +7,7 @@ export const getCustomPricingProduct = async (
   outletId: string
 ) => {
   try {
-    const url = `${backend_url}admin/custom-pricing/${outletId}`;
+    const url = `${backend_url}/admin/custom-pricing/${outletId}`;
     console.log(url);
     const idToken = await user?.getIdToken();
     const headers = {
@@ -27,7 +27,7 @@ export const addCustomPricing = async (
   price: number
 ) => {
   try {
-    const url = `${backend_url}admin/custom-pricing/add`;
+    const url = `${backend_url}/admin/custom-pricing/add`;
     const idToken = await user?.getIdToken();
     const headers = {
       Authorization: `Bearer ${idToken}`,

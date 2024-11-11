@@ -119,12 +119,7 @@ const PersonPage: React.FC = () => {
             )}
           </Formik>
           <div>
-            <StockList
-              date={date}
-              onChange={(date) => setDate(date)}
-              onDelete={() => {}}
-              onEdit={() => {}}
-            />
+            <StockList onDelete={() => {}} onEdit={() => {}} />
           </div>
         </div>
       </div>

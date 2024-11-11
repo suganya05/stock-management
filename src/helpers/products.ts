@@ -8,7 +8,7 @@ export const getProducts = async (user: User | null) => {
   if (!user) {
     return;
   }
-  const url = `${backend_url}admin/products/all`;
+  const url = `${backend_url}/admin/products/all`;
   const idToken = await user.getIdToken();
   const headers = {
     "Content-Type": "application/json",
@@ -23,7 +23,7 @@ export const createProduct = async (
   values: Partial<IProduct>
 ) => {
   try {
-    const url = `${backend_url}admin/products`;
+    const url = `${backend_url}/admin/products`;
     const idToken = await user?.getIdToken();
     const headers = {
       Authorization: `Bearer ${idToken}`,
@@ -47,7 +47,7 @@ export const createProduct = async (
 
 export const deleteProduct = async (user: User | null, productId: string) => {
   try {
-    const url = `${backend_url}admin/products/${productId}`;
+    const url = `${backend_url}/admin/products/${productId}`;
     const idToken = await user?.getIdToken();
     const headers = {
       Authorization: `Bearer ${idToken}`,
@@ -68,7 +68,7 @@ export const updateProductBck = async (
   updatedProductData: IProduct
 ) => {
   try {
-    const url = `${backend_url}admin/products/${productId}`;
+    const url = `${backend_url}/admin/products/${productId}`;
     const idToken = await user?.getIdToken();
     const headers = {
       "Content-Type": "application/json",

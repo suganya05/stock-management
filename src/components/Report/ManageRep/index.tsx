@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../Button";
 import useSalesRepStore from "../../../context/salesRepStore";
@@ -7,26 +7,52 @@ import MilkImg from "../../../assets/images/milk-img.png";
 import MilkImgOne from "../../../assets/images/milk-img-1.png";
 import ImgOne from "../../../assets/images/img-1.jpg";
 import "./ManageRep.scss";
+import { getManageSalesPerson } from "./ManageRepUtils";
+import useAuthStore from "../../../context/userStore";
+import { IDenomination, IGetMangeRep, IHandOver } from "../../../types/types";
 
 const ManageRep: React.FC = () => {
   const { salesReps } = useSalesRepStore();
   const [showDenomination, setShowDenomination] = useState(false);
   const [showHandovers, setShowHandovers] = useState(false);
+  const { user } = useAuthStore();
+  const [denomination, setDenomination] = useState<IDenomination>();
+  const [handOvers, setHandOver] = useState<IHandOver>();
+  const [results, setResults] = useState<IGetMangeRep[]>();
+
   const navigate = useNavigate();
 
-  const handleShowDenominationOpen = () => {
+  const handleShowDenominationOpen = (denoms: IDenomination) => {
     setShowDenomination(true);
+    setDenomination(denoms);
   };
   const handleShowDenominationClose = () => {
     setShowDenomination(false);
+    setDenomination(undefined);
   };
 
-  const handleShowHandoversOpen = () => {
+  const handleShowHandoversOpen = (handOver: IHandOver) => {
     setShowHandovers(true);
+    setHandOver(handOver);
   };
   const handleShowHandoversClose = () => {
     setShowHandovers(false);
+    setHandOver(undefined);
   };
+
+  const fetchRepData = async (year: number, month: number, date: number) => {
+    try {
+      const res = await getManageSalesPerson(user, year, month, date);
+      console.log("mage reps", res);
+      setResults(res.data.manageRepData);
+    } catch (error) {
+      console.log("Error occured on manage rep", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRepData(2024, 11, 8);
+  }, []);
 
   return (
     <div className="manage-rep-wrapper">
@@ -53,29 +79,52 @@ const ManageRep: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {[...Array(10)].map((_, i) => (
-              <tr key={i.toString()} style={{ cursor: "pointer" }}>
-                <td>
-                  <span className="name">Ramesh</span>
-                </td>
-                <td>
-                  <span className="attendance">Present</span>
-                </td>
-                <td>
-                  <div
-                    className="view-box"
-                    onClick={handleShowDenominationOpen}
-                  >
-                    <span>Check</span>
-                  </div>
-                </td>
-                <td>
-                  <div className="check-box" onClick={handleShowHandoversOpen}>
-                    <span>Check</span>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {results ? (
+              results.map((sr, i) => (
+                <tr key={i.toString()} style={{ cursor: "pointer" }}>
+                  <td>
+                    <span className="name">{sr.salesPerson.name}</span>
+                  </td>
+                  <td>
+                    <span className={`attendance ${sr.isAbsent && "absent"}`}>
+                      {sr.isAbsent ? "Absent" : "Present"}
+                    </span>
+                  </td>
+                  <td>
+                    {sr.isAbsent ? (
+                      <div className={`view-box absent`}>
+                        <span>Not Applic.</span>
+                      </div>
+                    ) : (
+                      <div
+                        className="view-box"
+                        onClick={() =>
+                          handleShowDenominationOpen(sr.denomination)
+                        }
+                      >
+                        <span>Check</span>
+                      </div>
+                    )}
+                  </td>
+                  <td>
+                    {sr.isAbsent ? (
+                      <div className="check-box absent">
+                        <span>Not Applic.</span>
+                      </div>
+                    ) : (
+                      <div
+                        className="check-box"
+                        onClick={() => handleShowHandoversOpen(sr.handOver)}
+                      >
+                        <span>Check</span>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <div>Please add sales rep</div>
+            )}
           </tbody>
         </table>
       </div>
@@ -100,6 +149,7 @@ const ManageRep: React.FC = () => {
                 <h4>1 X 20</h4>
                 <h4>1 X 50</h4>
                 <h4>1 X 100</h4>
+                <h4>1 X 200</h4>
                 <h4>1 X 500</h4>
                 <h4 className="top-gap">Total</h4>
               </div>
@@ -112,12 +162,13 @@ const ManageRep: React.FC = () => {
                 <h4 className="top-gap">=</h4>
               </div>
               <div>
-                <h4>10</h4>
-                <h4>20</h4>
-                <h4>50</h4>
-                <h4>100</h4>
-                <h4>500</h4>
-                <h4 className="top-gap">600</h4>
+                <h4>{denomination?.noOfTen}</h4>
+                <h4>{denomination?.noOfTwenty}</h4>
+                <h4>{denomination?.noOfFifty}</h4>
+                <h4>{denomination?.noOfHundred}</h4>
+                <h4>{denomination?.noOfTwoHundred}</h4>
+                <h4>{denomination?.noOfFiveHundred}</h4>
+                <h4 className="top-gap">{denomination?.totalAmount}</h4>
               </div>
             </div>
             <div className="close-button" onClick={handleShowDenominationClose}>
@@ -135,26 +186,27 @@ const ManageRep: React.FC = () => {
             <h2>Handover Products</h2>
             <div className="handovers-container">
               <div className="milk-img">
-                <img src={MilkImg} alt="" />
+                <img src={handOvers?.proofUrl} alt="" />
               </div>
-              <div className="images">
+              {/* <div className="images">
                 <img src={MilkImgOne} alt="" />
                 <img src={MilkImgOne} alt="" />
-              </div>
+              </div> */}
             </div>
             <div className="milk-container">
-              {[...Array(10)].map((_, i) => (
-                <div className="content">
-                  <div className="name">
-                    <img src={ImgOne} alt="" />
-                    <p>Nandini Milk 1 Litre</p>
+              {handOvers &&
+                handOvers.products.map((p, i) => (
+                  <div className="content">
+                    <div className="name">
+                      <img src={p.product.photoUrl} alt="" />
+                      <p>{p.product.name}</p>
+                    </div>
+                    <div className="litre">
+                      <h4>{p.quantity}</h4>
+                      <p>{p.product.unit}</p>
+                    </div>
                   </div>
-                  <div className="litre">
-                    <h4>300</h4>
-                    <p>Litre</p>
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </LayoutModule>

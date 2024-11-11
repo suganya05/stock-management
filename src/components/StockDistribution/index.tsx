@@ -106,9 +106,9 @@ const StockDistribution: React.FC = () => {
                   <p>Price</p>
                 </div>
                 <div className="table-content">
-                  {allocations && allocations.allocations ? (
-                    allocations.allocations
-                      .filter((allocate) => allocate.salesPersonId === f._id)
+                  {allocations && allocations ? (
+                    allocations
+                      .filter((allocate) => allocate.salesPerson?._id === f._id)
                       .map((allocate, i) => (
                         <div key={i.toString()} className="table-body">
                           <div className="company-img">

@@ -34,17 +34,17 @@ const StockAssigned: React.FC = () => {
         </div>
       </div>
       <div className="stock-assigned-container">
-        {stocks.stocks ? (
-          stocks.stocks.map((f, index) => {
+        {stocks ? (
+          stocks.map((f, index) => {
             return (
               <div key={index} className="stock-assigned-content">
                 <div className="content">
-                  <img src={f.productId.photoUrl} alt="" />
-                  <h3>{f.productId.name}</h3>
+                  <img src={f.product.photoUrl} alt="" />
+                  <h3>{f.product.name}</h3>
                 </div>
                 <div className="text">
                   <h4>{f.quantity}</h4>
-                  <p>{getUnit(f.productId.unit)}</p>
+                  <p>{getUnit(f.product.unit)}</p>
                 </div>
               </div>
             );

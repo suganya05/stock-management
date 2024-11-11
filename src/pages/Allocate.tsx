@@ -19,18 +19,12 @@ const Allocate: React.FC = () => {
   const user = useAuthStore((state) => state.user);
   const [selectedRepId, setSeletedRepId] = useState<string>();
   // const [date, setDate] = useState<Date>(new Date());
-  const { date, setDate, fetchStocks } = useStockStore();
+  const { fetchStocks } = useStockStore();
   const { salesReps } = useSalesRepStore();
-  const { uploadCSV, fetchAllocations } = useAllocationsStore();
+  const { uploadCSV, fetchAllocations, allocations } = useAllocationsStore();
   const [showCsv, setShowCsv] = useState(false);
   const showFileRef = useRef<HTMLInputElement | null>(null);
   const { makeExistingStock } = useAllocationsStore();
-
-  const handleDateChange = (date: Date) => {
-    // setDate(user, date);
-    setDate(user, date);
-    fetchAllocations(user, date);
-  };
 
   const handleRepClick = (id: string | undefined) => {
     setSeletedRepId(id);
@@ -47,8 +41,8 @@ const Allocate: React.FC = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
-    if (file && date) {
-      await uploadCSV(user, file, date);
+    if (file) {
+      await uploadCSV(user, file);
       console.log("upolded csv");
       await fetchStocks(user);
       handleCloseCsv();
@@ -66,13 +60,13 @@ const Allocate: React.FC = () => {
           <h4>Delivery Person(s)</h4>
         </div>
         <div className="btn">
-          <Button
+          {/* <Button
             varient="secondary"
             leftIcon={<img src={PlusIcon} alt="plus" />}
             onClick={handleUseExisitng}
           >
             Use Previous allocation
-          </Button>
+          </Button> */}
           <Button varient="primary" onClick={handleShowCsv}>
             Upload CSV file
           </Button>
@@ -115,11 +109,7 @@ const Allocate: React.FC = () => {
             </Button>
           </div> */}
         </div>
-        <AllocatedList
-          selectedRepId={selectedRepId}
-          date={date}
-          onDateChange={handleDateChange}
-        />
+        <AllocatedList selectedRepId={selectedRepId} />
         {showCsv && (
           <LayoutModule handleToggle={handleCloseCsv}>
             <SampleCsv

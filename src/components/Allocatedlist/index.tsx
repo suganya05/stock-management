@@ -17,8 +17,6 @@ import "react-datepicker/dist/react-datepicker.css";
 
 interface IAllocateList {
   selectedRepId: string | undefined;
-  date: Date | undefined;
-  onDateChange: (date: Date) => void;
 }
 
 interface IEditData {
@@ -27,11 +25,7 @@ interface IEditData {
   unit: string;
 }
 
-const AllocatedList: React.FC<IAllocateList> = ({
-  selectedRepId,
-  date,
-  onDateChange,
-}) => {
+const AllocatedList: React.FC<IAllocateList> = ({ selectedRepId }) => {
   const [showAddProduct, setShowAddProduct] = useState(false);
   const {
     createAllocations,
@@ -59,50 +53,43 @@ const AllocatedList: React.FC<IAllocateList> = ({
     setShowEditProduct(false);
   };
 
-  const handleDateChange = (newDate: Date | null) => {
-    if (newDate) onDateChange(newDate);
-  };
-
   const handleAddProduct = async (values: IStockItem) => {
     if (!selectedRepId) {
       return;
     }
-    if (!date) {
-      console.log("date not set");
-      return;
-    }
-    await createAllocations(user, {
-      allotedDate: date,
-      allocations: [
-        {
-          salesPersonId: selectedRepId,
-          //@ts-ignore
-          allocatedItems: [values],
-        },
-      ],
-    });
+    // if (!date) {
+    //   console.log("date not set");
+    //   return;
+    // }
+    // await createAllocations(user, {
+    //   // allotedDate: date,
+    //   allocations: [
+    //     {
+    //       salesPersonId: selectedRepId,
+    //       //@ts-ignore
+    //       allocatedItems: [values],
+    //     },
+    //   ],
+    // });
+
+    await createAllocations(user, selectedRepId, [values]);
     await fetchStocks(user);
     handleCloseAdd();
   };
 
   useEffect(() => {
     if (allocations) {
-      console.log("alocation found");
-      const data = allocations.allocations?.find(
-        (f) => f.salesPersonId === selectedRepId
-      );
+      const data = allocations.find((items) => {
+        // console.log("iteer", items.salesPerson?._id);
+        return items.salesPerson?._id === selectedRepId;
+      });
       if (data) {
-        console.log("data found");
         setProducts(data.allocatedItems as IGetStockItem[]);
       } else {
         setProducts(undefined);
       }
     }
   }, [selectedRepId, allocations]);
-
-  useEffect(() => {
-    setProducts(undefined);
-  }, [date]);
 
   const units = {
     lt: "Litre",
@@ -119,37 +106,40 @@ const AllocatedList: React.FC<IAllocateList> = ({
   };
 
   const handleDelete = async (productId: string) => {
-    if (allocations) {
-      const data = allocations.allocations?.find(
-        (f) => f.salesPersonId === selectedRepId
-      );
-      if (data?._id && selectedRepId) {
-        removeAllocations(user, data?._id, productId, selectedRepId);
-      }
+    // if (allocations) {
+    //   const data = allocations.allocations?.find(
+    //     (f) => f.salesPersonId === selectedRepId
+    //   );
+    //   if (data?._id && selectedRepId) {
+    //     removeAllocations(user, data?._id, productId, selectedRepId);
+    //   }
+    // }
+    if (selectedRepId) {
+      removeAllocations(user, productId, selectedRepId);
     }
   };
 
   const handleEditSubmit = async (updatedValue: { quantity: number }) => {
-    console.log(updatedValue);
-    if (!dataToEdit || !dataToEdit.productId || !date) {
-      return;
-    }
-    updateAllocation(user, {
-      allotedDate: date,
-      allocations: [
-        {
-          salesPersonId: selectedRepId,
-          allocatedItems: [
-            {
-              //@ts-ignore
-              productId: dataToEdit?.productId,
-              quantity: updatedValue.quantity,
-            },
-          ],
-        },
-      ],
-    });
-    handleCloseEdit();
+    // console.log(updatedValue);
+    // if (!dataToEdit || !dataToEdit.productId) {
+    //   return;
+    // }
+    // updateAllocation(user, {
+    //   // allotedDate: date,
+    //   allocations: [
+    //     {
+    //       salesPersonId: selectedRepId,
+    //       allocatedItems: [
+    //         {
+    //           //@ts-ignore
+    //           productId: dataToEdit?.productId,
+    //           quantity: updatedValue.quantity,
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // });
+    // handleCloseEdit();
   };
 
   const handleEditbtn = (dataToEdit: IEditData) => {
@@ -157,19 +147,18 @@ const AllocatedList: React.FC<IAllocateList> = ({
     handleOpenEdit();
   };
 
+  useEffect(() => {
+    fetchStocks(user);
+  }, []);
+
+  useEffect(() => {
+    console.log("selected rep id", selectedRepId);
+  }, [selectedRepId]);
+
   return (
     <div className="allocated-list-wrapper">
       <div className="allocated-list-head">
         <h4>Allocated list</h4>
-        <div>
-          <DatePicker
-            selected={date}
-            onChange={(date) => handleDateChange(date)}
-            dateFormat="dd-MM-yyyy"
-            // className="month-picker"
-            placeholderText="Select Month"
-          />
-        </div>
       </div>
       <div className="data-content">
         {!selectedRepId ? (
@@ -180,25 +169,25 @@ const AllocatedList: React.FC<IAllocateList> = ({
               <div className={"box"} key={index}>
                 <div className="flex-box">
                   <div className="img">
-                    <img src={f.productId.photoUrl} alt="" />
+                    <img src={f.product.photoUrl} alt="" />
                   </div>
                   <div className="para">
-                    <h5>{f.productId.name}</h5>
+                    <h5>{f.product.name}</h5>
                   </div>
                 </div>
                 <div className="add-delete-content">
                   <div className="litre">
                     <p>
-                      {f.quantity} <span>{getUnit(f.productId.unit)}</span>
+                      {f.quantity} <span>{getUnit(f.product.unit)}</span>
                     </p>
                   </div>
                   <div
                     className="edit-icon"
                     onClick={() =>
                       handleEditbtn({
-                        productId: f.productId._id,
+                        productId: f.product._id,
                         quantity: f.quantity,
-                        unit: getUnit(f.productId.unit),
+                        unit: getUnit(f.product.unit),
                       })
                     }
                   >
@@ -206,7 +195,7 @@ const AllocatedList: React.FC<IAllocateList> = ({
                   </div>
                   <div
                     className="delete-icon"
-                    onClick={() => handleDelete(f.productId._id)}
+                    onClick={() => handleDelete(f.product._id)}
                   >
                     <img src={DeleteIcon} alt="" />
                   </div>

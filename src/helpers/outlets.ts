@@ -6,7 +6,7 @@ import Papa from "papaparse";
 
 export const getOutlets = async (user: User | null) => {
   try {
-    const url = `${backend_url}admin/outlets`;
+    const url = `${backend_url}/admin/outlets`;
     const idToken = await user?.getIdToken();
     const headers = {
       Authorization: `Bearer ${idToken}`,
@@ -27,7 +27,7 @@ export const createOutlet = async (
   outlet: Partial<IOutlet>
 ) => {
   try {
-    const url = `${backend_url}admin/outlets`;
+    const url = `${backend_url}/admin/outlets`;
     const idToken = await user?.getIdToken();
     const headers = {
       Authorization: `Bearer ${idToken}`,
@@ -47,7 +47,7 @@ export const createOutlet = async (
 
 export const deleteOutlet = async (user: User | null, outletId: string) => {
   try {
-    const url = `${backend_url}admin/outlets/${outletId}`;
+    const url = `${backend_url}/admin/outlets/${outletId}`;
     const idTkoken = await user?.getIdToken();
     const headers = {
       Authorization: `Bearer ${idTkoken}`,
@@ -69,7 +69,7 @@ export const updateOutletBck = async (
   updatedOutlet: Partial<IOutlet>
 ) => {
   try {
-    const url = `${backend_url}admin/outlets/${outletId}`;
+    const url = `${backend_url}/admin/outlets/${outletId}`;
     const idToken = await user?.getIdToken();
     const headers = {
       Authorization: `Bearer ${idToken}`,

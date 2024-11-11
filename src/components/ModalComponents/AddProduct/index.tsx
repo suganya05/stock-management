@@ -43,7 +43,7 @@ const AddProduct: React.FC<IAddProduct> = ({ onSubmit }) => {
   const { stocks } = useStockStore();
 
   const handleSubmit = (values: IStockItem) => {
-    console.log(values);
+    // console.log(values);
     onSubmit(values);
   };
 
@@ -78,8 +78,8 @@ const AddProduct: React.FC<IAddProduct> = ({ onSubmit }) => {
       // const stock = await getStockForDay(user, new Date());
 
       if (stocks) {
-        const selectedStock = stocks.stocks?.find(
-          (f) => f.productId._id === formik.values.productId
+        const selectedStock = stocks.find(
+          (f) => f.product._id === formik.values.productId
         );
         if (!selectedStock) {
           setAvail("Out of stock");

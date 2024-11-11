@@ -36,8 +36,12 @@ const CSVColumns = ["Product Name", "Wholesale Price", "Retail Price", "Unit"];
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   unit: Yup.string().required("Unit Of Mesurment is required"),
-  actualPrice: Yup.number().required("? Price per unit").min(1),
-  retailPrice: Yup.number().required("Retail Price is required").min(1),
+  actualPrice: Yup.number()
+    .required("? Price per unit")
+    .min(1, "Minimum Price should be 1"),
+  retailPrice: Yup.number()
+    .required("Retail Price is required")
+    .min(1, "Minimum Price should be 1"),
   photoUrl: Yup.string().optional(),
 });
 
@@ -89,7 +93,7 @@ const NewProducts: React.FC = () => {
   const handleCreateProduct = async (values: Partial<IProduct>) => {
     try {
       addProduct(user, values);
-      formik.setValues(initialValues);
+      formik.resetForm();
     } catch (error) {
       // handle error
     }
@@ -324,10 +328,7 @@ const NewProducts: React.FC = () => {
                   varient="primary"
                   type="submit"
                   rightIcon={<img src={ArrowRight} alt="plus" />}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    formik.handleSubmit();
-                  }}
+                  onClick={() => formik.handleSubmit()}
                 >
                   Add Product
                 </Button>

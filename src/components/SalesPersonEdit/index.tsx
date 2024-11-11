@@ -163,7 +163,7 @@ const SalesPersonEditor: React.FC<IUpdateSalesRepresentative> = ({
             leftIcon={<img src={BlackPlusIcon} alt="plus" />}
             onClick={() => formik.handleSubmit()}
           >
-            Add
+            Update
           </Button>
         </div>
       </div>

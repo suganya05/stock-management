@@ -61,26 +61,65 @@ export interface IStock {
 }
 
 export interface IGetStockItem {
-  productId: IProduct;
+  product: IProduct;
   quantity: number;
+  updatedAt: Date;
+  createdAt: Date;
 }
 
-export interface IGetStock {
-  _id: string;
-  allotedDate: Date;
-  stocks: IGetStockItem[];
-}
+// export interface IGetStock {
+//   _id: string;
+//   allotedDate: Date;
+//   stocks: IGetStockItem[];
+// }
 
-export interface IRepAllocation {
+export interface IAllocate {
   _id: string;
-  salesPersonId: string;
+  salesPerson: ISalesPerson;
   allotedDate: Date;
   allocatedItems: IGetStockItem[];
   soldItem: IGetStockItem[];
+  availableItems: IGetStockItem[];
 }
 
-export interface IAllocate {
-  _id?: string;
-  allotedDate: Date;
-  allocations: Partial<IRepAllocation>[];
+export interface IStatus {
+  type: "sucess" | "server" | "client" | "unknown";
+  data: any;
+}
+
+export interface IDenomination {
+  salesPerson: ISalesPerson;
+  totalAmount: number;
+  noOfFiveHundred: number;
+  noOfTwoHundred: number;
+  noOfHundred: number;
+  noOfFifty: number;
+  noOfTwenty: number;
+  noOfTen: number;
+}
+
+export interface IHandOver {
+  salesPerson: ISalesPerson;
+  products: INewStockItem[];
+  proofUrl: string;
+}
+
+export interface IGetMangeRep {
+  denomination: IDenomination;
+  handOver: IHandOver;
+  salesPerson: ISalesPerson;
+  isAbsent: boolean;
+}
+
+export interface INewStockItem {
+  product: IProduct;
+  quantity: number;
+}
+
+export interface IDamagedProduct {
+  date: Date;
+  outlet: IOutlet;
+  prodcut: INewStockItem[];
+  soldBy: ISalesPerson;
+  proofUrl: string;
 }

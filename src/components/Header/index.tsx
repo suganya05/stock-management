@@ -22,7 +22,7 @@ const Header: React.FC<IHeader> = ({ monthValue }) => {
 
   const getUserData = async () => {
     try {
-      const url = `${backend_url}admin/super-users`;
+      const url = `${backend_url}/admin/super-users`;
       const idToken = await user?.getIdToken();
       const headers = {
         Authorization: `Bearer ${idToken}`,

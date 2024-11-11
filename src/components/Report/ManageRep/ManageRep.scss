@@ -78,6 +78,9 @@
             font-weight: 600;
           }
         }
+        .view-box.absent {
+          background: #96908f;
+        }
         .check-box {
           background: #ffefb1;
           border-radius: 10px;
@@ -89,10 +92,16 @@
             font-weight: 600;
           }
         }
+        .check-box.absent {
+          background: #96908f;
+        }
         .attendance {
           color: #02c202;
           font-weight: 600;
           font-size: 14px;
+        }
+        .attendance.absent {
+          color: #f55142;
         }
         td {
           border-bottom: 1px solid #e7e7e7;
@@ -156,7 +165,8 @@
         margin-bottom: 20px;
         .milk-img {
           img {
-            width: 365px;
+            width: 250px;
+            height: 250px;
           }
         }
         .images {

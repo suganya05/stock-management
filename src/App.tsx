@@ -27,7 +27,6 @@ const App: React.FC = () => {
   const { fetchProduct } = useProductStore();
   const { fetchOutlets } = useOutletStore();
   const { fetchSalesReps } = useSalesRepStore();
-  const { setDate } = useStockStore();
   const { fetchAllocations } = useAllocationsStore();
 
   useEffect(() => {
@@ -35,8 +34,7 @@ const App: React.FC = () => {
       fetchProduct(user);
       fetchOutlets(user);
       fetchSalesReps(user);
-      setDate(user, new Date());
-      fetchAllocations(user, new Date());
+      fetchAllocations(user);
     }
   }, [loading]);
   return (

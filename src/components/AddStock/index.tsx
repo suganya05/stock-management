@@ -35,17 +35,9 @@ const AddProducts: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<
     string | ArrayBuffer | undefined
   >(undefined);
-  // const [date, setDate] = useState(new Date());
   const user = useAuthStore((state) => state.user);
-  const {
-    addStock,
-    removeStock,
-    updateStock,
-    date,
-    setDate,
-    uploadCSV,
-    existingStock,
-  } = useStockStore();
+  const { addStock, removeStock, updateStock, uploadCSV, fetchStocks } =
+    useStockStore();
   const { products } = useProductStore();
   const [unit, setUnit] = useState<string>();
   const [showSampleCsv, setShowSampleCsv] = useState(false);
@@ -122,9 +114,9 @@ const AddProducts: React.FC = () => {
     }
   };
 
-  const handleExistingStock = async () => {
-    existingStock(user);
-  };
+  useEffect(() => {
+    fetchStocks(user);
+  }, []);
   return (
     <div className="add-product-wrapper">
       <div className="add-product-content">
@@ -146,7 +138,7 @@ const AddProducts: React.FC = () => {
                 <PreviewChanges />
               </LayoutModule>
             )} */}
-            {date && date.toDateString() === new Date().toDateString() && (
+            {/* {date && date.toDateString() === new Date().toDateString() && (
               <Button
                 varient="secondary"
                 leftIcon={<img src={PlusIcon} alt="plus" />}
@@ -154,7 +146,7 @@ const AddProducts: React.FC = () => {
               >
                 Use Existing Stock
               </Button>
-            )}
+            )} */}
           </div>
         </div>
         <div className="form">
@@ -244,8 +236,8 @@ const AddProducts: React.FC = () => {
         </div>
       </div>
       <StockList
-        date={date}
-        onChange={(date) => setDate(user, date)}
+        // date={date}
+        // onChange={(date) => setDate(user, date)}
         onDelete={handleDelete}
         // onEdit={(id, updatedStock) => handleEdit(id, updatedStock)}
         onEdit={(data) => handleEdit(data)}

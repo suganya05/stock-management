@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import jsPDF from "jspdf";
 import Layout from "../Layout";
@@ -13,8 +13,10 @@ import ShareImg from "../../assets/icons/share-2.svg";
 import { Modal } from "../Modal";
 import "./CompanyDetails.scss";
 import useOutletStore from "../../context/outletStore";
-import { IOutlet } from "../../types/types";
+import { IDamagedProduct, IOutlet } from "../../types/types";
 import { isValidObjectId } from "../../helpers/objectIdTester";
+import useAuthStore from "../../context/userStore";
+import { getDamagedProduct } from "./CompanyDetailsUtils";
 
 const data = [
   {
@@ -42,7 +44,19 @@ const CompanyDetails: React.FC = () => {
   const [isModalOpen, setModalState] = useState(false);
   const { outlets } = useOutletStore();
   const [selectedOutlet, setSelectedOutlet] = useState<Partial<IOutlet>>();
+  const { user } = useAuthStore();
+  const limit = 10;
   const navigate = useNavigate();
+
+  const damagedContainer = useRef<HTMLDivElement>(null);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [damaged, setDamaged] = useState<IDamagedProduct[]>([]);
+
+  const unPaidContainer = useRef<HTMLDivElement>(null);
+  const [unpaidPage, setUnpaidPage] = useState(1);
+  const [unpaidLoading, setUnPaidLoading] = useState(false);
+  const [unpaidList, setUnpaidList] = useState<IDamagedProduct[]>([]);
 
   const toggleModal = () => setModalState(!isModalOpen);
 
@@ -67,7 +81,46 @@ const CompanyDetails: React.FC = () => {
         }
       }
     }
-  }, [companyId]);
+  }, [companyId, outlets]);
+
+  const fetchDamagedProducts = async (page: number) => {
+    try {
+      if (companyId) {
+        const res = await getDamagedProduct(user, companyId, page, limit);
+        setDamaged((prevProducts: any) => [
+          ...prevProducts,
+          ...res.data.damaged,
+        ]);
+        console.log("fetching", res.data);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDamagedProducts(page);
+  }, [page]);
+
+  const handleScroll = () => {
+    if (damagedContainer.current) {
+      const { scrollTop, clientHeight, scrollHeight } =
+        damagedContainer.current;
+      if (scrollTop + clientHeight >= scrollHeight - 10 && !loading) {
+        setPage((prevPage) => prevPage + 1);
+        console.log(scrollTop + clientHeight >= scrollHeight);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const container = damagedContainer.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+      return () => container.removeEventListener("scroll", handleScroll);
+    }
+  }, []);
 
   return (
     <Layout className="company-details">
@@ -155,7 +208,7 @@ const CompanyDetails: React.FC = () => {
                     <p>View All</p>
                   </Link>
                 </div>
-                <div className="table-wrapper">
+                <div className="table-wrapper" ref={damagedContainer}>
                   <table>
                     <thead>
                       <tr>
@@ -171,7 +224,7 @@ const CompanyDetails: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {[...Array(10)].map((_, i) => (
+                      {damaged.map((dam, i) => (
                         <tr key={i.toString()} style={{ cursor: "pointer" }}>
                           <td>
                             <div className="view-text" onClick={toggleModal}>
@@ -179,10 +232,12 @@ const CompanyDetails: React.FC = () => {
                             </div>
                           </td>
                           <td>
-                            <span className="date">Dec 23,2024</span>
+                            <span className="date">
+                              {new Date(dam.date).toDateString()}
+                            </span>
                           </td>
                           <td className="img">
-                            <img src={ImgFour} alt="" />
+                            <img src={dam.proofUrl} alt="" />
                           </td>
                         </tr>
                       ))}
