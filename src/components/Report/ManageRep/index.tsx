@@ -58,29 +58,31 @@ const ManageRep: React.FC = () => {
     <div className="manage-rep-wrapper">
       <div className="manage-rep-head">
         <h4>Manage Rep(s)</h4>
-        <p onClick={() => navigate("/report/manage-rep-details")}>View All</p>
+        {results && results.length > 0 && (
+          <p onClick={() => navigate("/report/manage-rep-details")}>View All</p>
+        )}
       </div>
       <div className="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>
-                <span className="left">Representative</span>
-              </th>
-              <th>
-                <span>Attendance</span>
-              </th>
-              <th>
-                <span>Denominations</span>
-              </th>
-              <th>
-                <span>Handovers</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {results ? (
-              results.map((sr, i) => (
+        {results && results.length > 0 ? (
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  <span className="left">Representative</span>
+                </th>
+                <th>
+                  <span>Attendance</span>
+                </th>
+                <th>
+                  <span>Denominations</span>
+                </th>
+                <th>
+                  <span>Handovers</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {results.map((sr, i) => (
                 <tr key={i.toString()} style={{ cursor: "pointer" }}>
                   <td>
                     <span className="name">{sr.salesPerson.name}</span>
@@ -121,20 +123,22 @@ const ManageRep: React.FC = () => {
                     )}
                   </td>
                 </tr>
-              ))
-            ) : (
-              <div>Please add sales rep</div>
-            )}
-          </tbody>
-        </table>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div className="no-data">No Reps added yet</div>
+        )}
       </div>
       <div className="more-details-btn">
-        <Button
-          varient="primary"
-          onClick={() => navigate("/report/manage-rep-details")}
-        >
-          More details
-        </Button>
+        {results && results.length > 0 && (
+          <Button
+            varient="primary"
+            onClick={() => navigate("/report/manage-rep-details")}
+          >
+            More details
+          </Button>
+        )}
       </div>
       {showDenomination && (
         <LayoutModule

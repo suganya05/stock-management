@@ -119,7 +119,25 @@ export interface INewStockItem {
 export interface IDamagedProduct {
   date: Date;
   outlet: IOutlet;
-  prodcut: INewStockItem[];
+  product: INewStockItem;
   soldBy: ISalesPerson;
   proofUrl: string;
+}
+
+export interface ISales {
+  salesDate: Date;
+  soldTo: IOutlet;
+  soldBy: ISalesPerson;
+  products: INewStockItem[];
+  totalAmount: number;
+  paidAmount: number;
+  paymentStatus?: "paid" | "pending" | "partial";
+  paymentProofUrl: string;
+  paymentMethod: string;
+}
+
+export interface IMetrics {
+  totalRevenue: number;
+  totalExpense: number;
+  totalProfit: number;
 }

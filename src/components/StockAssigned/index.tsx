@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import EditIcon from "../../assets/icons/edit.svg";
 import ImgOne from "../../assets/images/img-1.jpg";
 import "./StockAssigned.scss";
 import useStockStore from "../../context/stockStore";
 import { useNavigate } from "react-router-dom";
+import useAuthStore from "../../context/userStore";
 
 const StockAssigned: React.FC = () => {
-  const { stocks } = useStockStore();
+  const { stocks, fetchStocks } = useStockStore();
+  const { user } = useAuthStore();
   const navigate = useNavigate();
   const units = {
     lt: "Litre",
@@ -25,6 +27,12 @@ const StockAssigned: React.FC = () => {
   const handleEditStockClick = () => {
     navigate("/inventory");
   };
+  useEffect(() => {
+    if (!stocks.length) {
+      fetchStocks(user);
+    }
+  }, []);
+
   return (
     <div className="stock-assigned-wrapper">
       <div className="stock-assigned-head">
@@ -34,12 +42,12 @@ const StockAssigned: React.FC = () => {
         </div>
       </div>
       <div className="stock-assigned-container">
-        {stocks ? (
+        {stocks && stocks.length > 0 ? (
           stocks.map((f, index) => {
             return (
               <div key={index} className="stock-assigned-content">
                 <div className="content">
-                  <img src={f.product.photoUrl} alt="" />
+                  <img src={f.product?.photoUrl} alt="" />
                   <h3>{f.product.name}</h3>
                 </div>
                 <div className="text">

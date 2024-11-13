@@ -1,20 +1,74 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Layout from "../Layout";
 import LeftArrow from "../../assets/icons/arrow-left.png";
 import ImgThree from "../../assets/images/img-3.png";
 import ImgFour from "../../assets/images/img-4.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./DamageProductView.scss";
 import { Modal } from "../Modal";
+import { IDamagedProduct } from "../../types/types";
+import useAuthStore from "../../context/userStore";
+import LayoutModule from "../LayoutModal";
+import DamageProduct from "../ModalComponents/DamageProduct";
+import { getDamageProduct } from "../Dashboard/DamageProduct/DamageUtils";
 
 const DamageProductView: React.FC = () => {
   const navigate = useNavigate();
-  const [isModalOpen, setModalState] = useState(false);
+  const limit = 10;
+  const { user } = useAuthStore();
 
-  const toggleModal = () => setModalState(!isModalOpen);
+  const damagedContainer = useRef<HTMLDivElement>(null);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [damaged, setDamaged] = useState<IDamagedProduct[]>([]);
+  const [damagedProduct, setDamagedProduct] = useState<IDamagedProduct>();
+  const [showProds, setShowProds] = useState(false);
 
   const handleGoBack = () => {
     navigate(-1);
+  };
+
+  const fetchDamagedProducts = async (page: number) => {
+    try {
+      setLoading(true);
+      const res = await getDamageProduct(user, 2024, 8, page, limit);
+      setDamaged((prevProducts: any) => [...prevProducts, ...res.data.damaged]);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDamgedScroll = () => {
+    if (damagedContainer.current) {
+      const { scrollTop, clientHeight, scrollHeight } =
+        damagedContainer.current;
+      if (scrollTop + clientHeight >= scrollHeight - 10 && !loading) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const container = damagedContainer.current;
+    if (container) {
+      container.addEventListener("scroll", handleDamgedScroll);
+      return () => container.removeEventListener("scroll", handleDamgedScroll);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchDamagedProducts(page);
+  }, [page]);
+
+  const handleOpenDamageproduct = async (dam: IDamagedProduct) => {
+    setDamagedProduct(dam);
+    setShowProds(true);
+  };
+
+  const handleCloseDamageproduct = () => {
+    setDamagedProduct(undefined);
+    setShowProds(false);
   };
 
   return (
@@ -24,7 +78,7 @@ const DamageProductView: React.FC = () => {
           <img src={LeftArrow} alt="" />
           <p>DAMAGE PRODUCT</p>
         </div>
-        <div className="table-wrapper">
+        <div className="table-wrapper" ref={damagedContainer}>
           <table>
             <thead>
               <tr>
@@ -43,26 +97,29 @@ const DamageProductView: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {[...Array(10)].map((_, i) => (
+              {damaged.map((d, i) => (
                 <tr key={i.toString()} style={{ cursor: "pointer" }}>
                   <td>
                     <div className="flex-item">
                       <div className="img-box">
-                        <img src={ImgThree} alt="" />
+                        <img src={d.soldBy.photoUrl} alt="" />
                       </div>
-                      <span>Person 1</span>
+                      <span>{d.soldBy.name}</span>
                     </div>
                   </td>
                   <td>
-                    <div className="view-text" onClick={toggleModal}>
+                    <div
+                      className="view-text"
+                      onClick={() => handleOpenDamageproduct(d)}
+                    >
                       <p>VIEW</p>
                     </div>
                   </td>
                   <td className="date">
-                    <span>Dec 23,2024</span>
+                    <span>{new Date(d.date).toDateString()}</span>
                   </td>
                   <td className="img">
-                    <img src={ImgFour} alt="" />
+                    <img src={d.proofUrl} alt="" />
                   </td>
                 </tr>
               ))}
@@ -70,7 +127,11 @@ const DamageProductView: React.FC = () => {
           </table>
         </div>
       </div>
-      <Modal isOpen={isModalOpen} onClose={toggleModal}></Modal>
+      {showProds && (
+        <LayoutModule handleToggle={handleCloseDamageproduct}>
+          <DamageProduct damageproduct={damagedProduct} />
+        </LayoutModule>
+      )}
     </Layout>
   );
 };

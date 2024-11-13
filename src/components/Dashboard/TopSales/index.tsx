@@ -7,29 +7,6 @@ import { Link } from "react-router-dom";
 import useAuthStore from "../../../context/userStore";
 import { getTopSelling } from "./TopSellingUtils";
 
-const data = [
-  {
-    img: ImgOne,
-    title: "Nandini Milk 1 Litre",
-    kg: "300 liter",
-  },
-  {
-    img: ImgTwo,
-    title: "Palkova 1 kg",
-    kg: "200 Kg",
-  },
-  {
-    img: ImgOne,
-    title: "Nandini Milk 1 Litre",
-    kg: "300 liter",
-  },
-  {
-    img: ImgTwo,
-    title: "Palkova 1 kg",
-    kg: "200 Kg",
-  },
-];
-
 const TopSales: React.FC = () => {
   const { user } = useAuthStore();
   const [topSellings, setTopSellings] = useState<any>();
@@ -52,10 +29,12 @@ const TopSales: React.FC = () => {
     <div className="topSales-wrapper">
       <div className="topSales-head">
         <h4>Top Sales</h4>
-        <p>View All</p>
       </div>
       <div className="topSales-container-box">
-        {topSellings ? (
+        {topSellings &&
+        topSellings.topSellingProducts &&
+        Array.isArray(topSellings.topSellingProducts) &&
+        topSellings.topSellingProducts.length > 0 ? (
           topSellings.topSellingProducts.map((f: any, index: number) => {
             return (
               <div key={index} className="topSales-container">
@@ -63,7 +42,7 @@ const TopSales: React.FC = () => {
                   <p>{index + 1}.</p>
                 </div>
                 <div className="img">
-                  <img src={f.product.photoUrl} alt="" />
+                  <img src={f.product?.photoUrl} alt="" />
                 </div>
                 <div className="para">
                   <h3>{f.product.name}</h3>
@@ -73,14 +52,14 @@ const TopSales: React.FC = () => {
             );
           })
         ) : (
-          <div>Start selling products</div>
+          <div className="no-data">Start selling products</div>
         )}
       </div>
-      <div className="add-btn">
+      {/* <div className="add-btn">
         <Link to="/inventory">
           <Button varient="primary">Add Product</Button>
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 };

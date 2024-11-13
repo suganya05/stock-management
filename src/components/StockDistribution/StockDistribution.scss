@@ -4,6 +4,15 @@
   padding: 12px;
   width: 940px;
   height: 320px;
+  .no-data {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+    height: calc(100% - 60px);
+    color: #6d6d6d;
+    font-size: 13px;
+  }
   .stock-distribution-head {
     display: flex;
     align-items: center;

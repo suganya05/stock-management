@@ -6,17 +6,29 @@ import LeftArrow from "../../assets/icons/arrow-left.png";
 import Briefcase from "../../assets/icons/briefcase.png";
 import Rupee from "../../assets/icons/Rupee.png";
 import ImgOne from "../../assets/images/img-3.png";
-import ImgThree from "../../assets/images/img-3.png";
-import ImgFour from "../../assets/images/img-4.png";
 import DownloadIcon from "../../assets/icons/download.svg";
 import ShareImg from "../../assets/icons/share-2.svg";
 import { Modal } from "../Modal";
 import "./CompanyDetails.scss";
 import useOutletStore from "../../context/outletStore";
-import { IDamagedProduct, IOutlet } from "../../types/types";
+import {
+  IDamagedProduct,
+  IMetrics,
+  INewStockItem,
+  IOutlet,
+  ISales,
+} from "../../types/types";
 import { isValidObjectId } from "../../helpers/objectIdTester";
 import useAuthStore from "../../context/userStore";
-import { getDamagedProduct } from "./CompanyDetailsUtils";
+import {
+  getDamagedProduct,
+  getSalesForOutlet,
+  getTransactionHistory,
+  getUnPaid,
+} from "./CompanyDetailsUtils";
+import LayoutModule from "../LayoutModal";
+import ViewStockList from "../ModalComponents/ViewStockList";
+import DamageProduct from "../ModalComponents/DamageProduct";
 
 const data = [
   {
@@ -47,6 +59,12 @@ const CompanyDetails: React.FC = () => {
   const { user } = useAuthStore();
   const limit = 10;
   const navigate = useNavigate();
+  const [showUnpaidModel, setShowUnpaidModel] = useState(false);
+  const [showDamageProrduct, setShowDamageProduct] = useState(false);
+  const [unpaidProducts, setunPaidProducts] = useState<INewStockItem[]>([]);
+  const [damagedProduct, setDamagedProduct] = useState<IDamagedProduct>();
+  const [showTrasac, setShowTrasac] = useState(false);
+  const [transacProds, setTransacProds] = useState<INewStockItem[]>([]);
 
   const damagedContainer = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState(1);
@@ -56,7 +74,14 @@ const CompanyDetails: React.FC = () => {
   const unPaidContainer = useRef<HTMLDivElement>(null);
   const [unpaidPage, setUnpaidPage] = useState(1);
   const [unpaidLoading, setUnPaidLoading] = useState(false);
-  const [unpaidList, setUnpaidList] = useState<IDamagedProduct[]>([]);
+  const [unpaidList, setUnpaidList] = useState<ISales[]>([]);
+
+  const transactionHist = useRef<HTMLDivElement>(null);
+  const [transacPage, setTransacPage] = useState(1);
+  const [trasacLoading, setTransacLoading] = useState(false);
+  const [trasacs, setTransacs] = useState<ISales[]>([]);
+
+  const [sales, setSales] = useState<IMetrics>();
 
   const toggleModal = () => setModalState(!isModalOpen);
 
@@ -86,13 +111,55 @@ const CompanyDetails: React.FC = () => {
   const fetchDamagedProducts = async (page: number) => {
     try {
       if (companyId) {
+        setLoading(true);
         const res = await getDamagedProduct(user, companyId, page, limit);
         setDamaged((prevProducts: any) => [
           ...prevProducts,
           ...res.data.damaged,
         ]);
-        console.log("fetching", res.data);
         setLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchUnpaidProducts = async (page: number) => {
+    try {
+      if (companyId) {
+        setUnPaidLoading(true);
+        const res = await getUnPaid(user, companyId, page, limit);
+        setUnpaidList((prevProducts: any) => [
+          ...prevProducts,
+          ...res.data.pendingStocks,
+        ]);
+        console.log("fetching unpaid", res.data);
+        setUnPaidLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchTransactions = async (page: number) => {
+    try {
+      if (companyId) {
+        setTransacLoading(true);
+        const res = await getTransactionHistory(user, companyId, page, limit);
+        console.log("fetching transactions", res.data);
+        setTransacs((prev) => [...prev, ...res.data.transactions]);
+        setTransacLoading(false);
+      }
+    } catch (error) {
+      console.log("Error occured transac", error);
+    }
+  };
+
+  const fetchSales = async () => {
+    try {
+      if (companyId) {
+        const res = await getSalesForOutlet(user, companyId);
+        setSales(res.data);
       }
     } catch (error) {
       console.log(error);
@@ -103,7 +170,20 @@ const CompanyDetails: React.FC = () => {
     fetchDamagedProducts(page);
   }, [page]);
 
-  const handleScroll = () => {
+  useEffect(() => {
+    fetchUnpaidProducts(unpaidPage);
+  }, [unpaidPage]);
+
+  useEffect(() => {
+    fetchTransactions(transacPage);
+  }, [transacPage]);
+
+  useEffect(() => {
+    fetchSales();
+  }, []);
+
+  // damaged products
+  const handleDamgedScroll = () => {
     if (damagedContainer.current) {
       const { scrollTop, clientHeight, scrollHeight } =
         damagedContainer.current;
@@ -117,11 +197,98 @@ const CompanyDetails: React.FC = () => {
   useEffect(() => {
     const container = damagedContainer.current;
     if (container) {
-      container.addEventListener("scroll", handleScroll);
-      return () => container.removeEventListener("scroll", handleScroll);
+      container.addEventListener("scroll", handleDamgedScroll);
+      return () => container.removeEventListener("scroll", handleDamgedScroll);
     }
   }, []);
 
+  // unpaid products
+  const handleunpaidScroll = () => {
+    if (unPaidContainer.current) {
+      const { scrollTop, clientHeight, scrollHeight } = unPaidContainer.current;
+      if (scrollTop + clientHeight >= scrollHeight - 10 && !unpaidLoading) {
+        setUnpaidPage((prevPage) => prevPage + 1);
+        console.log("unpaid", scrollTop + clientHeight >= scrollHeight);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const container = unPaidContainer.current;
+    if (container) {
+      container.addEventListener("scroll", handleunpaidScroll);
+      return () => container.removeEventListener("scroll", handleunpaidScroll);
+    }
+  }, []);
+
+  //transaction
+  const handleTrasacScroll = () => {
+    if (transactionHist.current) {
+      const { scrollTop, clientHeight, scrollHeight } = transactionHist.current;
+      if (scrollTop + clientHeight >= scrollHeight - 10 && !trasacLoading) {
+        setTransacPage((prevPage) => prevPage + 1);
+        console.log("unpaid", scrollTop + clientHeight >= scrollHeight);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const container = transactionHist.current;
+    if (container) {
+      container.addEventListener("scroll", handleTrasacScroll);
+      return () => container.removeEventListener("scroll", handleTrasacScroll);
+    }
+  }, []);
+
+  const data = [
+    {
+      img: Briefcase,
+      title: "Total Sales",
+      rupee: Rupee,
+      amount: sales?.totalRevenue || 0,
+    },
+    {
+      img: Briefcase,
+      title: "Total Profit",
+      rupee: Rupee,
+      amount: sales?.totalProfit || 0,
+    },
+    {
+      img: Briefcase,
+      title: "Total Expense",
+      rupee: Rupee,
+      amount: sales?.totalExpense || 0,
+    },
+  ];
+
+  const handleUnpaidToggle = () => {
+    setShowUnpaidModel((prev) => !prev);
+  };
+
+  const handleOpenUnpaid = (products: INewStockItem[]) => {
+    setShowUnpaidModel(true);
+    setunPaidProducts(products);
+  };
+
+  const handleOpenDamageproduct = async (dam: IDamagedProduct) => {
+    setDamagedProduct(dam);
+    setShowDamageProduct(true);
+  };
+
+  const handleCloseDamageproduct = () => {
+    setDamagedProduct(undefined);
+    setShowDamageProduct(false);
+  };
+
+  const handleOpenTransac = (prods: INewStockItem[]) => {
+    setShowTrasac(true);
+    setTransacProds(prods);
+  };
+
+  const handleCloseTransac = () => {
+    setShowTrasac(false);
+    setTransacProds([]);
+  };
   return (
     <Layout className="company-details">
       {selectedOutlet ? (
@@ -129,14 +296,11 @@ const CompanyDetails: React.FC = () => {
           <div className="head" onClick={handleGoBack}>
             <img src={LeftArrow} alt="" />
             <div className="img">
-              <img src={ImgOne} alt="" />
+              <img src={selectedOutlet.photoUrl} alt="" />
             </div>
             <div className="title">
               <h3>{selectedOutlet?.outletName}</h3>
-              <p>
-                {/* 20,Main Road Area <br /> Vallioor, tirunelveli */}
-                {selectedOutlet?.address}
-              </p>
+              <p>{selectedOutlet?.address}</p>
             </div>
           </div>
           <div className="container">
@@ -162,7 +326,7 @@ const CompanyDetails: React.FC = () => {
                 </div>
                 <div className="flex-two">
                   <h4>UN-PAID</h4>
-                  <div className="table-wrapper">
+                  <div className="table-wrapper" ref={unPaidContainer}>
                     <table>
                       <thead>
                         <tr>
@@ -178,20 +342,27 @@ const CompanyDetails: React.FC = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {[...Array(10)].map((_, i) => (
+                        {unpaidList.map((p, i) => (
                           <tr key={i.toString()} style={{ cursor: "pointer" }}>
                             <td>
-                              <span className="date">Dec 23, 2024</span>
+                              <span className="date">
+                                {new Date(p.salesDate).toDateString()}
+                              </span>
                             </td>
                             <td>
-                              <div className="view-box" onClick={toggleModal}>
+                              <div
+                                className="view-box"
+                                onClick={() => {
+                                  handleOpenUnpaid(p.products);
+                                }}
+                              >
                                 <span>VIEW</span>
                               </div>
                             </td>
                             <td>
                               <div className="rupee-img">
                                 <img src={Rupee} alt="" />
-                                <span>2000</span>
+                                <span>{p.totalAmount - p.paidAmount}</span>
                               </div>
                             </td>
                           </tr>
@@ -227,7 +398,10 @@ const CompanyDetails: React.FC = () => {
                       {damaged.map((dam, i) => (
                         <tr key={i.toString()} style={{ cursor: "pointer" }}>
                           <td>
-                            <div className="view-text" onClick={toggleModal}>
+                            <div
+                              className="view-text"
+                              onClick={() => handleOpenDamageproduct(dam)}
+                            >
                               <p>VIEW</p>
                             </div>
                           </td>
@@ -261,13 +435,13 @@ const CompanyDetails: React.FC = () => {
                   </Link>
                 </div>
               </div>
-              <div className="table-wrapper">
+              <div className="table-wrapper" ref={transactionHist}>
                 <table>
                   <thead>
                     <tr>
-                      <th>
+                      {/* <th>
                         <span className="product">Product</span>
-                      </th>
+                      </th> */}
                       <th>
                         <span>Order Amount</span>
                       </th>
@@ -277,33 +451,34 @@ const CompanyDetails: React.FC = () => {
                       <th>
                         <span>Status</span>
                       </th>
+                      <th>
+                        <span>View</span>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {[...Array(10)].map((_, i) => (
+                    {trasacs.map((t, i) => (
                       <tr key={i.toString()} style={{ cursor: "pointer" }}>
-                        <td>
-                          <div className="flex-item">
-                            <div className="img-box">
-                              <img src={ImgThree} alt="" />
-                            </div>
-                            <span title="vasanth Bavan">Nanthini Milk</span>
-                          </div>
+                        <td className="date">
+                          <span>{new Date(t.salesDate).toDateString()}</span>
                         </td>
                         <td>
                           <div className="rupee-img">
                             <img src={Rupee} alt="" />
-                            <span>80,000</span>
+                            <span>{t.totalAmount}</span>
                           </div>
-                        </td>
-                        <td className="date">
-                          <span>Dec 23,2024</span>
                         </td>
                         <td>
                           <div className="status">
                             <div className="box"></div>
-                            <h5>Paid</h5>
+                            <h5>{t.paymentStatus}</h5>
                           </div>
+                        </td>
+                        <td
+                          className="click-here-btn"
+                          onClick={() => handleOpenTransac(t.products)}
+                        >
+                          <span>View</span>
                         </td>
                       </tr>
                     ))}
@@ -312,8 +487,24 @@ const CompanyDetails: React.FC = () => {
               </div>
             </div>
           </div>
-
-          <Modal isOpen={isModalOpen} onClose={toggleModal}></Modal>
+          {showUnpaidModel && (
+            <LayoutModule handleToggle={handleUnpaidToggle}>
+              <ViewStockList
+                products={unpaidProducts}
+                title="Unpaid payments"
+              />
+            </LayoutModule>
+          )}
+          {showDamageProrduct && (
+            <LayoutModule handleToggle={handleCloseDamageproduct}>
+              <DamageProduct damageproduct={damagedProduct} />
+            </LayoutModule>
+          )}
+          {showTrasac && (
+            <LayoutModule handleToggle={handleCloseTransac}>
+              <ViewStockList products={transacProds} title="View Products" />
+            </LayoutModule>
+          )}
         </div>
       ) : (
         <div>Outlet not found</div>

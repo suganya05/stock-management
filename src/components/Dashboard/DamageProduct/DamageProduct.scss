@@ -27,6 +27,14 @@
     &::-webkit-scrollbar {
       width: 0;
     }
+    .no-data {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #6a6969;
+      font-size: 13px;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -90,12 +98,14 @@
           justify-content: center;
           img {
             width: 20px;
-            object-fit: cover;
+            object-fit: fill;
           }
         }
         .img {
           img {
             width: 35px;
+            height: 30px;
+            object-fit: cover;
           }
         }
         td {

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import jsPDF from "jspdf";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import LeftArrow from "../../assets/icons/arrow-left.png";
 import DownloadIcon from "../../assets/icons/download.svg";
 import ShareImg from "../../assets/icons/share-2.svg";
@@ -11,10 +11,26 @@ import Edit from "../../assets/icons/edit.svg";
 import "./TransactionHistoryDetails.scss";
 import Layout from "../Layout";
 import { Modal } from "../Modal";
+import { INewStockItem, IOutlet, ISales } from "../../types/types";
+import { getTransactionHistory } from "../CompanyDetails/CompanyDetailsUtils";
+import useAuthStore from "../../context/userStore";
+import { isValidObjectId } from "../../helpers/objectIdTester";
+import useOutletStore from "../../context/outletStore";
 
 const TransactionHistoryDetails: React.FC = () => {
   const navigate = useNavigate();
   const [isModalOpen, setModalState] = useState(false);
+  const { companyId } = useParams<{ companyId: string }>();
+  const { user } = useAuthStore();
+  const limit = 10;
+  const { outlets } = useOutletStore();
+  const [selectedOutlet, setSelectedOutlet] = useState<Partial<IOutlet>>();
+
+  const transactionHist = useRef<HTMLDivElement>(null);
+  const [transacPage, setTransacPage] = useState(1);
+  const [trasacLoading, setTransacLoading] = useState(false);
+  const [trasacs, setTransacs] = useState<ISales[]>([]);
+  const [transacProds, setTransacProds] = useState<INewStockItem[]>([]);
 
   const toggleModal = () => setModalState(!isModalOpen);
 
@@ -28,19 +44,66 @@ const TransactionHistoryDetails: React.FC = () => {
     doc.save("sample.pdf");
   };
 
+  useEffect(() => {
+    if (companyId) {
+      if (isValidObjectId(companyId)) {
+        const selected = outlets.find((f) => {
+          return f._id === companyId;
+        });
+        if (selected) {
+          setSelectedOutlet(selected);
+        }
+      }
+    }
+  }, [companyId, outlets]);
+
+  const fetchTransactions = async (page: number) => {
+    try {
+      if (companyId) {
+        setTransacLoading(true);
+        const res = await getTransactionHistory(user, companyId, page, limit);
+        console.log("fetching transactions", res.data);
+        setTransacs((prev) => [...prev, ...res.data.transactions]);
+        setTransacLoading(false);
+      }
+    } catch (error) {
+      console.log("Error occured transac", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTransactions(transacPage);
+  }, [transacPage]);
+
+  const handleTrasacScroll = () => {
+    if (transactionHist.current) {
+      const { scrollTop, clientHeight, scrollHeight } = transactionHist.current;
+      if (scrollTop + clientHeight >= scrollHeight - 10 && !trasacLoading) {
+        setTransacPage((prevPage) => prevPage + 1);
+        console.log("unpaid", scrollTop + clientHeight >= scrollHeight);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const container = transactionHist.current;
+    if (container) {
+      container.addEventListener("scroll", handleTrasacScroll);
+      return () => container.removeEventListener("scroll", handleTrasacScroll);
+    }
+  }, []);
+
   return (
     <Layout className="transaction-history">
       <div className="transaction-history-details">
         <div className="head" onClick={handleGoBack}>
           <img src={LeftArrow} alt="" />
           <div className="img">
-            <img src={ImgOne} alt="" />
+            <img src={selectedOutlet?.photoUrl} alt="" />
           </div>
           <div className="title">
-            <h3>Vasanth Bavan</h3>
-            <p>
-              20,Main Road Area <br /> Vallioor, tirunelveli
-            </p>
+            <h3>{selectedOutlet?.outletName}</h3>
+            <p>{selectedOutlet?.address}</p>
           </div>
         </div>
         <div className="transaction">
@@ -55,16 +118,13 @@ const TransactionHistoryDetails: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="table-wrapper">
+          <div className="table-wrapper" ref={transactionHist}>
             <table>
               <thead>
                 <tr>
-                  <th>
+                  {/* <th>
                     <span>Product</span>
-                  </th>
-                  <th>
-                    <span>Order Amount</span>
-                  </th>
+                  </th> */}
                   <th>
                     <span>Date</span>
                   </th>
@@ -75,42 +135,45 @@ const TransactionHistoryDetails: React.FC = () => {
                     <span>Executed By</span>
                   </th>
                   <th>
-                    <span>Edit</span>
+                    <span>Order Amount</span>
                   </th>
+                  {/* <th>
+                    <span>Edit</span>
+                  </th> */}
                 </tr>
               </thead>
               <tbody>
-                {[...Array(10)].map((_, i) => (
+                {trasacs.map((t, i) => (
                   <tr key={i.toString()} style={{ cursor: "pointer" }}>
-                    <td>
+                    {/* <td>
                       <div className="flex-item">
                         <div className="img-box">
                           <img src={ImgThree} alt="" />
                         </div>
-                        <span title="vasanth Bavan">Nanthini Milk</span>
+                        <span title="vasanth Bavan">{t.}</span>
                       </div>
-                    </td>
-                    <td>
-                      <div className="rupee-img">
-                        <img src={Rupee} alt="" />
-                        <span>80,000</span>
-                      </div>
-                    </td>
+                    </td> */}
                     <td className="date">
-                      <span>Dec 23,2024</span>
+                      <span>{new Date(t.salesDate).toDateString()}</span>
                     </td>
                     <td>
                       <div className="status">
                         <div className="box"></div>
-                        <h5>Success</h5>
+                        <h5>{t.paymentStatus}</h5>
                       </div>
                     </td>
                     <td className="date">
-                      <span>Person 1</span>
+                      <span>{t.soldBy.name}</span>
                     </td>
-                    <td className="edit-img" onClick={toggleModal}>
+                    <td>
+                      <div className="rupee-img">
+                        <img src={Rupee} alt="" />
+                        <span>{t.totalAmount}</span>
+                      </div>
+                    </td>
+                    {/* <td className="edit-img" onClick={toggleModal}>
                       <img src={Edit} alt="" />
-                    </td>
+                    </td> */}
                   </tr>
                 ))}
               </tbody>

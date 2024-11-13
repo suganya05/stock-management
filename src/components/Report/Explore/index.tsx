@@ -12,26 +12,32 @@ const ExploreOutlets: React.FC = () => {
     <div className="explore-wrapper">
       <div className="explore-head">
         <h4>Explore Outlets</h4>
-        <p onClick={() => navigate("/report/explore-outlets")}>View All</p>
+        {outlets && outlets.length > 0 && (
+          <p onClick={() => navigate("/report/explore-outlets")}>View All</p>
+        )}
       </div>
       <div className="explore-container">
-        {outlets.map((f, index) => {
-          return (
-            <Link to={`/report/explore-outlets/${f._id}`} key={index}>
-              <div className="explore-content">
-                <div className="explore-box">
-                  <div className="img">
-                    <img src={f.photoUrl} alt="" />
+        {outlets && outlets.length > 0 ? (
+          outlets.map((f, index) => {
+            return (
+              <Link to={`/report/explore-outlets/${f._id}`} key={index}>
+                <div className="explore-content">
+                  <div className="explore-box">
+                    <div className="img">
+                      <img src={f.photoUrl} alt="" />
+                    </div>
+                    <h4>{f.outletName}</h4>
                   </div>
-                  <h4>{f.outletName}</h4>
+                  <div className="arrow">
+                    <img src={RightArrow} alt="" />
+                  </div>
                 </div>
-                <div className="arrow">
-                  <img src={RightArrow} alt="" />
-                </div>
-              </div>
-            </Link>
-          );
-        })}
+              </Link>
+            );
+          })
+        ) : (
+          <div className="no-data">No outlets not added yet</div>
+        )}
       </div>
     </div>
   );

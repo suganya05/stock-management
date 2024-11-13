@@ -157,4 +157,3 @@ const StockList: React.FC<StockListProps> = ({ onDelete, onEdit }) => {
 };
 
 export default StockList;
-  

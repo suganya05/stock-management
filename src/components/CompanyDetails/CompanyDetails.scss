@@ -11,12 +11,13 @@
         width: 25px;
       }
       .img {
-        border: 1px solid #6caa7d;
         border-radius: 10px;
         img {
           width: 50px;
           height: 50px;
-          object-fit: contain;
+          object-fit: cover;
+          border-radius: 10px;
+          border: 1px solid #6caa7d;
         }
       }
       .title {
@@ -434,6 +435,17 @@
               }
               .date {
                 span {
+                  font-size: 13px;
+                  font-weight: 700;
+                }
+              }
+              .click-here-btn {
+                span {
+                  background: #d5ffbc;
+                  border-radius: 5px;
+                  width: fit-content;
+                  padding: 6px 16px;
+                  margin-left: 14px;
                   font-size: 13px;
                   font-weight: 700;
                 }

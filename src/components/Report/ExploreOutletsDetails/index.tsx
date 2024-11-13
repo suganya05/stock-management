@@ -21,28 +21,32 @@ const ExploreOutletsDetails: React.FC = () => {
           <img src={LeftArrow} alt="" />
           <h4>Explore Outlets</h4>
         </div>
-        <div className="explore-outlets-details-container">
-          {outlets.map((f, index) => {
-            return (
-              <Link key={index} to={`/report/explore-outlets/${f._id}`}>
-                <div className="explore-outlets-details-content">
-                  <div className="logo">
-                    <img src={f.photoUrl} alt="" />
-                  </div>
-                  <div className="content">
-                    <div className="texts">
-                      <h3>{f.outletName}</h3>
-                      <p>{f.address}</p>
+        {outlets && outlets.length > 0 ? (
+          <div className="explore-outlets-details-container">
+            {outlets.map((f, index) => {
+              return (
+                <Link key={index} to={`/report/explore-outlets/${f._id}`}>
+                  <div className="explore-outlets-details-content">
+                    <div className="logo">
+                      <img src={f.photoUrl} alt="" />
                     </div>
-                    <div className="explore-btn">
-                      <Button varient="primary">Explore</Button>
+                    <div className="content">
+                      <div className="texts">
+                        <h3>{f.outletName}</h3>
+                        <p>{f.address}</p>
+                      </div>
+                      <div className="explore-btn">
+                        <Button varient="primary">Explore</Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+                </Link>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="no-data">No outlets added yet</div>
+        )}
       </div>
     </Layout>
   );

@@ -26,32 +26,32 @@ const Revenue: React.FC = () => {
     {
       img: Briefcase,
       title: "Total Sales",
-      amount: totalRevenue,
+      amount: totalRevenue || 0,
     },
     {
       img: Briefcase,
       title: "Total Profit",
-      amount: totalProfit,
+      amount: totalProfit || 0,
     },
     {
       img: Briefcase,
       title: "Total Expense",
-      amount: totalExpense,
+      amount: totalExpense || 0,
     },
   ];
 
   const data = [
     {
       title: "Total Revenue",
-      amount: totalRevenue,
+      amount: totalRevenue || 0,
     },
     {
       title: "Total Expense",
-      amount: totalExpense,
+      amount: totalExpense || 0,
     },
     {
       title: "Total Profit",
-      amount: totalProfit,
+      amount: totalProfit || 0,
     },
   ];
 
@@ -110,9 +110,9 @@ const Revenue: React.FC = () => {
             );
           })}
 
-          <Button varient="primary" onClick={handleOpenToggle}>
+          {/* <Button varient="primary" onClick={handleOpenToggle}>
             Add <br /> Expense
-          </Button>
+          </Button> */}
         </div>
         {active && (
           <LayoutModule

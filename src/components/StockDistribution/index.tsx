@@ -1,53 +1,22 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import Slider from "react-slick";
 import RightArrow from "../../assets/images/arrow-right.svg";
-import ProfileImg from "../../assets/images/profile-img.jpg";
 import LeftArrow from "../../assets/images/arrow-left.svg";
 import ImgOne from "../../assets/images/img-3.png";
 import "./StockDistribution.scss";
 import useSalesRepStore from "../../context/salesRepStore";
 import useAllocationsStore from "../../context/allocationStore";
-
-const data = [
-  {
-    img: ProfileImg,
-    heading: "Ramesh",
-  },
-  {
-    img: ProfileImg,
-    heading: "Ramesh",
-  },
-  {
-    img: ProfileImg,
-    heading: "Ramesh",
-  },
-  {
-    img: ProfileImg,
-    heading: "Ramesh",
-  },
-  {
-    img: ProfileImg,
-    heading: "Ramesh",
-  },
-  {
-    img: ProfileImg,
-    heading: "Ramesh",
-  },
-  {
-    img: ProfileImg,
-    heading: "Ramesh",
-  },
-  {
-    img: ProfileImg,
-    heading: "Ramesh",
-  },
-];
+import useSalesStore from "../../context/salesStore";
+import useAuthStore from "../../context/userStore";
 
 const StockDistribution: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const sliderRef = useRef<Slider>(null);
+
   const { salesReps } = useSalesRepStore();
   const { allocations } = useAllocationsStore();
+  const { sales, fetchSales } = useSalesStore();
+  const { user } = useAuthStore();
 
   const settings = {
     dots: false,
@@ -58,18 +27,31 @@ const StockDistribution: React.FC = () => {
   };
 
   const handleNextClick = () => {
-    if (sliderRef.current) {
-      sliderRef.current.slickNext();
-      setCurrentIndex(currentIndex + 1);
-    }
+    sliderRef.current?.slickNext();
+    setCurrentIndex(currentIndex + 1);
   };
 
   const handlePrevClick = () => {
-    if (sliderRef.current) {
-      sliderRef.current.slickPrev();
-      setCurrentIndex(currentIndex - 1);
-    }
+    sliderRef.current?.slickPrev();
+    setCurrentIndex(currentIndex - 1);
   };
+
+  useEffect(() => {
+    if (sales.length === 0) fetchSales(user);
+  }, [fetchSales, user, sales.length]);
+
+  const salesBySalesRep = useMemo(
+    () =>
+      salesReps.map((rep) => ({
+        ...rep,
+        sales: sales.filter((sale) => sale.soldBy?._id === rep._id),
+        totalAmount: sales
+          .filter((sale) => sale.soldBy?._id === rep._id)
+          .reduce((sum, sale) => sum + (sale.totalAmount || 0), 0),
+      })),
+    [salesReps, sales]
+  );
+
   return (
     <div className="stock-distribution-wrapper">
       <div className="stock-distribution-head">
@@ -88,14 +70,14 @@ const StockDistribution: React.FC = () => {
         </div>
       </div>
 
-      <Slider ref={sliderRef} {...settings} className="slider-wrapper">
-        {salesReps.map((f, index) => {
-          return (
+      {salesBySalesRep && salesBySalesRep.length > 0 ? (
+        <Slider ref={sliderRef} {...settings} className="slider-wrapper">
+          {salesBySalesRep.map((rep, index) => (
             <div key={index} className="persons-wrapper">
               <div className="person-head">
-                <img src={f.photoUrl} alt="" />
+                <img src={rep?.photoUrl || ""} alt={rep.name} />
                 <div className="heading">
-                  <p>{f.name}</p>
+                  <p>{rep.name}</p>
                   <div className="dot"></div>
                 </div>
               </div>
@@ -106,39 +88,38 @@ const StockDistribution: React.FC = () => {
                   <p>Price</p>
                 </div>
                 <div className="table-content">
-                  {allocations && allocations ? (
-                    allocations
-                      .filter((allocate) => allocate.salesPerson?._id === f._id)
-                      .map((allocate, i) => (
-                        <div key={i.toString()} className="table-body">
-                          <div className="company-img">
-                            <img src={ImgOne} alt="" />
-                            <h4 className="vasanth-bavan" title="vasanth Bavan">
-                              Vasanth Bavan
-                            </h4>
-                          </div>
-                          <div className="product">
-                            <p>{allocate.allocatedItems?.length}</p>
-                          </div>
-                          <div className="price">
-                            <h3>1500</h3>
-                          </div>
-                        </div>
-                      ))
-                  ) : (
-                    <div></div>
-                  )}
+                  {rep.sales.map((sale, i) => (
+                    <div key={i} className="table-body">
+                      <div className="company-img">
+                        <img src={sale.soldTo?.photoUrl} alt="Outlet" />
+                        <h4
+                          className="vasanth-bavan"
+                          title={sale.soldTo.outletName}
+                        >
+                          {sale.soldTo?.outletName}
+                        </h4>
+                      </div>
+                      <div className="product">
+                        <p>{sale.paymentStatus}</p>
+                      </div>
+                      <div className="price">
+                        <h3>{sale.totalAmount}</h3>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
               <div className="total">
                 <p>
-                  Total: <span>1500</span> /10500
+                  Total: <span>{rep.totalAmount}</span>
                 </p>
               </div>
             </div>
-          );
-        })}
-      </Slider>
+          ))}
+        </Slider>
+      ) : (
+        <div className="no-data">Not yet allocated</div>
+      )}
     </div>
   );
 };

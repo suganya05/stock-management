@@ -1,0 +1,55 @@
+.basic-div {
+  margin: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  .model-box {
+    background: #e3e1e1;
+    padding: 6px 12px;
+    border-radius: 10px;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .flex-box {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      .img {
+        img {
+          width: 50px;
+          border-radius: 10px;
+        }
+      }
+      .para {
+        h5 {
+          font-size: 15px;
+          font-weight: 500;
+        }
+      }
+    }
+    .add-delete-content {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      margin-right: 12px;
+      .litre {
+        p {
+          font-size: 16px;
+          font-weight: 600;
+          span {
+            color: #6a6969;
+            font-size: 12px;
+          }
+        }
+      }
+      .edit-icon {
+        cursor: pointer;
+      }
+      .delete-icon {
+        cursor: pointer;
+      }
+    }
+  }
+}

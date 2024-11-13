@@ -235,13 +235,7 @@ const AddProducts: React.FC = () => {
           </div>
         </div>
       </div>
-      <StockList
-        // date={date}
-        // onChange={(date) => setDate(user, date)}
-        onDelete={handleDelete}
-        // onEdit={(id, updatedStock) => handleEdit(id, updatedStock)}
-        onEdit={(data) => handleEdit(data)}
-      />
+      <StockList onDelete={handleDelete} onEdit={(data) => handleEdit(data)} />
       {showSampleCsv && (
         <LayoutModule handleToggle={handleSampleCsvClose}>
           <SampleCsv

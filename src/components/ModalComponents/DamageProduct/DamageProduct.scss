@@ -1,0 +1,30 @@
+.Damage-product {
+  display: flex;
+  .containerr {
+    display: flex;
+    gap: 20px;
+    img {
+      height: 200px;
+      width: 200px;
+    }
+    .right-container {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      div {
+        margin-top: 10px;
+      }
+      .salesperson {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .view {
+          font-size: 12px;
+          padding-left: 10px;
+          color: #ffbb64;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
