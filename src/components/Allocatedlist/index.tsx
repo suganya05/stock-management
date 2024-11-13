@@ -204,7 +204,7 @@ const AllocatedList: React.FC<IAllocateList> = ({ selectedRepId }) => {
             );
           })
         ) : products && products.length === 0 ? (
-          <div>No data found</div>
+          <div className="centered">No data found</div>
         ) : (
           <div className="centered">Not yet allocated</div>
         )}

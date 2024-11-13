@@ -113,21 +113,25 @@ const AddSalesperson: React.FC = () => {
           </div>
         </div>
         <div className="add-sales-person-container">
-          {salesReps.map((f) => (
-            <div
-              key={f._id}
-              className={`add-sales ${
-                selectedRep?._id === f._id ? "selected" : ""
-              }`}
-              onClick={() => handleSelectRep(f)}
-            >
-              <div className="profile-img">
-                <img src={f.photoUrl} alt="" />
-                <p>{f.name}</p>
+          {salesReps && salesReps.length > 0 ? (
+            salesReps.map((f) => (
+              <div
+                key={f._id}
+                className={`add-sales ${
+                  selectedRep?._id === f._id ? "selected" : ""
+                }`}
+                onClick={() => handleSelectRep(f)}
+              >
+                <div className="profile-img">
+                  <img src={f.photoUrl} alt="" />
+                  <p>{f.name}</p>
+                </div>
+                <img src={RightArrow} alt="" />
               </div>
-              <img src={RightArrow} alt="" />
-            </div>
-          ))}
+            ))
+          ) : (
+            <div className="not-selected">No sales rep added yet</div>
+          )}
         </div>
         <div className="add-btn">
           <Button varient="primary" onClick={handleOpenAdd}>

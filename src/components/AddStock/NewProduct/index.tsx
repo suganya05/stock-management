@@ -320,9 +320,7 @@ const NewProducts: React.FC = () => {
             </div>
             <div className="error">{errorStatus}</div>
             <div className="product-content">
-              <div className="cancel-btn">
-                <h5>Cancel</h5>
-              </div>
+              <div className="cancel-btn">{/* <h5>Cancel</h5> */}</div>
               <div className="add-product-btn">
                 <Button
                   varient="primary"

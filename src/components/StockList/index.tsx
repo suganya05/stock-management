@@ -10,6 +10,7 @@ import { IGetStockItem, IProduct, IStock, IStockItem } from "../../types/types";
 import useAuthStore from "../../context/userStore";
 import EditStock from "../ModalComponents/EditStock";
 import LayoutModule from "../LayoutModal";
+import { getUnit } from "../../utils/unit";
 
 interface StockListProps {
   onDelete: (productId: string) => void;
@@ -25,33 +26,6 @@ const StockList: React.FC<StockListProps> = ({ onDelete, onEdit }) => {
   }>();
   const [selectedId, setSelectedId] = useState<string>();
   const { user } = useAuthStore();
-
-  const fetchData = async () => {
-    // const data = await getStockForDay(user, date);
-    // setStock(data);
-  };
-
-  // useEffect(() => {
-  //   fetchData();
-  // }, [date]);
-
-  // const handleDateChange = (newDate: Date | null) => {
-  //   if (newDate) onChange(newDate);
-  // };
-
-  const units = {
-    lt: "Litre",
-    ml: "Milli Litre",
-    kgs: "Kilo",
-    gms: "Gram",
-    nos: "No(s)",
-    dozens: "Dozens",
-  };
-
-  const getUnit = (unit: any) => {
-    //@ts-ignore
-    return units[unit] ? units[unit] : "Unit";
-  };
 
   const handleDelete = (id?: string) => {
     id && onDelete(id);
@@ -90,20 +64,10 @@ const StockList: React.FC<StockListProps> = ({ onDelete, onEdit }) => {
         <div className="stock-head">
           <h4>Stock List</h4>
         </div>
-        {/* <div className="date-picker">
-          <DatePicker
-            selected={date}
-            onChange={(date) => handleDateChange(date)}
-            dateFormat="dd-MM-yyyy"
-            className="month-picker"
-            placeholderText="Select Month"
-          />
-        </div> */}
       </div>
       <div className="data-content">
         {stocks && stocks.length > 0 ? (
           stocks.map((item, i) => {
-            // console.log("this is the item", item);
             return (
               <div className="box" key={i}>
                 <div className="flex-box">
@@ -144,9 +108,11 @@ const StockList: React.FC<StockListProps> = ({ onDelete, onEdit }) => {
           <div className="center">No products found</div>
         )}
       </div>
-      <div className="clear" onClick={deleteAll}>
-        <p>Clear All</p>
-      </div>
+      {stocks && stocks.length > 0 && (
+        <div className="clear" onClick={deleteAll}>
+          <p>Clear All</p>
+        </div>
+      )}
       {showEdit && (
         <LayoutModule handleToggle={handleEditClose}>
           <EditStock editableData={editData} onSubmit={handleEdit} />

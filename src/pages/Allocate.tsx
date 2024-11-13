@@ -75,39 +75,35 @@ const Allocate: React.FC = () => {
       <div className="allocate-container">
         <div className="allocate-wrapper">
           <div className="add-sales-person-container">
-            {salesReps.map((d, i) => (
-              <div
-                key={i.toString()}
-                className={
-                  d._id === selectedRepId ? "add-sales selected" : "add-sales"
-                }
-                onClick={() => handleRepClick(d._id)}
-              >
-                <div className="profile-img">
-                  <img src={d.photoUrl} alt="" />
-                  <p>{d.name}</p>
+            {salesReps && salesReps.length > 0 ? (
+              salesReps.map((d, i) => (
+                <div
+                  key={i.toString()}
+                  className={
+                    d._id === selectedRepId ? "add-sales selected" : "add-sales"
+                  }
+                  onClick={() => handleRepClick(d._id)}
+                >
+                  <div className="profile-img">
+                    <img src={d.photoUrl} alt="" />
+                    <p>{d.name}</p>
+                  </div>
+                  <div className="text">
+                    <p>
+                      {d.isActive ? (
+                        <div className="allocate">Active</div>
+                      ) : (
+                        <div className="deactivate">Deactive</div>
+                      )}
+                    </p>
+                    <img src={RightArrow} alt="" />
+                  </div>
                 </div>
-                <div className="text">
-                  <p>
-                    {d.isActive ? (
-                      <div className="allocate">Active</div>
-                    ) : (
-                      <div className="deactivate">Deactive</div>
-                    )}
-                  </p>
-                  <img src={RightArrow} alt="" />
-                </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <div className="no-data">No Sales Rep yet added</div>
+            )}
           </div>
-          {/* <div className="confirm-stock-list-btn">
-            <Button
-              varient="primary"
-              rightIcon={<img src={RightArrow} alt="plus" />}
-            >
-              Confirm Stock List
-            </Button>
-          </div> */}
         </div>
         <AllocatedList selectedRepId={selectedRepId} />
         {showCsv && (

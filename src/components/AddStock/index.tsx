@@ -218,9 +218,7 @@ const AddProducts: React.FC = () => {
             </div>
 
             <div className="stock-content">
-              <div className="cancel-btn">
-                <h5>Cancel</h5>
-              </div>
+              <div className="cancel-btn"></div>
               <div>
                 <Button
                   varient="primary"

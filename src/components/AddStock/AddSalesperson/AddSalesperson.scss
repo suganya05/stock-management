@@ -1,11 +1,13 @@
 .add-sales-person-wrapper {
   display: grid;
   grid-template-columns: 0.9fr 1fr;
-  .not-selected{
+  .not-selected {
     display: flex;
-    align-items:center;
+    align-items: center;
     justify-content: center;
     height: 100%;
+    color: #6a6969;
+    font-size: 15px;
   }
   .add-sales-person-content {
     padding: 0px 16px;
@@ -198,5 +200,4 @@
       }
     }
   }
-  
 }
