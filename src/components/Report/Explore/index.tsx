@@ -26,7 +26,10 @@ const ExploreOutlets: React.FC = () => {
                     <div className="img">
                       <img src={f.photoUrl} alt="" />
                     </div>
-                    <h4>{f.outletName}</h4>
+                    <h4>
+                      {f.outletName?.charAt(0).toUpperCase() +
+                        (f.outletName?.slice(1) || "")}
+                    </h4>
                   </div>
                   <div className="arrow">
                     <img src={RightArrow} alt="" />

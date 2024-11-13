@@ -32,7 +32,10 @@ const ExploreOutletsDetails: React.FC = () => {
                     </div>
                     <div className="content">
                       <div className="texts">
-                        <h3>{f.outletName}</h3>
+                        <h3>
+                          {f.outletName?.charAt(0).toUpperCase() +
+                            (f.outletName?.slice(1) || "")}
+                        </h3>
                         <p>{f.address}</p>
                       </div>
                       <div className="explore-btn">

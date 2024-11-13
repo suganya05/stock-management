@@ -19,6 +19,7 @@ import SampleCsv from "../../ModalComponents/SampleCSV";
 import OutletEditor from "../../OutletEditor";
 import useProductStore from "../../../context/productStore";
 import useOutletStore from "../../../context/outletStore";
+import { newOutlet } from "../../../constants/CSVSamples";
 
 const CSVColumns = [
   "Outlet Name",
@@ -159,6 +160,8 @@ const AddOutletList: React.FC = () => {
                     }
                   }}
                   columns={CSVColumns}
+                  onSampleDownload={newOutlet}
+                  sampleFileName="New Oulet Sample"
                 />
                 <input
                   type="file"

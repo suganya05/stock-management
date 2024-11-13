@@ -42,12 +42,15 @@ const AddProducts: React.FC = () => {
   const [unit, setUnit] = useState<string>();
   const [showSampleCsv, setShowSampleCsv] = useState(false);
   const showFileRef = useRef<HTMLInputElement | null>(null);
+  const [sampleData, setSampleData] = useState<any[]>([]);
 
   const handleSampleCsvOpen = () => {
+    fetchSampleData();
     setShowSampleCsv(true);
   };
   const handleSampleCsvClose = () => {
     setShowSampleCsv(false);
+    setSampleData([]);
   };
 
   const handleSubmit = (values: IStockItem) => {
@@ -92,10 +95,6 @@ const AddProducts: React.FC = () => {
     }
   }, [formik.values.productId]);
 
-  const fetchData = async () => {
-    console.log("fetching");
-  };
-
   const handleDelete = async (id: string) => {
     removeStock(user, id);
   };
@@ -117,6 +116,19 @@ const AddProducts: React.FC = () => {
   useEffect(() => {
     fetchStocks(user);
   }, []);
+
+  const fetchSampleData = async () => {
+    console.log(products);
+    const samplePrd = [];
+    for (const product of products) {
+      samplePrd.push({
+        "Product ID": product._id,
+        "Product Name": product.name,
+        Quantity: 0,
+      });
+    }
+    setSampleData(samplePrd);
+  };
   return (
     <div className="add-product-wrapper">
       <div className="add-product-content">
@@ -130,23 +142,6 @@ const AddProducts: React.FC = () => {
             >
               Upload csv
             </Button>
-            {/* {active && (
-              <LayoutModule
-                handleToggle={handleCloseToggle}
-                className="layout-module"
-              >
-                <PreviewChanges />
-              </LayoutModule>
-            )} */}
-            {/* {date && date.toDateString() === new Date().toDateString() && (
-              <Button
-                varient="secondary"
-                leftIcon={<img src={PlusIcon} alt="plus" />}
-                onClick={handleExistingStock}
-              >
-                Use Existing Stock
-              </Button>
-            )} */}
           </div>
         </div>
         <div className="form">
@@ -194,13 +189,6 @@ const AddProducts: React.FC = () => {
                 </div>
               </div>
               <div className="upload-image-box">
-                {/* <input
-                  type="file"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  id="upload-input"
-                  onChange={handleImageChange}
-                /> */}
                 <label htmlFor="upload-input" className="upload-label">
                   {selectedImage ? (
                     <img
@@ -243,6 +231,8 @@ const AddProducts: React.FC = () => {
                 showFileRef.current.click();
               }
             }}
+            onSampleDownload={sampleData}
+            sampleFileName="Stock"
           />
           <input
             type="file"

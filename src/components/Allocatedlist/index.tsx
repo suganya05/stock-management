@@ -14,6 +14,7 @@ import useAuthStore from "../../context/userStore";
 import EditStock from "../ModalComponents/EditStock";
 import useStockStore from "../../context/stockStore";
 import "react-datepicker/dist/react-datepicker.css";
+import { getUnit } from "../../utils/unit";
 
 interface IAllocateList {
   selectedRepId: string | undefined;
@@ -57,21 +58,6 @@ const AllocatedList: React.FC<IAllocateList> = ({ selectedRepId }) => {
     if (!selectedRepId) {
       return;
     }
-    // if (!date) {
-    //   console.log("date not set");
-    //   return;
-    // }
-    // await createAllocations(user, {
-    //   // allotedDate: date,
-    //   allocations: [
-    //     {
-    //       salesPersonId: selectedRepId,
-    //       //@ts-ignore
-    //       allocatedItems: [values],
-    //     },
-    //   ],
-    // });
-
     await createAllocations(user, selectedRepId, [values]);
     await fetchStocks(user);
     handleCloseAdd();
@@ -80,7 +66,6 @@ const AllocatedList: React.FC<IAllocateList> = ({ selectedRepId }) => {
   useEffect(() => {
     if (allocations) {
       const data = allocations.find((items) => {
-        // console.log("iteer", items.salesPerson?._id);
         return items.salesPerson?._id === selectedRepId;
       });
       if (data) {
@@ -90,20 +75,6 @@ const AllocatedList: React.FC<IAllocateList> = ({ selectedRepId }) => {
       }
     }
   }, [selectedRepId, allocations]);
-
-  const units = {
-    lt: "Litre",
-    ml: "Milli Litre",
-    kgs: "Kilo",
-    gms: "Gram",
-    nos: "No(s)",
-    dozens: "Dozens",
-  };
-
-  const getUnit = (unit: any) => {
-    //@ts-ignore
-    return units[unit] ? units[unit] : "Unit";
-  };
 
   const handleDelete = async (productId: string) => {
     // if (allocations) {
@@ -209,11 +180,6 @@ const AllocatedList: React.FC<IAllocateList> = ({ selectedRepId }) => {
           <div className="centered">Not yet allocated</div>
         )}
       </div>
-      {/* {selectedRepId && (
-        <div className="clear">
-          <p>Clear all</p>
-        </div>
-      )} */}
       {selectedRepId && (
         <div className="add-product-btn">
           <Button varient="primary" onClick={handleOpenAdd}>

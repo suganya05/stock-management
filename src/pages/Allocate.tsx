@@ -12,28 +12,31 @@ import useAllocationsStore from "../context/allocationStore";
 import useStockStore from "../context/stockStore";
 import SampleCsv from "../components/ModalComponents/SampleCSV";
 import LayoutModule from "../components/LayoutModal";
+import useProductStore from "../context/productStore";
 
 const columns = ["Sales Person Id", "Product Id", "Quantity"];
 
 const Allocate: React.FC = () => {
   const user = useAuthStore((state) => state.user);
   const [selectedRepId, setSeletedRepId] = useState<string>();
-  // const [date, setDate] = useState<Date>(new Date());
   const { fetchStocks } = useStockStore();
   const { salesReps } = useSalesRepStore();
   const { uploadCSV, fetchAllocations, allocations } = useAllocationsStore();
   const [showCsv, setShowCsv] = useState(false);
   const showFileRef = useRef<HTMLInputElement | null>(null);
-  const { makeExistingStock } = useAllocationsStore();
+  const [sampleData, setSampleData] = useState<any[]>([]);
+  const { products } = useProductStore();
 
   const handleRepClick = (id: string | undefined) => {
     setSeletedRepId(id);
   };
 
   const handleShowCsv = () => {
+    handleFetchSampleData();
     setShowCsv(true);
   };
   const handleCloseCsv = () => {
+    setSampleData([]);
     setShowCsv(false);
   };
 
@@ -49,8 +52,21 @@ const Allocate: React.FC = () => {
     }
   };
 
-  const handleUseExisitng = () => {
-    makeExistingStock(user);
+  const handleFetchSampleData = () => {
+    for (const salesPerson of salesReps) {
+      for (const product of products) {
+        setSampleData((prev) => [
+          ...prev,
+          {
+            "Sales Person Id": salesPerson._id,
+            "Sales Person Name": salesPerson.name,
+            "Product Id": product._id,
+            "Product Name": product.name,
+            Quantity: 0,
+          },
+        ]);
+      }
+    }
   };
 
   return (
@@ -60,13 +76,6 @@ const Allocate: React.FC = () => {
           <h4>Delivery Person(s)</h4>
         </div>
         <div className="btn">
-          {/* <Button
-            varient="secondary"
-            leftIcon={<img src={PlusIcon} alt="plus" />}
-            onClick={handleUseExisitng}
-          >
-            Use Previous allocation
-          </Button> */}
           <Button varient="primary" onClick={handleShowCsv}>
             Upload CSV file
           </Button>
@@ -115,6 +124,8 @@ const Allocate: React.FC = () => {
                   showFileRef.current.click();
                 }
               }}
+              onSampleDownload={sampleData}
+              sampleFileName="AllocationList"
             />
             <input
               type="file"

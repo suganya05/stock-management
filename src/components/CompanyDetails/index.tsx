@@ -5,10 +5,8 @@ import Layout from "../Layout";
 import LeftArrow from "../../assets/icons/arrow-left.png";
 import Briefcase from "../../assets/icons/briefcase.png";
 import Rupee from "../../assets/icons/Rupee.png";
-import ImgOne from "../../assets/images/img-3.png";
 import DownloadIcon from "../../assets/icons/download.svg";
 import ShareImg from "../../assets/icons/share-2.svg";
-import { Modal } from "../Modal";
 import "./CompanyDetails.scss";
 import useOutletStore from "../../context/outletStore";
 import {
@@ -29,27 +27,6 @@ import {
 import LayoutModule from "../LayoutModal";
 import ViewStockList from "../ModalComponents/ViewStockList";
 import DamageProduct from "../ModalComponents/DamageProduct";
-
-const data = [
-  {
-    img: Briefcase,
-    title: "Total Sales",
-    rupee: Rupee,
-    amount: "13,80,000",
-  },
-  {
-    img: Briefcase,
-    title: "Total Profit",
-    rupee: Rupee,
-    amount: "13,80,000",
-  },
-  {
-    img: Briefcase,
-    title: "Total Expense",
-    rupee: Rupee,
-    amount: "13,80,000",
-  },
-];
 
 const CompanyDetails: React.FC = () => {
   const { companyId } = useParams<{ companyId: string }>();
@@ -82,8 +59,6 @@ const CompanyDetails: React.FC = () => {
   const [trasacs, setTransacs] = useState<ISales[]>([]);
 
   const [sales, setSales] = useState<IMetrics>();
-
-  const toggleModal = () => setModalState(!isModalOpen);
 
   const handleGoBack = () => {
     navigate(-1);
@@ -327,163 +302,181 @@ const CompanyDetails: React.FC = () => {
                 <div className="flex-two">
                   <h4>UN-PAID</h4>
                   <div className="table-wrapper" ref={unPaidContainer}>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>
-                            <span>DATE</span>
-                          </th>
-                          <th>
-                            <span>STOCK</span>
-                          </th>
-                          <th>
-                            <span>AMOUNT</span>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {unpaidList.map((p, i) => (
-                          <tr key={i.toString()} style={{ cursor: "pointer" }}>
-                            <td>
-                              <span className="date">
-                                {new Date(p.salesDate).toDateString()}
-                              </span>
-                            </td>
-                            <td>
-                              <div
-                                className="view-box"
-                                onClick={() => {
-                                  handleOpenUnpaid(p.products);
-                                }}
-                              >
-                                <span>VIEW</span>
-                              </div>
-                            </td>
-                            <td>
-                              <div className="rupee-img">
-                                <img src={Rupee} alt="" />
-                                <span>{p.totalAmount - p.paidAmount}</span>
-                              </div>
-                            </td>
+                    {unpaidList && unpaidList.length > 0 ? (
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>
+                              <span>DATE</span>
+                            </th>
+                            <th>
+                              <span>STOCK</span>
+                            </th>
+                            <th>
+                              <span>AMOUNT</span>
+                            </th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {unpaidList.map((p, i) => (
+                            <tr
+                              key={i.toString()}
+                              style={{ cursor: "pointer" }}
+                            >
+                              <td>
+                                <span className="date">
+                                  {new Date(p.salesDate).toDateString()}
+                                </span>
+                              </td>
+                              <td>
+                                <div
+                                  className="view-box"
+                                  onClick={() => {
+                                    handleOpenUnpaid(p.products);
+                                  }}
+                                >
+                                  <span>VIEW</span>
+                                </div>
+                              </td>
+                              <td>
+                                <div className="rupee-img">
+                                  <img src={Rupee} alt="" />
+                                  <span>{p.totalAmount - p.paidAmount}</span>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    ) : (
+                      <div className="no-data">No uncleared payments found</div>
+                    )}
                   </div>
                 </div>
               </div>
               <div className="flex-three">
                 <div className="flex-items">
                   <h4>DAMAGE PRODUCT</h4>
-                  <Link to="damage-product-view">
-                    <p>View All</p>
-                  </Link>
+                  {damaged && damaged.length > 0 && (
+                    <Link to="damage-product-view">
+                      <p>View All</p>
+                    </Link>
+                  )}
                 </div>
                 <div className="table-wrapper" ref={damagedContainer}>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>
-                          <span className="product">PRODUCT</span>
-                        </th>
-                        <th>
-                          <span>DATE</span>
-                        </th>
-                        <th>
-                          <span>IMAGE</span>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {damaged.map((dam, i) => (
-                        <tr key={i.toString()} style={{ cursor: "pointer" }}>
-                          <td>
-                            <div
-                              className="view-text"
-                              onClick={() => handleOpenDamageproduct(dam)}
-                            >
-                              <p>VIEW</p>
-                            </div>
-                          </td>
-                          <td>
-                            <span className="date">
-                              {new Date(dam.date).toDateString()}
-                            </span>
-                          </td>
-                          <td className="img">
-                            <img src={dam.proofUrl} alt="" />
-                          </td>
+                  {damaged && damaged.length > 0 ? (
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>
+                            <span className="product">PRODUCT</span>
+                          </th>
+                          <th>
+                            <span>DATE</span>
+                          </th>
+                          <th>
+                            <span>IMAGE</span>
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {damaged.map((dam, i) => (
+                          <tr key={i.toString()} style={{ cursor: "pointer" }}>
+                            <td>
+                              <div
+                                className="view-text"
+                                onClick={() => handleOpenDamageproduct(dam)}
+                              >
+                                <p>VIEW</p>
+                              </div>
+                            </td>
+                            <td>
+                              <span className="date">
+                                {new Date(dam.date).toDateString()}
+                              </span>
+                            </td>
+                            <td className="img">
+                              <img src={dam.proofUrl} alt="" />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <div className="no-data">
+                      No damged product submitted yet
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
             <div className="transaction">
               <div className="transaction-head">
                 <h4>TRANSACTION HISTORY</h4>
-                <div className="download">
-                  <div onClick={generatePDF}>
-                    <img src={DownloadIcon} alt="" />
+                {trasacs && trasacs.length > 0 && (
+                  <div className="download">
+                    <div onClick={generatePDF}>
+                      <img src={DownloadIcon} alt="" />
+                    </div>
+                    <div className="share">
+                      <img src={ShareImg} alt="" />
+                    </div>
+                    <Link to="transaction-history-details">
+                      <p>View All</p>
+                    </Link>
                   </div>
-                  <div className="share">
-                    <img src={ShareImg} alt="" />
-                  </div>
-                  <Link to="transaction-history-details">
-                    <p>View All</p>
-                  </Link>
-                </div>
+                )}
               </div>
               <div className="table-wrapper" ref={transactionHist}>
-                <table>
-                  <thead>
-                    <tr>
-                      {/* <th>
-                        <span className="product">Product</span>
-                      </th> */}
-                      <th>
-                        <span>Order Amount</span>
-                      </th>
-                      <th>
-                        <span>Date</span>
-                      </th>
-                      <th>
-                        <span>Status</span>
-                      </th>
-                      <th>
-                        <span>View</span>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {trasacs.map((t, i) => (
-                      <tr key={i.toString()} style={{ cursor: "pointer" }}>
-                        <td className="date">
-                          <span>{new Date(t.salesDate).toDateString()}</span>
-                        </td>
-                        <td>
-                          <div className="rupee-img">
-                            <img src={Rupee} alt="" />
-                            <span>{t.totalAmount}</span>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="status">
-                            <div className="box"></div>
-                            <h5>{t.paymentStatus}</h5>
-                          </div>
-                        </td>
-                        <td
-                          className="click-here-btn"
-                          onClick={() => handleOpenTransac(t.products)}
-                        >
+                {trasacs && trasacs.length > 0 ? (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>
+                          <span>Date</span>
+                        </th>
+                        <th>
+                          <span>Order Amount</span>
+                        </th>
+                        <th>
+                          <span>Status</span>
+                        </th>
+                        <th>
                           <span>View</span>
-                        </td>
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {trasacs.map((t, i) => (
+                        <tr key={i.toString()} style={{ cursor: "pointer" }}>
+                          <td className="date">
+                            <span>{new Date(t.salesDate).toDateString()}</span>
+                          </td>
+                          <td>
+                            <div className="rupee-img">
+                              <img src={Rupee} alt="" />
+                              <span>{t.totalAmount}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="status">
+                              <div className="box"></div>
+                              <h5>{t.paymentStatus}</h5>
+                            </div>
+                          </td>
+                          <td
+                            className="click-here-btn"
+                            onClick={() => handleOpenTransac(t.products)}
+                          >
+                            <span>View</span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <div className="no-data">No transactions made yet</div>
+                )}
               </div>
             </div>
           </div>

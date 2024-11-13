@@ -22,6 +22,7 @@ import { IProduct } from "../../../types/types";
 import EditProductModel from "../../ModalComponents/EditProduct";
 import useProductStore from "../../../context/productStore";
 import { uploadImageToFirebase } from "../../../helpers/firebase";
+import { newProduct } from "../../../constants/CSVSamples";
 
 const initialValues: Partial<IProduct> = {
   name: "",
@@ -166,6 +167,8 @@ const NewProducts: React.FC = () => {
                   }
                 }}
                 columns={CSVColumns}
+                onSampleDownload={newProduct}
+                sampleFileName="New Product Sample"
               />
               <input
                 type="file"
