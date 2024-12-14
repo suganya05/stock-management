@@ -1,18 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Formik,
-  Form,
-  Field,
-  ErrorMessage,
-  useFormik,
-  FastField,
-} from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import ArrowRight from "../../../assets/icons/arrow-right.png";
 import PlusIcon from "../../../assets/icons/plus.png";
 import RupeeImg from "../../../assets/icons/Rupee.png";
 import Button from "../../Button";
-import PreviewChanges from "../../ModalComponents/PreviewChanges";
 import LayoutModule from "../../LayoutModal";
 import "./NewProduct.scss";
 import AllProductList from "../../AllProductList";
@@ -23,6 +15,7 @@ import EditProductModel from "../../ModalComponents/EditProduct";
 import useProductStore from "../../../context/productStore";
 import { uploadImageToFirebase } from "../../../helpers/firebase";
 import { newProduct } from "../../../constants/CSVSamples";
+import { toast } from "react-toastify";
 
 const initialValues: Partial<IProduct> = {
   name: "",
@@ -92,12 +85,17 @@ const NewProducts: React.FC = () => {
   };
 
   const handleCreateProduct = async (values: Partial<IProduct>) => {
-    try {
-      addProduct(user, values);
-      formik.resetForm();
-    } catch (error) {
-      // handle error
-    }
+    toast.promise(
+      async () => {
+        await addProduct(user, values);
+        formik.resetForm();
+      },
+      {
+        pending: "Creating Product",
+        success: "Product created",
+        error: "error occured on creating product",
+      }
+    );
   };
 
   const handleProductDelete = async (id: string | undefined) => {
@@ -329,7 +327,10 @@ const NewProducts: React.FC = () => {
                   varient="primary"
                   type="submit"
                   rightIcon={<img src={ArrowRight} alt="plus" />}
-                  onClick={() => formik.handleSubmit()}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    formik.handleSubmit()}
+                  }
                 >
                   Add Product
                 </Button>

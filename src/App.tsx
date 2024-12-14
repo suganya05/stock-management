@@ -21,6 +21,7 @@ import useAllocationsStore from "./context/allocationStore";
 import ManageRep from "./components/Report/ManageRep";
 import ManageRepDetails from "./components/Report/ManageRepDetails";
 import ForgotPasswordScreen from "./pages/ForgotPassword";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 
 const App: React.FC = () => {
   const { user, loading } = useAuthStore();
@@ -37,51 +38,67 @@ const App: React.FC = () => {
       fetchAllocations(user);
     }
   }, [loading]);
+
   return (
     <>
       {loading ? (
         <div>Loading....</div>
       ) : (
-        <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="/login" element={<LoginScreen />} />
-          <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/allocate" element={<Allocate />} />
+        <>
+          <Routes>
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/login" element={<LoginScreen />} />
+            <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/allocate" element={<Allocate />} />
 
-          <Route path="/report" element={<Report />} />
+            <Route path="/report" element={<Report />} />
 
-          <Route path="/person-page" element={<PersonPage />} />
-          <Route path="/attendance" element={<Attendance />} />
-          <Route path="/confirm-stock-list" element={<ConfirmStockList />} />
-          {/* <Route path="/company-details" element={<CompanyDetails />} /> */}
-          <Route
-            path="/report/explore-outlets"
-            element={<ExploreOutletsDetails />}
-          />
-          <Route
-            path="/report/manage-rep-details"
-            element={<ManageRepDetails />}
-          />
-          <Route
-            path="/report/explore-outlets/:companyId/damage-product-view"
-            element={<DamageProductView />}
-          />
-          <Route
-            path="/dashboard/damage-product-view"
-            element={<DamageProductView />}
-          />
-          <Route
-            path="/report/explore-outlets/:companyId" // add dynacmic url
-            element={<CompanyDetails />}
-          />
+            <Route path="/person-page" element={<PersonPage />} />
+            <Route path="/attendance" element={<Attendance />} />
+            <Route path="/confirm-stock-list" element={<ConfirmStockList />} />
+            {/* <Route path="/company-details" element={<CompanyDetails />} /> */}
+            <Route
+              path="/report/explore-outlets"
+              element={<ExploreOutletsDetails />}
+            />
+            <Route
+              path="/report/manage-rep-details"
+              element={<ManageRepDetails />}
+            />
+            <Route
+              path="/report/explore-outlets/:companyId/damage-product-view"
+              element={<DamageProductView />}
+            />
+            <Route
+              path="/dashboard/damage-product-view"
+              element={<DamageProductView />}
+            />
+            <Route
+              path="/report/explore-outlets/:companyId" // add dynacmic url
+              element={<CompanyDetails />}
+            />
 
-          <Route
-            path="/report/explore-outlets/:companyId/transaction-history-details"
-            element={<TransactionHistoryDetails />}
+            <Route
+              path="/report/explore-outlets/:companyId/transaction-history-details"
+              element={<TransactionHistoryDetails />}
+            />
+          </Routes>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            transition={Bounce}
           />
-        </Routes>
+        </>
       )}
     </>
   );

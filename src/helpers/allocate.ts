@@ -3,10 +3,10 @@ import { IAllocate, IStatus, IStockItem } from "../types/types";
 import { backend_url } from "../constants/backend";
 import axios from "axios";
 import Papa from "papaparse";
-import { handleError } from "../utils/handleError";
 import { ParseFile } from "../utils/handleFile";
+import { toast } from "react-toastify";
 
-export const createAllocation = async (
+export const createAllocations = async (
   user: User | null,
   salesPersonId: string,
   allocatedItems: IStockItem[]
@@ -26,11 +26,16 @@ export const createAllocation = async (
 
       const res = await axios.post(url, data, { headers });
       resolve({ type: "sucess", data: res.data } as IStatus);
-    } catch (error) {
-      handleError(error, reject);
+    } catch (err: any) {
+      toast.error(
+        err?.response?.data?.message || err?.message || "Something went wrong!"
+      );
+      reject(err);
     }
   });
 };
+
+const;
 
 export const getAllocation = async (user: User | null): Promise<IStatus> => {
   return new Promise(async (resolve, reject) => {

@@ -4,19 +4,18 @@ import {
   createStock,
   deleteAll,
   deleteStock,
-  existingStockBck,
   getStocks,
   parseAndUploadCSV,
   updateStockBck,
 } from "../helpers/StockUtils";
-import { IGetStockItem, IStock, IStockItem } from "../types/types";
+import { IGetStockItem, IStatus, IStock, IStockItem } from "../types/types";
 
 interface StockStore {
   stocks: IGetStockItem[];
-  fetchStocks: (user: User | null) => Promise<void>;
-  addStock: (user: User | null, stock: IStockItem) => void;
-  removeStock: (user: User | null, productId: string) => void;
-  updateStock: (user: User | null, updatedStock: IStockItem) => void;
+  fetchStocks: (user: User | null) => Promise<IStatus>;
+  addStock: (user: User | null, stock: IStockItem) => Promise<IStatus>;
+  removeStock: (user: User | null, productId: string) => Promise<IStatus>;
+  updateStock: (user: User | null, updatedStock: IStockItem) => Promise<IStatus>;
   uploadCSV: (user: User | null, file: File) => void;
   clearAllStock: (user: User | null) => void;
 }
@@ -30,16 +29,19 @@ const useStockStore = create<StockStore>((set, get) => ({
         const result = await getStocks(user);
         console.log("stocks", result.data);
         set({ stocks: result.data });
-      } catch (error) {
-        console.log(error);
+        return {type: result.type, data: result.data} as IStatus
+      } catch (error : any) {
+        return {type: error.type, data: error.data} as IStatus
       }
+    }
+    else{
+      return {type: "client", data: "Invalid token"} as IStatus
     }
   },
 
   addStock: async (user, stock) => {
     try {
       const data = await createStock(user, stock);
-      console.log(data.data.stocks);
       set((state) => {
         let updatedStock = [...state.stocks];
         const newStock = updatedStock.map((item) => {
@@ -58,14 +60,16 @@ const useStockStore = create<StockStore>((set, get) => ({
           : [...newStock, data.data.stocks];
         return { ...state, stocks: finalStock };
       });
-    } catch (error) {
-      console.log(error);
+
+      return {type: data.type, data: "Success"} as IStatus 
+    } catch (error : any) {
+      return {type: error.type, data : error.data} as IStatus
     }
   },
 
   removeStock: async (user, productId) => {
     try {
-      await deleteStock(user, productId);
+      const result = await deleteStock(user, productId);
       set((state) => {
         if (state.stocks) {
           const newStock = state.stocks.filter(
@@ -76,15 +80,15 @@ const useStockStore = create<StockStore>((set, get) => ({
           return state;
         }
       });
-    } catch (error) {
-      console.log(error);
+      return {type: result.type, data: result.data} as IStatus
+    } catch (error : any) {
+      return {type: error.type, data: error.data} as IStatus
     }
   },
 
   updateStock: async (user, updatedStockItem) => {
     try {
       const updatedStockResponse = await updateStockBck(user, updatedStockItem);
-      if (updatedStockResponse.type === "sucess") {
         set((state) => {
           const newStock = state.stocks.map((item) => {
             if (item.product._id === updatedStockItem.productId) {
@@ -94,29 +98,29 @@ const useStockStore = create<StockStore>((set, get) => ({
           });
           return { ...state, stocks: newStock };
         });
-      }
-    } catch (error) {
-      console.log(error);
+      return {type: updatedStockResponse.type, data : updatedStockResponse.data} as IStatus
+    } catch (error : any) {
+      return {type: error.type, data : error.data} as IStatus
     }
   },
   uploadCSV: async (user, file) => {
     try {
-      await parseAndUploadCSV(user, file);
+      const result = await parseAndUploadCSV(user, file);
       get().fetchStocks(user);
-    } catch (error) {
-      console.log(error);
+      return {type: result.type,data : result.data} as IStatus
+    } catch (error : any) {
+      return {type: error.type,data : error.data} as IStatus
     }
   },
   clearAllStock: async (user) => {
     try {
       const res = await deleteAll(user);
-      if (res.type === "sucess") {
         set((state) => {
           return { stocks: { ...state.stocks, stocks: [] } };
         });
-      }
-    } catch (error) {
-      console.log(error);
+        return {type: res.type, data: res.data} as IStatus
+    } catch (error : any) {
+      return {type: error.type, data: error.data} as IStatus
     }
   },
 }));

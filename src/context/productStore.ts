@@ -12,7 +12,7 @@ import { IProduct } from "../types/types";
 interface ProductStore {
   products: Partial<IProduct>[];
   fetchProduct: (user: User | null) => Promise<void>;
-  addProduct: (user: User | null, product: Partial<IProduct>) => void;
+  addProduct: (user: User | null, product: Partial<IProduct>) => Promise<void>;
   removeProduct: (user: User | null, productId: string) => void;
   updateProduct: (
     user: User | null,

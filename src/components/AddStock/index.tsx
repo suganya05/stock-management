@@ -10,9 +10,12 @@ import LayoutModule from "../LayoutModal";
 import "./AddStock.scss";
 import useStockStore from "../../context/stockStore";
 import useAuthStore from "../../context/userStore";
-import { IStockItem } from "../../types/types";
+import { IStatus, IStockItem } from "../../types/types";
 import useProductStore from "../../context/productStore";
 import SampleCsv from "../ModalComponents/SampleCSV";
+import { toast } from "react-toastify";
+import { TostPromiseOption } from "../../constants/Toast";
+import { Exception } from "sass";
 
 // interface FormValues {
 //   productId: string;
@@ -54,10 +57,41 @@ const AddProducts: React.FC = () => {
   };
 
   const handleSubmit = (values: IStockItem) => {
-    console.log(values);
-    addStock(user, values);
-    formik.resetForm();
-    setSelectedImage(undefined);
+    toast.promise(
+      async () =>{
+          const result = await addStock(user, values);
+          if(result.type !== "sucess"){
+            throw new Error(JSON.stringify({ type: result.type, data: result.data } as IStatus));
+          }
+          setSelectedImage(undefined);
+          formik.resetForm();
+          return {type : result.type, data : result.data} as IStatus
+
+      },
+    {
+        pending: "Creating stock",
+        success: {
+          render({data}){
+            console.log(data)
+            return `${data.data}`
+          }
+        },
+        error: {
+          render({ data }) {
+            let errorMessage = "An unknown error occurred";
+            try {
+              //@ts-ignore
+              const parsedError = JSON.parse(data.message); // Extract the JSON object
+              errorMessage = parsedError.data || parsedError.type || errorMessage;
+            } catch (parseError) {
+              console.error("Error parsing error message:", parseError);
+            }
+            console.log(data);
+            return `${errorMessage}`;
+          },
+        },
+      }
+    )
   };
 
   const formik = useFormik({
@@ -96,11 +130,17 @@ const AddProducts: React.FC = () => {
   }, [formik.values.productId]);
 
   const handleDelete = async (id: string) => {
-    removeStock(user, id);
+      const res = await removeStock(user, id);
+      if(res.type !== "sucess"){
+        toast(res.data, TostPromiseOption);
+      }
   };
 
-  const handleEdit = (updatedStock: IStockItem) => {
-    updateStock(user, updatedStock);
+  const handleEdit = async (updatedStock: IStockItem) => {
+    const result = await  updateStock(user, updatedStock);  
+    if(result.type !== "sucess"){
+      toast(result.data, TostPromiseOption); 
+    }
   };
 
   const handleCSVUpload = async (
@@ -129,6 +169,7 @@ const AddProducts: React.FC = () => {
     }
     setSampleData(samplePrd);
   };
+
   return (
     <div className="add-product-wrapper">
       <div className="add-product-content">

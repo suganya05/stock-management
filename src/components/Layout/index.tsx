@@ -4,6 +4,8 @@ import Sidebar from "../Sidebar";
 import "./Layout.scss";
 import useAuthStore from "../../context/userStore";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface ILayoutProps {
   children: React.ReactNode;

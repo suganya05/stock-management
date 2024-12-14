@@ -8,6 +8,7 @@ import {
   handleUploadCsv,
   PreviousStock,
 } from "../helpers/allocate";
+import { toast } from "react-toastify";
 
 interface AllocationStore {
   allocations: Partial<IAllocate>[];
@@ -33,10 +34,9 @@ const useAllocationsStore = create<AllocationStore>((set, get) => ({
   fetchAllocations: async (user) => {
     try {
       const res = await getAllocation(user);
-      console.log("allocation", res.data);
       set({ allocations: res.data });
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      toast.error(error.msg);
     }
   },
 
@@ -45,7 +45,7 @@ const useAllocationsStore = create<AllocationStore>((set, get) => ({
       const res = await createAllocation(user, salesPersonId, allocations);
       get().fetchAllocations(user);
     } catch (error) {
-      console.log("Error occured on fetching allocations", error);
+      console.log(error);
     }
   },
 

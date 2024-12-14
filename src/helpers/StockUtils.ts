@@ -7,7 +7,7 @@ import { backend_url } from "../constants/backend";
 import axios from "axios";
 import { IGetStockItem, IStatus, IStockItem } from "../types/types";
 import Papa from "papaparse";
-import { handleError } from "../utils/handleError";
+import { handleError } from "../utils/handleCalls";
 import { ParseFile } from "../utils/handleFile";
 
 export const createStock = async (
@@ -49,7 +49,7 @@ export const getStocks = async (user: User | null): Promise<IStatus> => {
   });
 };
 
-export const deleteStock = async (user: User | null, productId: string) => {
+export const deleteStockold = async (user: User | null, productId: string) => {
   try {
     const url = `${backend_url}/admin/stocks/${productId}`;
     const idToken = await user?.getIdToken();
@@ -61,6 +61,25 @@ export const deleteStock = async (user: User | null, productId: string) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+export const deleteStock = async (
+  user: User | null,
+  productId: string
+): Promise<IStatus> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const url = `${backend_url}/admin/stocks/${productId}`;
+      const idToken = await user?.getIdToken();
+      const headers = {
+        Authorization: `Bearer ${idToken}`,
+      };
+      const res = await axios.delete(url, { headers });
+      resolve({ type: "sucess", data: "Success" } as IStatus);
+    } catch (error) {
+      handleError(error, reject);
+    }
+  });
 };
 
 export const updateStockBck = async (
@@ -111,9 +130,7 @@ export const parseAndUploadCSV = async (
       const data = {
         items: products,
       };
-      console.log("givining to server");
       const res = await axios.post(url, data, { headers });
-      console.log("i am server");
       resolve({ type: "sucess", data: res.data } as IStatus);
     } catch (error) {
       handleError(error, reject);

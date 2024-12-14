@@ -1,5 +1,5 @@
 import { User } from "firebase/auth";
-import { handleError } from "../utils/handleError";
+import { handleError } from "../utils/handleCalls";
 import { backend_url } from "../constants/backend";
 import axios from "axios";
 import { IStatus } from "../types/types";
