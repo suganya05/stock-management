@@ -27,38 +27,34 @@ const useProductStore = create<ProductStore>((set) => ({
 
   fetchProduct: async (user) => {
     if (user) {
-      try {
-        const data = await getProducts(user);
-        set({ products: data });
-      } catch (error) {
-        console.log(error);
+      const res = await getProducts(user);
+      if (res?.type == "sucess") {
+        set({ products: res.data.data });
       }
     }
   },
 
   addProduct: async (user, product) => {
-    try {
-      await createProduct(user, product);
-      const data = await getProducts(user);
-      set({ products: data });
-    } catch (error) {
-      console.log(error);
+    const createRes = await createProduct(user, product);
+    if (createRes.type == "sucess") {
+      const res = await getProducts(user);
+      if (res) {
+        set({ products: res.data.data });
+      }
     }
   },
 
   removeProduct: async (user, productId) => {
-    try {
-      await deleteProduct(user, productId);
+    const delRes = await deleteProduct(user, productId);
+    if (delRes.type == "sucess") {
       set((state) => ({
         products: state.products.filter((product) => product._id !== productId),
       }));
-    } catch (error) {
-      console.log(error);
     }
   },
   updateProduct: async (user, productId, updatedProduct) => {
-    try {
-      await updateProductBck(user, productId, updatedProduct);
+    const updateRes = await updateProductBck(user, productId, updatedProduct);
+    if (updateRes.type == "sucess") {
       set((state) => ({
         products: state.products.map((product) =>
           product._id === productId
@@ -66,19 +62,16 @@ const useProductStore = create<ProductStore>((set) => ({
             : product
         ),
       }));
-    } catch (error) {
-      console.log(error);
     }
   },
   uploadCSV: async (user, file) => {
-    try {
-      await parseAndUploadCSV(user, file);
-      const data = await getProducts(user);
-      set({ products: data });
-      console.log("new data", data);
-    } catch (error) {
-      console.log(error);
-    }
+    // const parsingRes = await parseAndUploadCSV(user, file);
+    // if (parsingRes.type === "sucess") {
+    //   const data = await getProducts(user);
+    //   if (data?.type == "sucess") {
+    //     set({ products: data.data.data });
+    //   }
+    // }
   },
 }));
 

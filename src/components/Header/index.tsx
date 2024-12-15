@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import PlusIcon from "../../assets/icons/plus-icon.png";
 import Profile from "../../assets/icons/profile.png";
 import DateImg from "../../assets/icons/Date.png";
 import "./Header.scss";
 import useAuthStore from "../../context/userStore";
-import { backend_url } from "../../constants/backend";
-import axios from "axios";
+import { auth } from "../../utils/handleCalls";
 
 interface IHeader {
   monthValue?: string;
@@ -21,23 +19,14 @@ const Header: React.FC<IHeader> = ({ monthValue }) => {
   const [month, setMonth] = useState<string>();
 
   const getUserData = async () => {
-    try {
-      const url = `${backend_url}/admin/super-users`;
-      const idToken = await user?.getIdToken();
-      const headers = {
-        Authorization: `Bearer ${idToken}`,
-      };
-      const res = await axios.get(url, { headers });
-      if (res.status === 200) {
-        setName(res.data.name ? res.data.name : "User");
-        setRole(res.data.role ? res.data.role : "Employee");
-      } else {
-        console.log("error occured on getting data");
-        setName("User");
-        setRole("Employee");
-      }
-    } catch (error) {
-      console.log(error);
+    const url = `admin/super-users`;
+    const res = await auth({ user, method: "GET", url });
+    if (res.type === "sucess") {
+      setName(res.data?.data?.name ? res.data?.data?.name : "User");
+      setRole(res.data?.data?.role ? res.data?.data?.role : "Employee");
+    } else {
+      setName("User");
+      setRole("Employee");
     }
   };
 

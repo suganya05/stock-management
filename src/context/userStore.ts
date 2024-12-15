@@ -16,11 +16,10 @@ const useAuthStore = create<AuthState>((set) => ({
   setLoading: (loading: boolean) => set({ loading }),
 }));
 
-// Initialize Firebase Auth state listener
 onAuthStateChanged(auth, (currentUser) => {
   const { setUser, setLoading } = useAuthStore.getState();
   setUser(currentUser);
-  setLoading(false); // Set loading to false once user state is determined
+  setLoading(false);
 });
 
 export default useAuthStore;

@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../Button";
-import useSalesRepStore from "../../../context/salesRepStore";
 import LayoutModule from "../../LayoutModal";
-import MilkImg from "../../../assets/images/milk-img.png";
-import MilkImgOne from "../../../assets/images/milk-img-1.png";
-import ImgOne from "../../../assets/images/img-1.jpg";
 import "./ManageRep.scss";
 import { getManageSalesPerson } from "./ManageRepUtils";
 import useAuthStore from "../../../context/userStore";
 import { IDenomination, IGetMangeRep, IHandOver } from "../../../types/types";
 
 const ManageRep: React.FC = () => {
-  const { salesReps } = useSalesRepStore();
   const [showDenomination, setShowDenomination] = useState(false);
   const [showHandovers, setShowHandovers] = useState(false);
   const { user } = useAuthStore();
@@ -41,12 +36,9 @@ const ManageRep: React.FC = () => {
   };
 
   const fetchRepData = async (year: number, month: number, date: number) => {
-    try {
-      const res = await getManageSalesPerson(user, year, month, date);
-      console.log("mage reps", res);
-      setResults(res.data.manageRepData);
-    } catch (error) {
-      console.log("Error occured on manage rep", error);
+    const res = await getManageSalesPerson(user, year, month, date);
+    if (res.type == "sucess") {
+      setResults(res.data.data);
     }
   };
 

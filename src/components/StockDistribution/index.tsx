@@ -5,7 +5,6 @@ import LeftArrow from "../../assets/images/arrow-left.svg";
 import ImgOne from "../../assets/images/img-3.png";
 import "./StockDistribution.scss";
 import useSalesRepStore from "../../context/salesRepStore";
-import useAllocationsStore from "../../context/allocationStore";
 import useSalesStore from "../../context/salesStore";
 import useAuthStore from "../../context/userStore";
 
@@ -14,7 +13,6 @@ const StockDistribution: React.FC = () => {
   const sliderRef = useRef<Slider>(null);
 
   const { salesReps } = useSalesRepStore();
-  const { allocations } = useAllocationsStore();
   const { sales, fetchSales } = useSalesStore();
   const { user } = useAuthStore();
 
@@ -37,8 +35,8 @@ const StockDistribution: React.FC = () => {
   };
 
   useEffect(() => {
-    if (sales.length === 0) fetchSales(user);
-  }, [fetchSales, user, sales.length]);
+    if (sales?.length === 0) fetchSales(user);
+  }, [fetchSales, user, sales?.length]);
 
   const salesBySalesRep = useMemo(
     () =>
@@ -46,7 +44,7 @@ const StockDistribution: React.FC = () => {
         ...rep,
         sales: sales.filter((sale) => sale.soldBy?._id === rep._id),
         totalAmount: sales
-          .filter((sale) => sale.soldBy?._id === rep._id)
+          ?.filter((sale) => sale.soldBy?._id === rep._id)
           .reduce((sum, sale) => sum + (sale.totalAmount || 0), 0),
       })),
     [salesReps, sales]
@@ -70,7 +68,7 @@ const StockDistribution: React.FC = () => {
         </div>
       </div>
 
-      {salesBySalesRep && salesBySalesRep.length > 0 ? (
+      {salesBySalesRep && salesBySalesRep.length === -1 ? (
         <Slider ref={sliderRef} {...settings} className="slider-wrapper">
           {salesBySalesRep.map((rep, index) => (
             <div key={index} className="persons-wrapper">

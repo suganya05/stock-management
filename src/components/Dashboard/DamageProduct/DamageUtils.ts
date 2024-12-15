@@ -1,7 +1,5 @@
 import { User } from "firebase/auth";
-import { handleError } from "../../../utils/handleCalls";
-import { backend_url } from "../../../constants/backend";
-import axios from "axios";
+import { auth } from "../../../utils/handleCalls";
 import { IStatus } from "../../../types/types";
 
 export const getDamageProduct = async (
@@ -11,17 +9,7 @@ export const getDamageProduct = async (
   page: number,
   limit: number
 ): Promise<IStatus> => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const url = `${backend_url}/admin/products/damage-product/${year}/${month}/?page=${page}?limit=${limit}`;
-      const idToken = await user?.getIdToken();
-      const headers = {
-        Authorization: `Bearer ${idToken}`,
-      };
-      const res = await axios.get(url, { headers });
-      resolve({ data: res.data, type: "sucess" } as IStatus);
-    } catch (error) {
-      handleError(error, reject);
-    }
-  });
+  const url = `admin/products/damage-product/${year}/${month}/?page=${page}?limit=${limit}`;
+  const res = await auth({ user: user, method: "GET", url: url });
+  return res;
 };

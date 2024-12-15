@@ -2,7 +2,7 @@ import { User } from "firebase/auth";
 import { create } from "zustand";
 import { IAllocate, IStockItem } from "../types/types";
 import {
-  createAllocation,
+  createAllocations,
   deleteAllocation,
   getAllocation,
   handleUploadCsv,
@@ -32,20 +32,16 @@ const useAllocationsStore = create<AllocationStore>((set, get) => ({
   allocations: [],
 
   fetchAllocations: async (user) => {
-    try {
-      const res = await getAllocation(user);
-      set({ allocations: res.data });
-    } catch (error: any) {
-      toast.error(error.msg);
+    const res = await getAllocation(user);
+    if (res.type == "sucess") {
+      set({ allocations: res.data?.data });
     }
   },
 
   createAllocations: async (user, salesPersonId, allocations) => {
-    try {
-      const res = await createAllocation(user, salesPersonId, allocations);
-      get().fetchAllocations(user);
-    } catch (error) {
-      console.log(error);
+    const res = await createAllocations(user, salesPersonId, allocations);
+    if (res.type == "sucess") {
+      await get().fetchAllocations(user);
     }
   },
 

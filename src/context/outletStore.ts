@@ -29,8 +29,8 @@ const useOutletStore = create<OutletStore>((set) => ({
   fetchOutlets: async (user) => {
     if (user) {
       try {
-        const data = await getOutlets(user);
-        set({ outlets: data });
+        const response = await getOutlets(user);
+        set({ outlets: response.data.data });
       } catch (error) {
         console.log(error);
       }
@@ -39,12 +39,14 @@ const useOutletStore = create<OutletStore>((set) => ({
 
   createOutlet: async (user, outlet) => {
     try {
-      const newOutlet = await createOutlet(user, outlet);
+      const response = await createOutlet(user, outlet);
       //   const data = await getOutlets(user);
       //   set({ outlets: data });
-      set((state) => ({
-        outlets: [...state.outlets, newOutlet.newOutlet],
-      }));
+      if (response.type == "sucess") {
+        set((state) => ({
+          outlets: [...state.outlets, response.data.data],
+        }));
+      }
     } catch (error) {
       console.log(error);
     }
@@ -52,10 +54,12 @@ const useOutletStore = create<OutletStore>((set) => ({
 
   removeOutlet: async (user, outletId) => {
     try {
-      await deleteOutlet(user, outletId);
-      set((state) => ({
-        outlets: state.outlets.filter((outlet) => outlet._id !== outletId),
-      }));
+      const res = await deleteOutlet(user, outletId);
+      if (res.type == "sucess") {
+        set((state) => ({
+          outlets: state.outlets.filter((outlet) => outlet._id !== outletId),
+        }));
+      }
     } catch (error) {
       console.log(error);
     }
@@ -63,20 +67,17 @@ const useOutletStore = create<OutletStore>((set) => ({
 
   updateOutlet: async (user, outletId, updatedOutlet) => {
     try {
-      const fetchedOutlet = await updateOutletBck(
-        user,
-        outletId,
-        updatedOutlet
-      );
-      set((state) => ({
-        outlets: state.outlets.map((outlet) =>
-          outlet._id === outletId
-            ? { ...outlet, ...fetchedOutlet.outlet }
-            : outlet
-        ),
-      }));
-      // console.log("returned", fetchedOutlet.outlet);
-      return fetchedOutlet.outlet as IOutlet;
+      const response = await updateOutletBck(user, outletId, updatedOutlet);
+      if (response.type == "sucess") {
+        set((state) => ({
+          outlets: state.outlets.map((outlet) =>
+            outlet._id === outletId
+              ? { ...outlet, ...response.data.data }
+              : outlet
+          ),
+        }));
+        return response.data.data as IOutlet;
+      }
     } catch (error) {
       console.log(error);
     }
@@ -84,10 +85,10 @@ const useOutletStore = create<OutletStore>((set) => ({
 
   uploadCSV: async (user, file) => {
     try {
-      const newData = await parseAndUploadOutletCSV(user, file);
-      set((state) => ({
-        outlets: [...state.outlets, ...newData],
-      }));
+      const response = await parseAndUploadOutletCSV(user, file);
+      // set((state) => ({
+      //   outlets: [...state.outlets, ...response],
+      // }));
     } catch (error) {
       console.log(error);
     }

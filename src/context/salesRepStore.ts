@@ -34,54 +34,45 @@ const useSalesRepStore = create<SalesRepStore>((set) => ({
 
   fetchSalesReps: async (user) => {
     if (user) {
-      try {
-        const data = await getSalesReps(user);
-        set({ salesReps: data });
-      } catch (error) {
-        console.log(error);
+      const res = await getSalesReps(user);
+      if (res.type == "sucess") {
+        set({ salesReps: res.data?.data });
       }
     }
   },
 
   createSalesRep: async (user, salesRep) => {
-    try {
-      const newSalesRep = await createSalesRep(user, salesRep);
+    const newRepRes = await createSalesRep(user, salesRep);
+    if (newRepRes.type == "sucess") {
       set((state) => ({
-        salesReps: [...state.salesReps, newSalesRep.newSalesPerson],
+        salesReps: [...state.salesReps, newRepRes.data?.data],
       }));
-      return newSalesRep.password;
-    } catch (error) {
-      console.log(error);
-      throw error;
+      return newRepRes.data.additional_data;
     }
   },
 
   removeSalesRep: async (user, salesRepId) => {
-    try {
-      await deleteSalesRep(user, salesRepId);
+    const removeRes = await deleteSalesRep(user, salesRepId);
+    if (removeRes.type == "sucess") {
       set((state) => ({
         salesReps: state.salesReps.filter((rep) => rep._id !== salesRepId),
       }));
-    } catch (error) {
-      console.log(error);
     }
   },
 
   updateSalesRep: async (user, salesRepId, updatedSalesRep) => {
-    try {
-      const fetchedSalesRep = await updateSalesRepBck(
-        user,
-        salesRepId,
-        updatedSalesRep
-      );
+    const fetchedSalesRep = await updateSalesRepBck(
+      user,
+      salesRepId,
+      updatedSalesRep
+    );
+    if (fetchedSalesRep.type == "sucess") {
       set((state) => ({
         salesReps: state.salesReps.map((rep) =>
-          rep._id === salesRepId ? { ...fetchedSalesRep.salesRep } : rep
+          rep._id === salesRepId ? { ...fetchedSalesRep.data.data } : rep
         ),
       }));
       return fetchedSalesRep;
-    } catch (error) {
-      console.log(error);
     }
   },
 }));

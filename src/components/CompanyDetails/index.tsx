@@ -30,7 +30,6 @@ import DamageProduct from "../ModalComponents/DamageProduct";
 
 const CompanyDetails: React.FC = () => {
   const { companyId } = useParams<{ companyId: string }>();
-  const [isModalOpen, setModalState] = useState(false);
   const { outlets } = useOutletStore();
   const [selectedOutlet, setSelectedOutlet] = useState<Partial<IOutlet>>();
   const { user } = useAuthStore();
@@ -88,10 +87,8 @@ const CompanyDetails: React.FC = () => {
       if (companyId) {
         setLoading(true);
         const res = await getDamagedProduct(user, companyId, page, limit);
-        setDamaged((prevProducts: any) => [
-          ...prevProducts,
-          ...res.data.damaged,
-        ]);
+        console.log("company details", res.data);
+        setDamaged((prevProducts: any) => [...prevProducts, ...res.data.data]);
         setLoading(false);
       }
     } catch (error) {
@@ -106,7 +103,7 @@ const CompanyDetails: React.FC = () => {
         const res = await getUnPaid(user, companyId, page, limit);
         setUnpaidList((prevProducts: any) => [
           ...prevProducts,
-          ...res.data.pendingStocks,
+          ...res.data.data,
         ]);
         console.log("fetching unpaid", res.data);
         setUnPaidLoading(false);
@@ -121,8 +118,7 @@ const CompanyDetails: React.FC = () => {
       if (companyId) {
         setTransacLoading(true);
         const res = await getTransactionHistory(user, companyId, page, limit);
-        console.log("fetching transactions", res.data);
-        setTransacs((prev) => [...prev, ...res.data.transactions]);
+        setTransacs((prev) => [...prev, ...res.data.data]);
         setTransacLoading(false);
       }
     } catch (error) {

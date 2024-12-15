@@ -11,13 +11,8 @@ interface ISalesRecord {
 const useSalesStore = create<ISalesRecord>((set) => ({
   sales: [],
   fetchSales: async (user) => {
-    try {
-      const data = await getSales(user);
-      set({ sales: data.data });
-      console.log("sales", data.data);
-    } catch (error) {
-      console.log(error);
-    }
+    const data = await getSales(user);
+    set({ sales: data.data.data });
   },
 }));
 

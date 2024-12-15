@@ -6,7 +6,6 @@ import RightArrow from "../../../assets/icons/right.svg";
 import useAuthStore from "../../../context/userStore";
 import useOutletStore from "../../../context/outletStore";
 import CProducts from "../../CPproducts";
-import axios from "axios";
 import { getCustomPricingProduct } from "../../../helpers/customPricing";
 
 const CustomPricing: React.FC = () => {
@@ -18,11 +17,10 @@ const CustomPricing: React.FC = () => {
   const handleSelectOutlet = async (id: string | undefined) => {
     if (id) {
       setSelectedOutletId(id);
-      console.log("id", selectedOutletId);
-      const prods = await getCustomPricingProduct(user, id);
-      if (prods) {
-        console.log(prods);
-        setProducts(prods);
+      const response = await getCustomPricingProduct(user, id);
+      if (response) {
+        setProducts(response.data?.data);
+        console.log("custom product", response.data?.data);
       }
     }
   };

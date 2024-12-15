@@ -1,25 +1,37 @@
 import { IStatus } from "../types/types";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { User } from "firebase/auth";
 import { toast } from "react-toastify";
+import { backend_url } from "../constants/backend";
 
-// export const handleError = (error: any, reject: any) => {
-//   if (error.response) {
-//     reject({
-//       type: "server",
-//       data: error.response.data.message ? error.response.data.message : "Unknown server error",
-//     } as IStatus);
-//   } else if (error.request) {
-//     reject({
-//       type: "client",
-//       data: "Network error: No response from the server",
-//     } as IStatus);
-//   } else {
-//     reject({
-//       type: "unknown",
-//       data: error.message,
-//     } as IStatus);
-//   }
-// };
+export const handleError = (error: any, reject: any) => {
+  if (error.response) {
+    reject({
+      type: "server",
+      data: error.response.data.message
+        ? error.response.data.message
+        : "Unknown server error",
+    } as IStatus);
+  } else if (error.request) {
+    reject({
+      type: "client",
+      data: "Network error: No response from the server",
+    } as IStatus);
+  } else {
+    reject({
+      type: "unknown",
+      data: error.message,
+    } as IStatus);
+  }
+};
+
+interface AuthOptions {
+  user: User | null;
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+  url: string;
+  data?: Record<string, any>;
+  options?: AxiosRequestConfig;
+}
 
 interface NoAuthOptions {
   method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -46,7 +58,7 @@ export const noAuth = async <T>({
 
     const res: AxiosResponse<ApiResponse<T>> = await axios({
       method,
-      url: `${process.env.REACT_APP_API_URL}${url}`,
+      url: `${backend_url}/${url}`,
       data,
       headers: {
         "Content-Type": "application/json",
@@ -55,9 +67,9 @@ export const noAuth = async <T>({
       ...options,
     });
 
-    if (!res?.data?.success) {
-      throw new Error(res?.data?.message || "API request failed");
-    }
+    // if (!res?.data?.success) {
+    //   throw new Error(res?.data?.message || "API request failed");
+    // }
 
     return res.data;
   } catch (err: any) {
@@ -68,35 +80,41 @@ export const noAuth = async <T>({
 };
 
 export const auth = async <T>({
+  user,
   method,
   url,
   data = {},
   options = {},
-}: NoAuthOptions) => {
+}: AuthOptions) => {
   try {
     const headers = options?.headers || {};
     delete options.headers;
 
-    const res: AxiosResponse<ApiResponse<T>> = await axios({
+    const idToken = await user?.getIdToken();
+
+    const res = await axios({
       method,
-      url: `${process.env.REACT_APP_API_URL}${url}`,
+      url: `${backend_url}/${url}`,
       data,
       headers: {
+        Authorization: `Bearer ${idToken}`,
         "Content-Type": "application/json",
         ...headers,
       },
       ...options,
-      withCredentials: true,
     });
+    console.log("res data", res.data);
 
-    if (!res?.data?.success) {
+    if (res?.data?.message != "success") {
+      console.log("failer for following req", url);
       throw new Error(res?.data?.message || "API request failed");
     }
 
-    return res.data;
+    return { data: res.data, type: "sucess" } as IStatus;
   } catch (err: any) {
     const errorMessage =
       err?.response?.data?.message || err?.message || "Something went wrong!";
     toast.error(errorMessage);
+    return { type: "unknown", data: errorMessage } as IStatus;
   }
 };

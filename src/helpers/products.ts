@@ -1,65 +1,37 @@
 import { Auth, User } from "firebase/auth";
-import { backend_url } from "../constants/backend";
-import axios from "axios";
 import { AddNewProductForm, IProduct } from "../types/types";
 import Papa from "papaparse";
+import { auth } from "../utils/handleCalls";
 
 export const getProducts = async (user: User | null) => {
   if (!user) {
     return;
   }
-  const url = `${backend_url}/admin/products/all`;
-  const idToken = await user.getIdToken();
-  const headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${idToken}`,
-  };
-  const response = await axios.get(url, { headers });
-  return response.data;
+  const url = `admin/products/all`;
+  const res = await auth({ method: "GET", url, user });
+  return res;
 };
 
 export const createProduct = async (
   user: User | null,
   values: Partial<IProduct>
 ) => {
-  try {
-    const url = `${backend_url}/admin/products`;
-    const idToken = await user?.getIdToken();
-    const headers = {
-      Authorization: `Bearer ${idToken}`,
-    };
-    // const ProductData = {
-    //   name: values.name,
-    //   unit: values.unitOfMesurment,
-    //   actualPrice: parseInt(values.wholesalePrice),
-    //   retailPrice: parseInt(values.retailPrice),
-    //   imgUrl: values.imgUrl,
-    // };
-    const res = await axios.post(url, values, { headers });
-    if (res.status !== 201) {
-      throw Error("Unexpected status code");
-    }
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+  const url = `admin/products`;
+  const ProductData = {
+    name: values.name,
+    unit: values.unit,
+    actualPrice: parseInt(values.actualPrice?.toString() || "0"),
+    retailPrice: parseInt(values.retailPrice?.toString() || "0"),
+    photoUrl: values.photoUrl,
+  };
+  const res = await auth({ method: "POST", url, user, data: ProductData });
+  return res;
 };
 
 export const deleteProduct = async (user: User | null, productId: string) => {
-  try {
-    const url = `${backend_url}/admin/products/${productId}`;
-    const idToken = await user?.getIdToken();
-    const headers = {
-      Authorization: `Bearer ${idToken}`,
-    };
-    const response = await axios.delete(url, { headers });
-    if (response.status !== 200) {
-      throw Error("Unexpected status code");
-    }
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+  const url = `admin/products/${productId}`;
+  const res = await auth({ method: "DELETE", url, user });
+  return res;
 };
 
 export const updateProductBck = async (
@@ -67,26 +39,15 @@ export const updateProductBck = async (
   productId: string,
   updatedProductData: IProduct
 ) => {
-  try {
-    const url = `${backend_url}/admin/products/${productId}`;
-    const idToken = await user?.getIdToken();
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${idToken}`,
-    };
+  const url = `admin/products/${productId}`;
 
-    console.log("updated data", updatedProductData);
-
-    const response = await axios.put(url, updatedProductData, { headers });
-
-    if (response.status !== 200) {
-      throw Error("Unexpected status code");
-    }
-    return;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+  const res = await auth({
+    url,
+    user,
+    method: "PUT",
+    data: updatedProductData,
+  });
+  return res;
 };
 
 const convertCsvToJson = (data: any[]) => {
@@ -100,6 +61,7 @@ const convertCsvToJson = (data: any[]) => {
   });
 };
 
+//rephrase this function
 export const parseAndUploadCSV = async (user: User | null, file: File) => {
   return new Promise<void>((resolve, reject) => {
     Papa.parse(file, {

@@ -48,15 +48,17 @@ const StockList: React.FC<StockListProps> = ({ onDelete, onEdit }) => {
   const handleModelOpen = (data: IGetStockItem) => {
     setEditData({
       quantity: data.quantity,
-      unit: getUnit(data.product.unit),
+      unit: getUnit(data?.product?.unit),
     });
-    setSelectedId(data.product._id);
+    setSelectedId(data?.product?._id);
     setShowEdit(true);
   };
 
   const deleteAll = () => {
     clearAllStock(user);
   };
+
+  console.log("stcoks changesd", stocks);
 
   return (
     <div className="stockList-wrapper">
@@ -73,19 +75,19 @@ const StockList: React.FC<StockListProps> = ({ onDelete, onEdit }) => {
                 <div className="flex-box">
                   <div className="img">
                     <img
-                      src={item.product?.photoUrl}
-                      alt={item.product?.name}
+                      src={item?.product?.photoUrl}
+                      alt={item?.product?.name}
                     />
                   </div>
                   <div className="para">
-                    <h5>{item.product?.name}</h5>
+                    <h5>{item?.product?.name}</h5>
                   </div>
                 </div>
                 <div className="add-delete-content">
                   <div className="litre">
                     <p>
-                      {item.quantity}
-                      <span>{getUnit(item.product?.unit)}</span>
+                      {item?.quantity}
+                      <span>{getUnit(item?.product?.unit)}</span>
                     </p>
                   </div>
                   <div
@@ -96,7 +98,7 @@ const StockList: React.FC<StockListProps> = ({ onDelete, onEdit }) => {
                   </div>
                   <div
                     className="delete-icon"
-                    onClick={() => handleDelete(item.product?._id)}
+                    onClick={() => handleDelete(item?.product?._id)}
                   >
                     <img src={DeleteIcon} alt="Delete" />
                   </div>

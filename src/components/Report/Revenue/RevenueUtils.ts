@@ -1,19 +1,8 @@
-import axios from "axios";
-import { backend_url } from "../../../constants/backend";
 import { User } from "firebase/auth";
-import { IStatus } from "../../../types/types";
+import { auth } from "../../../utils/handleCalls";
 
 export const getMonetoryStat = async (user: User | null) => {
-  try {
-    const url = `${backend_url}/admin/sales/monitory-stat`;
-    const idToken = await user?.getIdToken();
-    const headers = {
-      Authorization: `Bearer ${idToken}`,
-    };
-    const response = await axios.get(url, { headers });
-    return { type: "sucess", data: response.data } as IStatus;
-  } catch (error: any) {
-    console.log(error);
-    return { type: "unknown", data: error.response } as IStatus;
-  }
+  const url = `admin/sales/monitory-stat`;
+  const res = await auth({ method: "GET", url, user });
+  return res;
 };

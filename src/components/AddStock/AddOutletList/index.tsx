@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import OutletList from "../../OutletList";
 import "./AddOutletList.scss";
 import { IOutlet } from "../../../types/types";
@@ -38,6 +38,7 @@ const AddOutletList: React.FC = () => {
   const [showSampleCsv, setShowSampleCsv] = useState(false);
   const [showEditor, setShowEditor] = useState<boolean>(false);
   const showFileRef = useRef<HTMLInputElement | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const { createOutlet, updateOutlet, removeOutlet, uploadCSV, outlets } =
     useOutletStore();
 
@@ -116,6 +117,16 @@ const AddOutletList: React.FC = () => {
     }
   };
 
+  const filteredOutlets = useMemo(() => {
+    return outlets.filter((outlet) =>
+      outlet?.outletName?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [searchTerm, outlets]);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
   return (
     <div className="add-outlet-list-wrapper">
       <div className="outlet-list-wrapper">
@@ -124,7 +135,12 @@ const AddOutletList: React.FC = () => {
           <div className="search-and-share">
             <div className="search-input">
               <SearchIcon />
-              <input type="search" placeholder="Search" />
+              <input
+                type="search"
+                placeholder="Search"
+                value={searchTerm}
+                onChange={handleSearchChange}
+              />
             </div>
             <div className="share-box" onClick={handleOpenSharing}>
               <img src={ShareImg} alt="" />
@@ -175,8 +191,8 @@ const AddOutletList: React.FC = () => {
           </div>
         </div>
         <div className="outlet-list-container">
-          {outlets.length >= 1 ? (
-            outlets.map((outlet) => (
+          {filteredOutlets.length >= 1 ? (
+            filteredOutlets.map((outlet) => (
               <div
                 key={outlet._id}
                 className={`outlet-list-content ${

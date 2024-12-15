@@ -58,23 +58,24 @@ const AddProducts: React.FC = () => {
 
   const handleSubmit = (values: IStockItem) => {
     toast.promise(
-      async () =>{
-          const result = await addStock(user, values);
-          if(result.type !== "sucess"){
-            throw new Error(JSON.stringify({ type: result.type, data: result.data } as IStatus));
-          }
-          setSelectedImage(undefined);
-          formik.resetForm();
-          return {type : result.type, data : result.data} as IStatus
-
+      async () => {
+        const result = await addStock(user, values);
+        if (result.type !== "sucess") {
+          throw new Error(
+            JSON.stringify({ type: result.type, data: result.data } as IStatus)
+          );
+        }
+        setSelectedImage(undefined);
+        formik.resetForm();
+        return { type: result.type, data: result.data } as IStatus;
       },
-    {
+      {
         pending: "Creating stock",
         success: {
-          render({data}){
-            console.log(data)
-            return `${data.data}`
-          }
+          render({ data }) {
+            console.log(data);
+            return `${data.data}`;
+          },
         },
         error: {
           render({ data }) {
@@ -82,7 +83,8 @@ const AddProducts: React.FC = () => {
             try {
               //@ts-ignore
               const parsedError = JSON.parse(data.message); // Extract the JSON object
-              errorMessage = parsedError.data || parsedError.type || errorMessage;
+              errorMessage =
+                parsedError.data || parsedError.type || errorMessage;
             } catch (parseError) {
               console.error("Error parsing error message:", parseError);
             }
@@ -91,7 +93,7 @@ const AddProducts: React.FC = () => {
           },
         },
       }
-    )
+    );
   };
 
   const formik = useFormik({
@@ -130,16 +132,16 @@ const AddProducts: React.FC = () => {
   }, [formik.values.productId]);
 
   const handleDelete = async (id: string) => {
-      const res = await removeStock(user, id);
-      if(res.type !== "sucess"){
-        toast(res.data, TostPromiseOption);
-      }
+    const res = await removeStock(user, id);
+    if (res.type !== "sucess") {
+      toast(res.data, TostPromiseOption);
+    }
   };
 
   const handleEdit = async (updatedStock: IStockItem) => {
-    const result = await  updateStock(user, updatedStock);  
-    if(result.type !== "sucess"){
-      toast(result.data, TostPromiseOption); 
+    const result = await updateStock(user, updatedStock);
+    if (result.type !== "sucess") {
+      toast(result.data, TostPromiseOption);
     }
   };
 

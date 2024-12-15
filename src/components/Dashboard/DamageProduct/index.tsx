@@ -24,14 +24,11 @@ const DamageProduct: React.FC = () => {
   const [showDamageProrduct, setShowDamageProduct] = useState(false);
 
   const fetchDamagedProducts = async (page: number) => {
-    try {
-      setLoading(true);
-      const res = await getDamageProduct(user, 2024, 11, page, limit);
-      console.log("damgedres", res);
-      setDamaged((prevProducts: any) => [...prevProducts, ...res.data.damaged]);
+    setLoading(true);
+    const res = await getDamageProduct(user, 2024, 11, page, limit);
+    if (res.type === "sucess") {
+      setDamaged((prevProducts: any) => [...prevProducts, ...res.data?.data]);
       setLoading(false);
-    } catch (error) {
-      console.log(error);
     }
   };
 

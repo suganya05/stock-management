@@ -1,66 +1,28 @@
 import { User } from "firebase/auth";
 import { IOutlet } from "../types/types";
-import { backend_url } from "../constants/backend";
-import axios from "axios";
 import Papa from "papaparse";
+import { auth } from "../utils/handleCalls";
+import { toast } from "react-toastify";
 
 export const getOutlets = async (user: User | null) => {
-  try {
-    const url = `${backend_url}/admin/outlets`;
-    const idToken = await user?.getIdToken();
-    const headers = {
-      Authorization: `Bearer ${idToken}`,
-    };
-    const res = await axios.get(url, { headers });
-    if (res.status != 200) {
-      throw Error(`Error occured with status code ${res.status}`);
-    }
-    return res.data;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+  const url = `admin/outlets`;
+  const res = await auth({ method: "GET", url, user });
+  return res;
 };
 
 export const createOutlet = async (
   user: User | null,
   outlet: Partial<IOutlet>
 ) => {
-  try {
-    const url = `${backend_url}/admin/outlets`;
-    const idToken = await user?.getIdToken();
-    const headers = {
-      Authorization: `Bearer ${idToken}`,
-    };
-    const res = await axios.post(url, outlet, { headers });
-    if (res.status != 201) {
-      throw Error(
-        `Error occured while creating outlet with error code ${res.status}`
-      );
-    }
-    return res.data;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+  const url = `admin/outlets`;
+  const res = await auth({ method: "POST", url, user, data: outlet });
+  return res;
 };
 
 export const deleteOutlet = async (user: User | null, outletId: string) => {
-  try {
-    const url = `${backend_url}/admin/outlets/${outletId}`;
-    const idTkoken = await user?.getIdToken();
-    const headers = {
-      Authorization: `Bearer ${idTkoken}`,
-    };
-    const res = await axios.delete(url, { headers });
-    if (res.status != 200) {
-      throw Error(`Error occured with error code ${res.status}`);
-    }
-    return;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+  const url = `admin/outlets/${outletId}`;
+  const res = await auth({ method: "DELETE", url, user });
+  return res;
 };
 
 export const updateOutletBck = async (
@@ -68,51 +30,40 @@ export const updateOutletBck = async (
   outletId: string,
   updatedOutlet: Partial<IOutlet>
 ) => {
-  try {
-    const url = `${backend_url}/admin/outlets/${outletId}`;
-    const idToken = await user?.getIdToken();
-    const headers = {
-      Authorization: `Bearer ${idToken}`,
-    };
-    const res = await axios.put(url, updatedOutlet, { headers });
-
-    if (res.status != 200) {
-      throw Error(`Error occured with error code ${res.status}`);
-    }
-    return res.data;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+  const url = `admin/outlets/${outletId}`;
+  const res = await auth({ method: "PUT", url, user, data: updatedOutlet });
+  return res;
 };
 
 export const parseAndUploadOutletCSV = async (
   user: User | null,
   file: File
-): Promise<Partial<IOutlet>[]> => {
-  return new Promise<IOutlet[]>((resolve, reject) => {
-    Papa.parse(file, {
-      complete: async (result) => {
-        const jsonData = convertCsvToJson(result.data);
+) => {
+  // return new Promise<IOutlet[]>((resolve, reject) => {
+  //   Papa.parse(file, {
+  //     complete: async (result) => {
+  //       const jsonData = convertCsvToJson(result.data);
 
-        try {
-          const createdOutlets = await Promise.all(
-            jsonData.map(async (product) => {
-              const newOutlet = await createOutlet(user, product); // this returns newly created data
-              return newOutlet.newOutlet; // Collect the newly created outlet
-            })
-          );
+  //       try {
+  //         const createdOutlets = await Promise.all(
+  //           jsonData.map(async (product) => {
+  //             const newOutlet = await createOutlet(user, product);
+  //             return newOutlet.newOutlet;
+  //           })
+  //         );
 
-          resolve(createdOutlets); // Resolve with the array of newly created outlets
-        } catch (error) {
-          console.error("Failed to upload product:", error);
-          reject(error);
-        }
-      },
-      header: true,
-      skipEmptyLines: true,
-    });
-  });
+  //         resolve(createdOutlets);
+  //       } catch (error) {
+  //         console.error("Failed to upload product:", error);
+  //         reject(error);
+  //       }
+  //     },
+  //     header: true,
+  //     skipEmptyLines: true,
+  //   });
+  // });
+
+  toast.error("Rephrase this function");
 };
 
 export const convertCsvToJson = (data: any[]) => {

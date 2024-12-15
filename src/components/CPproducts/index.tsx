@@ -4,12 +4,10 @@ import EditIcon from "../../assets/icons/edit.svg";
 import DeleteIcon from "../../assets/icons/delete.png";
 import RupeeImg from "../../assets/icons/Rupee.png";
 import "./CPproducts.scss";
-import { IAllProducts, ICustomProduct } from "../../types/types";
+import { ICustomProduct } from "../../types/types";
 import Button from "../Button";
 import LayoutModule from "../LayoutModal";
-import AddProduct from "../ModalComponents/AddProduct";
 import AddCustomProduct from "../ModalComponents/AddCustomPricing";
-import { backend_url } from "../../constants/backend";
 import { getCustomPricingProduct } from "../../helpers/customPricing";
 import useAuthStore from "../../context/userStore";
 
@@ -31,9 +29,10 @@ const CProducts: React.FC<ICustomProduct> = ({
 
   const getProducts = async () => {
     if (selectedId) {
-      const prods = await getCustomPricingProduct(user, selectedId);
-      if (prods) {
-        setProducts(prods.products);
+      const response = await getCustomPricingProduct(user, selectedId);
+      if (response) {
+        // setProducts(prods.products);
+        setProducts(response.data?.data);
       } else {
         setProducts([]);
       }

@@ -1,23 +1,13 @@
-import axios from "axios";
-import { backend_url } from "../constants/backend";
 import { User } from "firebase/auth";
+import { auth } from "../utils/handleCalls";
 
 export const getCustomPricingProduct = async (
   user: User | null,
   outletId: string
 ) => {
-  try {
-    const url = `${backend_url}/admin/custom-pricing/${outletId}`;
-    console.log(url);
-    const idToken = await user?.getIdToken();
-    const headers = {
-      Authorization: `Bearer ${idToken}`,
-    };
-    const res = await axios.get(url, { headers });
-    return res.data;
-  } catch (error) {
-    console.log(error);
-  }
+  const url = `admin/custom-pricing/${outletId}`;
+  const res = await auth({ method: "GET", url, user });
+  return res;
 };
 
 export const addCustomPricing = async (
@@ -26,21 +16,12 @@ export const addCustomPricing = async (
   productId: string,
   price: number
 ) => {
-  try {
-    const url = `${backend_url}/admin/custom-pricing/add`;
-    const idToken = await user?.getIdToken();
-    const headers = {
-      Authorization: `Bearer ${idToken}`,
-    };
-    const data = {
-      outletId: outletId,
-      productId: productId,
-      retailPrice: price,
-    };
-    console.log("custom pricng data", data);
-    const res = await axios.post(url, data, { headers });
-    return res.status;
-  } catch (error) {
-    console.log(error);
-  }
+  const url = `admin/custom-pricing/add`;
+  const data = {
+    outletId: outletId,
+    productId: productId,
+    retailPrice: price,
+  };
+  const res = await auth({ method: "POST", url, user, data });
+  return res;
 };

@@ -15,7 +15,10 @@ interface StockStore {
   fetchStocks: (user: User | null) => Promise<IStatus>;
   addStock: (user: User | null, stock: IStockItem) => Promise<IStatus>;
   removeStock: (user: User | null, productId: string) => Promise<IStatus>;
-  updateStock: (user: User | null, updatedStock: IStockItem) => Promise<IStatus>;
+  updateStock: (
+    user: User | null,
+    updatedStock: IStockItem
+  ) => Promise<IStatus>;
   uploadCSV: (user: User | null, file: File) => void;
   clearAllStock: (user: User | null) => void;
 }
@@ -25,45 +28,45 @@ const useStockStore = create<StockStore>((set, get) => ({
 
   fetchStocks: async (user) => {
     if (user) {
-      try {
-        const result = await getStocks(user);
-        console.log("stocks", result.data);
-        set({ stocks: result.data });
-        return {type: result.type, data: result.data} as IStatus
-      } catch (error : any) {
-        return {type: error.type, data: error.data} as IStatus
+      const result = await getStocks(user);
+      if (result.type == "sucess") {
+        set({ stocks: result.data?.data });
+        return { type: result.type, data: result.data.data } as IStatus;
+      } else {
+        return { type: "unknown", data: "failed" } as IStatus;
       }
-    }
-    else{
-      return {type: "client", data: "Invalid token"} as IStatus
+    } else {
+      return { type: "client", data: "Invalid token" } as IStatus;
     }
   },
 
   addStock: async (user, stock) => {
-    try {
-      const data = await createStock(user, stock);
+    const data = await createStock(user, stock);
+    if (data.type === "sucess") {
       set((state) => {
+        console.log("state stocks", state.stocks);
+        console.log("data stock", data.data);
         let updatedStock = [...state.stocks];
         const newStock = updatedStock.map((item) => {
-          if (item.product._id == data.data.stocks.product._id) {
-            item.quantity = data.data.stocks.quantity;
+          if (item.product._id == data.data.data.product._id) {
+            item.quantity = data.data.data.stocks.quantity;
           }
           return item;
         });
 
         const productExists = newStock.some(
-          (f) => f.product._id == data.data.stocks.product._id
+          (f) => f.product._id == data.data.data.product._id
         );
 
         const finalStock = productExists
           ? newStock
-          : [...newStock, data.data.stocks];
+          : [...newStock, data.data.data];
         return { ...state, stocks: finalStock };
       });
 
-      return {type: data.type, data: "Success"} as IStatus 
-    } catch (error : any) {
-      return {type: error.type, data : error.data} as IStatus
+      return { type: data.type, data: "Success" } as IStatus;
+    } else {
+      return { type: data.type, data: "Failed" } as IStatus;
     }
   },
 
@@ -80,47 +83,50 @@ const useStockStore = create<StockStore>((set, get) => ({
           return state;
         }
       });
-      return {type: result.type, data: result.data} as IStatus
-    } catch (error : any) {
-      return {type: error.type, data: error.data} as IStatus
+      return { type: result.type, data: result.data } as IStatus;
+    } catch (error: any) {
+      return { type: error.type, data: error.data } as IStatus;
     }
   },
 
   updateStock: async (user, updatedStockItem) => {
     try {
       const updatedStockResponse = await updateStockBck(user, updatedStockItem);
-        set((state) => {
-          const newStock = state.stocks.map((item) => {
-            if (item.product._id === updatedStockItem.productId) {
-              return { ...item, quantity: updatedStockItem.quantity };
-            }
-            return item;
-          });
-          return { ...state, stocks: newStock };
+      set((state) => {
+        const newStock = state.stocks.map((item) => {
+          if (item.product._id === updatedStockItem.productId) {
+            return { ...item, quantity: updatedStockItem.quantity };
+          }
+          return item;
         });
-      return {type: updatedStockResponse.type, data : updatedStockResponse.data} as IStatus
-    } catch (error : any) {
-      return {type: error.type, data : error.data} as IStatus
+        return { ...state, stocks: newStock };
+      });
+      return {
+        type: updatedStockResponse.type,
+        data: updatedStockResponse.data,
+      } as IStatus;
+    } catch (error: any) {
+      return { type: error.type, data: error.data } as IStatus;
     }
   },
   uploadCSV: async (user, file) => {
     try {
       const result = await parseAndUploadCSV(user, file);
       get().fetchStocks(user);
-      return {type: result.type,data : result.data} as IStatus
-    } catch (error : any) {
-      return {type: error.type,data : error.data} as IStatus
+      return { type: result.type, data: result.data } as IStatus;
+    } catch (error: any) {
+      return { type: error.type, data: error.data } as IStatus;
     }
   },
   clearAllStock: async (user) => {
     try {
       const res = await deleteAll(user);
-        set((state) => {
-          return { stocks: { ...state.stocks, stocks: [] } };
-        });
-        return {type: res.type, data: res.data} as IStatus
-    } catch (error : any) {
-      return {type: error.type, data: error.data} as IStatus
+      set((state) => {
+        return { stocks: { ...state.stocks, stocks: [] } };
+      });
+      return { type: res.type, data: res.data } as IStatus;
+    } catch (error: any) {
+      return { type: error.type, data: error.data } as IStatus;
     }
   },
 }));
