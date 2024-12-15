@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ReactComponent as SearchIcon } from "../../../assets/icons/search.svg";
 import ProfileImg from "../../../assets/images/profile-img.jpg";
 import RightArrow from "../../../assets/icons/right.svg";
@@ -22,6 +22,7 @@ const AddSalesperson: React.FC = () => {
   const [selectedRep, setSelectedRep] = useState<Partial<ISalesPerson>>();
   const [showEditor, setShowEditor] = useState(false);
   const [editorErr, setEditorErr] = useState<string>();
+  const [searchQuery, setSearchQuery] = useState("");
   const { salesReps, createSalesRep, updateSalesRep, removeSalesRep } =
     useSalesRepStore();
   const [showPassword, setShowPassword] = useState<string>();
@@ -98,9 +99,19 @@ const AddSalesperson: React.FC = () => {
     // update
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
   useEffect(() => {
     console.log("sales reps", salesReps);
   }, []);
+
+  const filteredOutlets = useMemo(() => {
+    return salesReps.filter((rep) =>
+      rep?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery, salesReps]);
 
   return (
     <div className="add-sales-person-wrapper">
@@ -109,12 +120,17 @@ const AddSalesperson: React.FC = () => {
           <h4>Delivery Person</h4>
           <div className="search-input">
             <SearchIcon />
-            <input type="search" placeholder="Search" />
+            <input
+              type="search"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
           </div>
         </div>
         <div className="add-sales-person-container">
-          {salesReps && salesReps.length > 0 ? (
-            salesReps.map((f) => (
+          {filteredOutlets && filteredOutlets.length > 0 ? (
+            filteredOutlets.map((f) => (
               <div
                 key={f._id}
                 className={`add-sales ${

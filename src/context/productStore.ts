@@ -4,6 +4,7 @@ import {
   createProduct,
   deleteProduct,
   getProducts,
+  parseAndUpload,
   parseAndUploadCSV,
   updateProductBck,
 } from "../helpers/products";
@@ -65,13 +66,13 @@ const useProductStore = create<ProductStore>((set) => ({
     }
   },
   uploadCSV: async (user, file) => {
-    // const parsingRes = await parseAndUploadCSV(user, file);
-    // if (parsingRes.type === "sucess") {
-    //   const data = await getProducts(user);
-    //   if (data?.type == "sucess") {
-    //     set({ products: data.data.data });
-    //   }
-    // }
+    const parsingRes = await parseAndUpload(user, file);
+    if (parsingRes.type === "sucess") {
+      const data = await getProducts(user);
+      if (data?.type == "sucess") {
+        set({ products: data.data.data });
+      }
+    }
   },
 }));
 

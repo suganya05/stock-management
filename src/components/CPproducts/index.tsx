@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ReactComponent as SearchIcon } from "../../assets/icons/search.svg";
 import EditIcon from "../../assets/icons/edit.svg";
 import DeleteIcon from "../../assets/icons/delete.png";
@@ -18,6 +18,7 @@ const CProducts: React.FC<ICustomProduct> = ({
   selectedId,
 }) => {
   const [showAddModel, setShowAddModel] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [products, setProducts] = useState<any[]>([]);
   const { user } = useAuthStore();
   const handleAddModelOpen = () => {
@@ -39,6 +40,16 @@ const CProducts: React.FC<ICustomProduct> = ({
     }
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredProducts = useMemo(() => {
+    return products.filter((prod) =>
+      prod?.productId?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery, products]);
+
   useEffect(() => {
     getProducts();
   }, [selectedId, showAddModel]);
@@ -48,12 +59,18 @@ const CProducts: React.FC<ICustomProduct> = ({
         <h4>All Product Price List</h4>
         <div className="search-input">
           <SearchIcon />
-          <input type="search" placeholder="Search" />
+          {/* <input type="search" placeholder="Search" /> */}
+          <input
+            type="search"
+            placeholder="Search"
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
         </div>
       </div>
       <div className="data-content">
-        {products && products.length >= 1 ? (
-          products.map((f, index) => {
+        {filteredProducts && filteredProducts.length >= 1 ? (
+          filteredProducts.map((f, index) => {
             return (
               <div className="box" key={index}>
                 <div className="flex-box">

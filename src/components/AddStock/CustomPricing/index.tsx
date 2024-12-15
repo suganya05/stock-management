@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./CustomPricing.scss";
 import { IOutlet, IProduct } from "../../../types/types";
 import { ReactComponent as SearchIcon } from "../../../assets/icons/search.svg";
@@ -13,6 +13,7 @@ const CustomPricing: React.FC = () => {
   const [selectedOutletId, setSelectedOutletId] = useState<string | null>(null);
   const { outlets } = useOutletStore();
   const [products, setProducts] = useState<IProduct[]>();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleSelectOutlet = async (id: string | undefined) => {
     if (id) {
@@ -29,6 +30,17 @@ const CustomPricing: React.FC = () => {
     if (selectedOutletId) {
     }
   }, [selectedOutletId]);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredOutlets = useMemo(() => {
+    return outlets.filter((outlet) =>
+      outlet?.outletName?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, []);
+
   return (
     <div className="custom-pricing-wrapper">
       <div className="outlet-list-wrapper">
@@ -37,13 +49,18 @@ const CustomPricing: React.FC = () => {
           <div className="search-and-share">
             <div className="search-input">
               <SearchIcon />
-              <input type="search" placeholder="Search" />
+              <input
+                type="search"
+                placeholder="Search"
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
             </div>
           </div>
         </div>
         <div className="outlet-list-container">
-          {outlets.length >= 1 ? (
-            outlets.map((outlet) => (
+          {filteredOutlets && filteredOutlets.length >= 1 ? (
+            filteredOutlets.map((outlet) => (
               <div
                 key={outlet._id}
                 className={`outlet-list-content ${

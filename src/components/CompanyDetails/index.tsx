@@ -22,6 +22,7 @@ import {
   getDamagedProduct,
   getSalesForOutlet,
   getTransactionHistory,
+  getTransactionHistoryDetails,
   getUnPaid,
 } from "./CompanyDetailsUtils";
 import LayoutModule from "../LayoutModal";
@@ -117,7 +118,13 @@ const CompanyDetails: React.FC = () => {
     try {
       if (companyId) {
         setTransacLoading(true);
-        const res = await getTransactionHistory(user, companyId, page, limit);
+        // const res = await getTransactionHistory(user, companyId, page, limit);
+        const res = await getTransactionHistoryDetails(
+          user,
+          companyId,
+          page,
+          limit
+        );
         setTransacs((prev) => [...prev, ...res.data.data]);
         setTransacLoading(false);
       }
@@ -411,12 +418,12 @@ const CompanyDetails: React.FC = () => {
                 <h4>TRANSACTION HISTORY</h4>
                 {trasacs && trasacs.length > 0 && (
                   <div className="download">
-                    <div onClick={generatePDF}>
+                    {/* <div onClick={generatePDF}>
                       <img src={DownloadIcon} alt="" />
                     </div>
                     <div className="share">
                       <img src={ShareImg} alt="" />
-                    </div>
+                    </div> */}
                     <Link to="transaction-history-details">
                       <p>View All</p>
                     </Link>

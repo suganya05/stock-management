@@ -1,33 +1,37 @@
-import { Auth, User } from "firebase/auth";
-import { AddNewProductForm, IProduct } from "../types/types";
+import { User } from "firebase/auth";
+import { backend_url } from "../constants/backend";
 import Papa from "papaparse";
 import { auth } from "../utils/handleCalls";
+import { ParseFile } from "../utils/handleFile";
+import { IStatus } from "../types/types";
 
 export const getProducts = async (user: User | null) => {
   if (!user) {
     return;
   }
   const url = `admin/products/all`;
-  const res = await auth({ method: "GET", url, user });
-  return res;
+  const response = await auth({ method: "GET", url, user });
+  return response;
 };
 
-export const createProduct = async (
-  user: User | null,
-  values: Partial<IProduct>
-) => {
+export const createProduct = async (user: User | null, values: any) => {
   const url = `admin/products`;
-  const ProductData = {
-    name: values.name,
-    unit: values.unit,
-    actualPrice: parseInt(values.actualPrice?.toString() || "0"),
-    retailPrice: parseInt(values.retailPrice?.toString() || "0"),
-    photoUrl: values.photoUrl,
-  };
-  const res = await auth({ method: "POST", url, user, data: ProductData });
+
+  const formData = new FormData();
+  formData.append("name", values.name);
+  formData.append("unit", values.unit);
+  formData.append("actualPrice", values.actualPrice);
+  formData.append("retailPrice", values.retailPrice);
+
+  if (values.photoFile) {
+    formData.append("photoFile", values.photoFile);
+  }
+
+  //   const res = await axios.post(url, formData, { headers });
+  const res = await auth({ method: "POST", url, user, data: formData });
+
   return res;
 };
-
 export const deleteProduct = async (user: User | null, productId: string) => {
   const url = `admin/products/${productId}`;
   const res = await auth({ method: "DELETE", url, user });
@@ -37,19 +41,23 @@ export const deleteProduct = async (user: User | null, productId: string) => {
 export const updateProductBck = async (
   user: User | null,
   productId: string,
-  updatedProductData: IProduct
+  updatedProductData: any
+  //   imageFile: any
 ) => {
-  const url = `admin/products/${productId}`;
+  const url = `${backend_url}/admin/products/${productId}`;
+  const formData = new FormData();
 
-  const res = await auth({
-    url,
-    user,
-    method: "PUT",
-    data: updatedProductData,
-  });
-  return res;
+  formData.append("name", updatedProductData.name);
+  formData.append("unit", updatedProductData.unit);
+  formData.append("actualPrice", updatedProductData.actualPrice.toString());
+  formData.append("retailPrice", updatedProductData.retailPrice.toString());
+
+  //   if (imageFile) {
+  //     formData.append("photoFile", imageFile);
+  //   }
+
+  return auth({ method: "PUT", url, user, data: formData });
 };
-
 const convertCsvToJson = (data: any[]) => {
   return data.map((row: any) => {
     return {
@@ -61,7 +69,6 @@ const convertCsvToJson = (data: any[]) => {
   });
 };
 
-//rephrase this function
 export const parseAndUploadCSV = async (user: User | null, file: File) => {
   return new Promise<void>((resolve, reject) => {
     Papa.parse(file, {
@@ -83,4 +90,19 @@ export const parseAndUploadCSV = async (user: User | null, file: File) => {
       skipEmptyLines: true,
     });
   });
+};
+
+export const parseAndUpload = async (user: User | null, file: File) => {
+  try {
+    const raw_data = await ParseFile(file);
+    const data = convertCsvToJson(raw_data);
+    await Promise.all(
+      data.map(async (product) => {
+        await createProduct(user, product);
+      })
+    );
+    return { type: "sucess", data: "success" } as IStatus;
+  } catch (error) {
+    return { type: "server", data: "faild" } as IStatus;
+  }
 };
