@@ -10,7 +10,6 @@ const BalanceSheet: React.FC = () => {
   const fetchBalanceSheet = async () => {
     try {
       const balanceSheet = await getBalanceSheet(user);
-      console.log("top selling prods", balanceSheet.data);
       setBalanceSheet(balanceSheet.data);
     } catch (error) {
       console.log(error);

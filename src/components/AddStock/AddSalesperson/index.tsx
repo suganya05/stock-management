@@ -66,9 +66,7 @@ const AddSalesperson: React.FC = () => {
     photoFile: File | undefined
   ) => {
     try {
-      console.log("photo file", photoFile);
       const password = await createSalesRep(user, data, photoFile);
-      console.log("password for newly created user is", password);
       setShowPassword(password);
       setShowRep(false);
       setAddRepErr(undefined);
@@ -96,7 +94,6 @@ const AddSalesperson: React.FC = () => {
           selectedRep?._id,
           updatedRepData
         );
-        console.log(newData.salesRep);
         setSelectedRep(newData.salesRep);
         setShowEditor(false);
       }
@@ -116,10 +113,6 @@ const AddSalesperson: React.FC = () => {
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
-
-  useEffect(() => {
-    console.log("sales reps", salesReps);
-  }, []);
 
   const filteredOutlets = useMemo(() => {
     return salesReps.filter((rep) =>

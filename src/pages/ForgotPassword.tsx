@@ -26,7 +26,6 @@ const ForgotPasswordScreen: React.FC = () => {
     } catch (error) {
       //@ts-ignore
       setError("Error occurred: " + error.message);
-      console.log(error);
     }
   };
 

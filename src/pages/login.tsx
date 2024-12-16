@@ -32,7 +32,6 @@ const LoginScreen: React.FC = () => {
         .required("Required"),
     }),
     onSubmit: (values) => {
-      console.log("Login with:", values);
       loginWithEmail(values);
     },
   });
@@ -47,7 +46,6 @@ const LoginScreen: React.FC = () => {
       setUser(signIn.user);
       navigate("/dashboard");
     } catch (error) {
-      console.log(error);
       //@ts-ignore
       setError("Error occured", error.message);
     }

@@ -14,7 +14,6 @@ export const uploadImageToFirebase = (
       (snapshot) => {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log(`Upload is ${progress}% done`);
         if (onProgress) onProgress(progress);
       },
       (error) => {
@@ -23,7 +22,6 @@ export const uploadImageToFirebase = (
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          console.log("File available at", downloadURL);
           resolve(downloadURL);
         });
       }

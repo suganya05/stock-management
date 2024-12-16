@@ -107,7 +107,6 @@ const TransactionHistoryDetails: React.FC = () => {
           formik.values.startDate,
           formik.values.endDate
         );
-        console.log("fetching transactions", res.data);
         setTransacs((prev) => [...prev, ...res.data.transactions]);
         setTransacLoading(false);
       }
@@ -125,7 +124,6 @@ const TransactionHistoryDetails: React.FC = () => {
       const { scrollTop, clientHeight, scrollHeight } = transactionHist.current;
       if (scrollTop + clientHeight >= scrollHeight - 10 && !trasacLoading) {
         setTransacPage((prevPage) => prevPage + 1);
-        console.log("unpaid", scrollTop + clientHeight >= scrollHeight);
       }
     }
   };

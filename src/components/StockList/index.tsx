@@ -58,8 +58,6 @@ const StockList: React.FC<StockListProps> = ({ onDelete, onEdit }) => {
     clearAllStock(user);
   };
 
-  console.log("stcoks changesd", stocks);
-
   return (
     <div className="stockList-wrapper">
       <div className="stock-list-content">

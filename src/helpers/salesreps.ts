@@ -20,7 +20,6 @@ export const createSalesRep = async (
 
   if (photoFile) {
     formData.append("photoFile", photoFile);
-    console.log("appended");
   }
 
   const headers = {

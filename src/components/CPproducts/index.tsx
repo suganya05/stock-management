@@ -45,7 +45,6 @@ const CProducts: React.FC<ICustomProduct> = ({
   };
 
   const filteredProducts = useMemo(() => {
-    console.log("cp prodcuts", products);
     return products?.filter((prod) =>
       prod?.productId?.name?.toLowerCase().includes(searchQuery.toLowerCase())
     );

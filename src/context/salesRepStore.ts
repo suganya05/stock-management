@@ -43,13 +43,11 @@ const useSalesRepStore = create<SalesRepStore>((set) => ({
   },
 
   createSalesRep: async (user, salesRep, photoFile) => {
-    console.log("photo inside store", photoFile);
     const newRepRes = await createSalesRep(user, salesRep, photoFile);
     if (newRepRes.type == "sucess") {
       set((state) => ({
         salesReps: [...state.salesReps, newRepRes.data?.data],
       }));
-      console.log(newRepRes.data);
       return newRepRes.data.password;
     }
   },

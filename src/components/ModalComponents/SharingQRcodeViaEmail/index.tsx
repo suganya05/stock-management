@@ -25,7 +25,6 @@ const SharingQRCodeViaEmail: React.FC = () => {
   };
 
   const handleSendPress = async () => {
-    console.log("Selected Items:", selectedItems);
     // Add logic to handle sending selected QR codes via email
   };
 

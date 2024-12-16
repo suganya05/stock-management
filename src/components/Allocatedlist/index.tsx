@@ -122,10 +122,6 @@ const AllocatedList: React.FC<IAllocateList> = ({ selectedRepId }) => {
     fetchStocks(user);
   }, []);
 
-  useEffect(() => {
-    console.log("selected rep id", selectedRepId);
-  }, [selectedRepId]);
-
   return (
     <div className="allocated-list-wrapper">
       <div className="allocated-list-head">

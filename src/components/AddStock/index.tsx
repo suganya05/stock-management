@@ -73,7 +73,6 @@ const AddProducts: React.FC = () => {
         pending: "Creating stock",
         success: {
           render({ data }) {
-            console.log(data);
             return `${data.data}`;
           },
         },
@@ -88,7 +87,6 @@ const AddProducts: React.FC = () => {
             } catch (parseError) {
               console.error("Error parsing error message:", parseError);
             }
-            console.log(data);
             return `${errorMessage}`;
           },
         },
@@ -160,7 +158,6 @@ const AddProducts: React.FC = () => {
   }, []);
 
   const fetchSampleData = async () => {
-    console.log(products);
     const samplePrd = [];
     for (const product of products) {
       samplePrd.push({

@@ -113,7 +113,6 @@ const NewProducts: React.FC = () => {
       if (id) {
         removeProduct(user, id);
       } else {
-        console.log("id not found");
       }
     } catch (e) {
       console.log(e);

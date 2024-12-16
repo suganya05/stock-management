@@ -88,7 +88,6 @@ const CompanyDetails: React.FC = () => {
       if (companyId) {
         setLoading(true);
         const res = await getDamagedProduct(user, companyId, page, limit);
-        console.log("company details", res.data);
         setDamaged((prevProducts: any) => [...prevProducts, ...res.data.data]);
         setLoading(false);
       }
@@ -106,7 +105,6 @@ const CompanyDetails: React.FC = () => {
           ...prevProducts,
           ...res.data.data,
         ]);
-        console.log("fetching unpaid", res.data);
         setUnPaidLoading(false);
       }
     } catch (error) {
@@ -125,7 +123,6 @@ const CompanyDetails: React.FC = () => {
           page,
           limit
         );
-        console.log("trans hist", res);
         if (res.type === "sucess") {
           setTransacs((prev) => [...prev, ...res.data.data]);
           setTransacLoading(false);
@@ -170,7 +167,6 @@ const CompanyDetails: React.FC = () => {
         damagedContainer.current;
       if (scrollTop + clientHeight >= scrollHeight - 10 && !loading) {
         setPage((prevPage) => prevPage + 1);
-        console.log(scrollTop + clientHeight >= scrollHeight);
       }
     }
   };
@@ -189,7 +185,6 @@ const CompanyDetails: React.FC = () => {
       const { scrollTop, clientHeight, scrollHeight } = unPaidContainer.current;
       if (scrollTop + clientHeight >= scrollHeight - 10 && !unpaidLoading) {
         setUnpaidPage((prevPage) => prevPage + 1);
-        console.log("unpaid", scrollTop + clientHeight >= scrollHeight);
       }
     }
   };
@@ -208,7 +203,6 @@ const CompanyDetails: React.FC = () => {
       const { scrollTop, clientHeight, scrollHeight } = transactionHist.current;
       if (scrollTop + clientHeight >= scrollHeight - 10 && !trasacLoading) {
         setTransacPage((prevPage) => prevPage + 1);
-        console.log("unpaid", scrollTop + clientHeight >= scrollHeight);
       }
     }
   };

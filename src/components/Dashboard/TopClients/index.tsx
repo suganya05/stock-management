@@ -49,7 +49,6 @@ const TopClient: React.FC = () => {
     try {
       const data = await getTopClients(user);
       setTopClients(data.data.topClients);
-      console.log(data.data.topClients);
     } catch (error) {
       console.log(error);
     }

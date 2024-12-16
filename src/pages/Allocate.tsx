@@ -47,7 +47,6 @@ const Allocate: React.FC = () => {
     const file = event.target.files?.[0];
     if (file) {
       await uploadCSV(user, file);
-      console.log("upolded csv");
       await fetchStocks(user);
       handleCloseCsv();
     }

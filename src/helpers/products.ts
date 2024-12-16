@@ -22,9 +22,7 @@ export const createProduct = async (user: User | null, values: any) => {
   formData.append("unit", values.unit);
   formData.append("actualPrice", values.actualPrice);
   formData.append("retailPrice", values.retailPrice);
-  console.log("about to give");
   if (values.photoFile) {
-    console.log("giving file");
     formData.append("photoFile", values.photoFile);
   }
 
@@ -122,7 +120,6 @@ export const parseAndUpload = async (user: User | null, file: File) => {
         await createProduct(user, product);
       })
     );
-    console.log("after");
 
     return { type: "sucess", data: "success" } as IStatus;
   } catch (error) {

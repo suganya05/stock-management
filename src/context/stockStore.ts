@@ -44,8 +44,6 @@ const useStockStore = create<StockStore>((set, get) => ({
     const data = await createStock(user, stock);
     if (data.type === "sucess") {
       set((state) => {
-        console.log("state stocks", state.stocks);
-        console.log("data stock", data.data);
         let updatedStock = [...state.stocks];
         const newStock = updatedStock.map((item) => {
           if (item.product._id == data.data.data?.product?._id) {

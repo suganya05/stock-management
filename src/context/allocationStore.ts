@@ -56,7 +56,6 @@ const useAllocationsStore = create<AllocationStore>((set, get) => ({
         salesPersonId,
         productId
       );
-      console.log("Deleted", deleteProduct.data);
 
       set((state) => {
         const salesPersonData = state.allocations.find(

@@ -42,7 +42,6 @@ const OutletEditor: React.FC<IOutletEditor> = ({
   }, [selectedOutlet]);
 
   const handleSubmit = (values: Partial<IOutlet>) => {
-    console.log("edited values", values);
     onSubmit(values);
   };
 
@@ -55,7 +54,6 @@ const OutletEditor: React.FC<IOutletEditor> = ({
       reader.readAsDataURL(file);
       setBtnDisabled(true);
       const imgUrl = await uploadImageToFirebase(file);
-      console.log("new img", imgUrl);
       formik.setFieldValue("photoUrl", imgUrl);
       setBtnDisabled(false);
     }

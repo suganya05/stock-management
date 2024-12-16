@@ -86,8 +86,6 @@ const useOutletStore = create<OutletStore>((set, get) => ({
   uploadCSV: async (user, file) => {
     try {
       const response = await parseAndUploadOutletCSV(user, file);
-      console.log("oulet", response);
-      console.log("oulet", get().outlets);
       set((state) => ({
         outlets: [...state.outlets, ...response],
       }));

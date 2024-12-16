@@ -103,10 +103,8 @@ export const auth = async <T>({
       },
       ...options,
     });
-    console.log("res data", res.data);
 
     if (res?.data?.message != "success") {
-      console.log("failer for following req", url);
       throw new Error(res?.data?.message || "API request failed");
     }
 

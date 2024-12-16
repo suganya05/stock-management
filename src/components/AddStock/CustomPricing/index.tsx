@@ -25,7 +25,6 @@ const CustomPricing: React.FC = () => {
       const response = await getCustomPricingProduct(user, id);
       if (response) {
         setProducts(response.data?.data);
-        console.log("custom product", response.data?.data);
       }
     }
   };
@@ -48,10 +47,8 @@ const CustomPricing: React.FC = () => {
   const handleDelete = async (id: string | undefined) => {
     const res = await deleteCP(user, id);
     if (res.type == "sucess") {
-      console.log("after delete", products);
       //@ts-ignore
       setProducts(products?.products.filter((product) => product._id !== id));
-      console.log("after delete", products);
     }
   };
 

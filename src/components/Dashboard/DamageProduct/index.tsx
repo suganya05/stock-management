@@ -43,7 +43,6 @@ const DamageProduct: React.FC = () => {
         damagedContainer.current;
       if (scrollTop + clientHeight >= scrollHeight - 10 && !loading) {
         setPage((prevPage) => prevPage + 1);
-        console.log(scrollTop + clientHeight >= scrollHeight);
       }
     }
   };
