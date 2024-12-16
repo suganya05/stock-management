@@ -14,7 +14,7 @@ interface OutletStore {
   outlets: Partial<IOutlet>[];
   fetchOutlets: (user: User | null) => Promise<void>;
   createOutlet: (user: User | null, outlet: Partial<IOutlet>) => void;
-  removeOutlet: (user: User | null, outletId: string) => void;
+  removeOutlet: (user: User | null, outletId: string) => Promise<void>;
   updateOutlet: (
     user: User | null,
     outletId: string,
@@ -23,7 +23,7 @@ interface OutletStore {
   uploadCSV: (user: User | null, csvFile: File) => void;
 }
 
-const useOutletStore = create<OutletStore>((set) => ({
+const useOutletStore = create<OutletStore>((set, get) => ({
   outlets: [],
 
   fetchOutlets: async (user) => {
@@ -86,9 +86,11 @@ const useOutletStore = create<OutletStore>((set) => ({
   uploadCSV: async (user, file) => {
     try {
       const response = await parseAndUploadOutletCSV(user, file);
-      // set((state) => ({
-      //   outlets: [...state.outlets, ...response],
-      // }));
+      console.log("oulet", response);
+      console.log("oulet", get().outlets);
+      set((state) => ({
+        outlets: [...state.outlets, ...response],
+      }));
     } catch (error) {
       console.log(error);
     }

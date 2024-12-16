@@ -19,7 +19,8 @@ interface SalesRepStore {
   fetchSalesReps: (user: User | null) => Promise<void>;
   createSalesRep: (
     user: User | null,
-    salesRep: Partial<ISalesPerson>
+    salesRep: Partial<ISalesPerson>,
+    photoFile: File | undefined
   ) => Promise<string>;
   removeSalesRep: (user: User | null, salesRepId: string) => void;
   updateSalesRep: (
@@ -41,13 +42,15 @@ const useSalesRepStore = create<SalesRepStore>((set) => ({
     }
   },
 
-  createSalesRep: async (user, salesRep) => {
-    const newRepRes = await createSalesRep(user, salesRep);
+  createSalesRep: async (user, salesRep, photoFile) => {
+    console.log("photo inside store", photoFile);
+    const newRepRes = await createSalesRep(user, salesRep, photoFile);
     if (newRepRes.type == "sucess") {
       set((state) => ({
         salesReps: [...state.salesReps, newRepRes.data?.data],
       }));
-      return newRepRes.data.additional_data;
+      console.log(newRepRes.data);
+      return newRepRes.data.password;
     }
   },
 

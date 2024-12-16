@@ -6,7 +6,6 @@ import BlackPlusIcon from "../../../assets/images/plus.svg";
 import Button from "../../Button";
 import "./AddSalesRepresentative.scss";
 import { ISalesPerson } from "../../../types/types";
-import { uploadImageToFirebase } from "../../../helpers/firebase";
 
 const initialValues: ISalesPerson = {
   name: "",
@@ -18,7 +17,7 @@ const initialValues: ISalesPerson = {
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   email: Yup.string()
-    .email("Invalid email format") // Validates for a proper email format
+    .email("Invalid email format")
     .required("Email is required"),
   phoneNumber: Yup.string()
     .matches(/^[0-9]{10}$/, "Phone Number must be 10 digits") // Ensures the phone number is exactly 10 digits
@@ -27,7 +26,7 @@ const validationSchema = Yup.object().shape({
 });
 
 interface IAddSalesRepresentative {
-  onSubmit: (data: ISalesPerson) => void;
+  onSubmit: (data: ISalesPerson, photoFile: File | undefined) => void;
   error: string | undefined;
 }
 
@@ -36,10 +35,12 @@ const AddSalesRepresentative: React.FC<IAddSalesRepresentative> = ({
   error,
 }) => {
   const [uploading, setUploading] = useState(false);
+  const [imgUrl, setImgUrl] = useState<string>();
+  const [image, setImage] = useState<File>();
 
   const handleSubmit = (values: ISalesPerson) => {
     console.log(values);
-    onSubmit(values);
+    onSubmit(values, image);
   };
 
   const formik = useFormik({
@@ -53,9 +54,16 @@ const AddSalesRepresentative: React.FC<IAddSalesRepresentative> = ({
   ) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
+      const reader = new FileReader();
+
       setUploading(true);
-      const imgUrl = await uploadImageToFirebase(file);
-      formik.setFieldValue("photoUrl", imgUrl);
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        const localFileUri = reader.result as string;
+        setImgUrl(localFileUri);
+        setImage(file);
+      };
+
       setUploading(false);
     }
   };
@@ -119,12 +127,8 @@ const AddSalesRepresentative: React.FC<IAddSalesRepresentative> = ({
                     Please wait
                   </h4>
                 </div>
-              ) : formik.values.photoUrl ? (
-                <img
-                  src={formik.values.photoUrl}
-                  alt="Uploaded"
-                  className="uploaded-image"
-                />
+              ) : imgUrl ? (
+                <img src={imgUrl} alt="Uploaded" className="uploaded-image" />
               ) : (
                 <div className="upload">
                   <h4>
@@ -149,6 +153,7 @@ const AddSalesRepresentative: React.FC<IAddSalesRepresentative> = ({
             value={formik.values.phoneNumber}
             onChange={formik.handleChange("phoneNumber")}
             onBlur={formik.handleBlur("phoneNumber")}
+            maxLength={10}
           />
           {formik.touched.phoneNumber && formik.errors.phoneNumber ? (
             <div className="error">{formik.errors.phoneNumber}</div>

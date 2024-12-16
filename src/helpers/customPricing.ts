@@ -25,3 +25,9 @@ export const addCustomPricing = async (
   const res = await auth({ method: "POST", url, user, data });
   return res;
 };
+
+export const deleteCP = async (user: User | null, id: string | undefined) => {
+  const url = `admin/custom-pricing/${id}`;
+  const res = await auth({ method: "DELETE", url, user });
+  return res;
+};

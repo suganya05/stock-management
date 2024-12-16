@@ -22,13 +22,24 @@ export const createProduct = async (user: User | null, values: any) => {
   formData.append("unit", values.unit);
   formData.append("actualPrice", values.actualPrice);
   formData.append("retailPrice", values.retailPrice);
-
+  console.log("about to give");
   if (values.photoFile) {
+    console.log("giving file");
     formData.append("photoFile", values.photoFile);
   }
 
   //   const res = await axios.post(url, formData, { headers });
-  const res = await auth({ method: "POST", url, user, data: formData });
+  const res = await auth({
+    method: "POST",
+    url,
+    user,
+    data: formData,
+    options: {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    },
+  });
 
   return res;
 };
@@ -41,8 +52,8 @@ export const deleteProduct = async (user: User | null, productId: string) => {
 export const updateProductBck = async (
   user: User | null,
   productId: string,
-  updatedProductData: any
-  //   imageFile: any
+  updatedProductData: any,
+  imageFile: File | undefined
 ) => {
   const url = `admin/products/${productId}`;
   const formData = new FormData();
@@ -52,11 +63,21 @@ export const updateProductBck = async (
   formData.append("actualPrice", updatedProductData.actualPrice.toString());
   formData.append("retailPrice", updatedProductData.retailPrice.toString());
 
-  //   if (imageFile) {
-  //     formData.append("photoFile", imageFile);
-  //   }
+  if (imageFile) {
+    formData.append("photoFile", imageFile);
+  }
 
-  return auth({ method: "PUT", url, user, data: formData });
+  return auth({
+    method: "PUT",
+    url,
+    user,
+    data: formData,
+    options: {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    },
+  });
 };
 const convertCsvToJson = (data: any[]) => {
   return data.map((row: any) => {
@@ -95,12 +116,14 @@ export const parseAndUploadCSV = async (user: User | null, file: File) => {
 export const parseAndUpload = async (user: User | null, file: File) => {
   try {
     const raw_data = await ParseFile(file);
-    const data = convertCsvToJson(raw_data);
+    const data = convertCsvToJson(raw_data.data);
     await Promise.all(
       data.map(async (product) => {
         await createProduct(user, product);
       })
     );
+    console.log("after");
+
     return { type: "sucess", data: "success" } as IStatus;
   } catch (error) {
     return { type: "server", data: "faild" } as IStatus;

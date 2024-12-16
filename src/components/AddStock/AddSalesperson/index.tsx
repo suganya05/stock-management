@@ -51,9 +51,23 @@ const AddSalesperson: React.FC = () => {
     setShowPassword(undefined);
   };
 
-  const handleCreateRep = async (data: ISalesPerson) => {
+  // const handleCreateRep = async (data: ISalesPerson) => {
+  //   try {
+  //     const password = await createSalesRep(user, data);
+  //     setShowPassword(password);
+  //     setShowRep(false);
+  //     setAddRepErr(undefined);
+  //   } catch (error) {
+  //     setAddRepErr("Error occured while creating salesperson");
+  //   }
+  // };
+  const handleCreateRep = async (
+    data: ISalesPerson,
+    photoFile: File | undefined
+  ) => {
     try {
-      const password = await createSalesRep(user, data);
+      console.log("photo file", photoFile);
+      const password = await createSalesRep(user, data, photoFile);
       console.log("password for newly created user is", password);
       setShowPassword(password);
       setShowRep(false);
@@ -233,9 +247,9 @@ const AddSalesperson: React.FC = () => {
                 <img src={DeleteIcon} alt="" />
                 <p>Delete</p>
               </div>
-              <Button varient="primary" onClick={handleToggleActive}>
+              {/* <Button varient="primary" onClick={handleToggleActive}>
                 Make inactive
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>

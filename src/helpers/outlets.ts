@@ -39,31 +39,29 @@ export const parseAndUploadOutletCSV = async (
   user: User | null,
   file: File
 ) => {
-  // return new Promise<IOutlet[]>((resolve, reject) => {
-  //   Papa.parse(file, {
-  //     complete: async (result) => {
-  //       const jsonData = convertCsvToJson(result.data);
+  return new Promise<IOutlet[]>((resolve, reject) => {
+    Papa.parse(file, {
+      complete: async (result) => {
+        const jsonData = convertCsvToJson(result.data);
 
-  //       try {
-  //         const createdOutlets = await Promise.all(
-  //           jsonData.map(async (product) => {
-  //             const newOutlet = await createOutlet(user, product);
-  //             return newOutlet.newOutlet;
-  //           })
-  //         );
+        try {
+          const createdOutlets = await Promise.all(
+            jsonData.map(async (product) => {
+              const newOutlet = await createOutlet(user, product);
+              return newOutlet.data.data;
+            })
+          );
 
-  //         resolve(createdOutlets);
-  //       } catch (error) {
-  //         console.error("Failed to upload product:", error);
-  //         reject(error);
-  //       }
-  //     },
-  //     header: true,
-  //     skipEmptyLines: true,
-  //   });
-  // });
-
-  toast.error("Rephrase this function");
+          resolve(createdOutlets);
+        } catch (error) {
+          console.error("Failed to upload product:", error);
+          reject(error);
+        }
+      },
+      header: true,
+      skipEmptyLines: true,
+    });
+  });
 };
 
 export const convertCsvToJson = (data: any[]) => {

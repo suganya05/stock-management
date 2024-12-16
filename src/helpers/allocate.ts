@@ -45,7 +45,7 @@ export const handleUploadCsv = async (user: User | null, file: File) => {
     };
   });
   const url = `admin/allocations/bulk`;
-  const res = await auth({ method: "POST", url, user, data });
+  const res = await auth({ method: "POST", url, user, data: { data } });
   return res;
 };
 

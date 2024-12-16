@@ -42,10 +42,6 @@ const AddOutletList: React.FC = () => {
   const { createOutlet, updateOutlet, removeOutlet, uploadCSV, outlets } =
     useOutletStore();
 
-  useEffect(() => {
-    console.log("outlets", outlets);
-  }, [outlets]);
-
   const handleCloseOutlet = () => {
     setAddOutlet(false);
   };
@@ -75,12 +71,8 @@ const AddOutletList: React.FC = () => {
   };
 
   const handleCreateOutlet = async (outletData: IOutlet) => {
-    try {
-      createOutlet(user, outletData);
-      setAddOutlet(false);
-    } catch (error) {
-      // handle error
-    }
+    await createOutlet(user, outletData);
+    setAddOutlet(false);
   };
 
   const handleDeleteOutlet = async () => {

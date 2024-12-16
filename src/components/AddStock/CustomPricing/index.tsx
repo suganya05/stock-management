@@ -6,7 +6,11 @@ import RightArrow from "../../../assets/icons/right.svg";
 import useAuthStore from "../../../context/userStore";
 import useOutletStore from "../../../context/outletStore";
 import CProducts from "../../CPproducts";
-import { getCustomPricingProduct } from "../../../helpers/customPricing";
+import {
+  deleteCP,
+  getCustomPricingProduct,
+} from "../../../helpers/customPricing";
+import { auth } from "../../../utils/handleCalls";
 
 const CustomPricing: React.FC = () => {
   const user = useAuthStore((state) => state.user);
@@ -40,6 +44,16 @@ const CustomPricing: React.FC = () => {
       outlet?.outletName?.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, []);
+
+  const handleDelete = async (id: string | undefined) => {
+    const res = await deleteCP(user, id);
+    if (res.type == "sucess") {
+      console.log("after delete", products);
+      //@ts-ignore
+      setProducts(products?.products.filter((product) => product._id !== id));
+      console.log("after delete", products);
+    }
+  };
 
   return (
     <div className="custom-pricing-wrapper">
@@ -84,7 +98,11 @@ const CustomPricing: React.FC = () => {
           )}
         </div>
       </div>
-      <CProducts prodList={products} selectedId={selectedOutletId} />
+      <CProducts
+        prodList={products}
+        selectedId={selectedOutletId}
+        onDelete={(id) => handleDelete(id)}
+      />
     </div>
   );
 };

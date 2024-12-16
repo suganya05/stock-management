@@ -49,6 +49,8 @@ const NewProducts: React.FC = () => {
   const showFileRef = useRef<HTMLInputElement | null>(null);
   const [disabled, setDisabled] = useState(false);
   const [editError, setEditError] = useState<string>();
+  const [image, setImage] = useState<string>();
+
   const { products, updateProduct, removeProduct, addProduct, uploadCSV } =
     useProductStore();
 
@@ -71,13 +73,20 @@ const NewProducts: React.FC = () => {
       if (event.target.files && event.target.files[0]) {
         const file = event.target.files[0];
         const reader = new FileReader();
+
         setIsUploading(true);
         setDisabled(true);
-        const imgUrl = await uploadImageToFirebase(file);
-        formik.setFieldValue("photoUrl", imgUrl);
+
         reader.readAsDataURL(file);
-        setIsUploading(false);
-        setDisabled(false);
+
+        reader.onloadend = () => {
+          const localFileUri = reader.result as string;
+          setImage(localFileUri);
+
+          formik.setFieldValue("photoFile", file);
+          setIsUploading(false);
+          setDisabled(false);
+        };
       }
     } catch (error) {
       console.log(error);
@@ -89,6 +98,7 @@ const NewProducts: React.FC = () => {
       async () => {
         await addProduct(user, values);
         formik.resetForm();
+        setImage("");
       },
       {
         pending: "Creating Product",
@@ -110,10 +120,13 @@ const NewProducts: React.FC = () => {
     }
   };
 
-  const onEditPress = async (id: string, updatedProductData: IProduct) => {
+  const onEditPress = async (
+    id: string,
+    updatedProductData: IProduct,
+    imageFile: File | undefined
+  ) => {
     try {
-      console.log("asda", id, updatedProductData);
-      updateProduct(user, id, updatedProductData);
+      updateProduct(user, id, updatedProductData, imageFile);
       setEditor(false);
     } catch (e) {
       console.log(e);
@@ -193,7 +206,9 @@ const NewProducts: React.FC = () => {
               <EditProductModel
                 errorStatus={editError}
                 productData={productToEdit}
-                onSubmit={(id, updatedProds) => onEditPress(id, updatedProds)}
+                onSubmit={(id, updatedProds, imageFile) =>
+                  onEditPress(id, updatedProds, imageFile)
+                }
               />
             </LayoutModule>
           )}
@@ -301,9 +316,9 @@ const NewProducts: React.FC = () => {
                         Please wait
                       </h4>
                     </div>
-                  ) : formik.values.photoUrl ? (
+                  ) : image ? (
                     <img
-                      src={formik.values.photoUrl}
+                      src={image}
                       alt="Uploaded"
                       className="uploaded-image"
                     />
@@ -328,9 +343,9 @@ const NewProducts: React.FC = () => {
                   type="submit"
                   rightIcon={<img src={ArrowRight} alt="plus" />}
                   onClick={(e) => {
-                    e.preventDefault()
-                    formik.handleSubmit()}
-                  }
+                    e.preventDefault();
+                    formik.handleSubmit();
+                  }}
                 >
                   Add Product
                 </Button>

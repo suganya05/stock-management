@@ -6,9 +6,34 @@ const url = `admin/sales-persons`;
 
 export const createSalesRep = async (
   user: User | null,
-  salesRep: Partial<ISalesPerson>
+  salesRep: Partial<ISalesPerson>,
+  photoFile: File | undefined
 ) => {
-  const res = await auth({ method: "POST", url, user, data: salesRep });
+  const formData = new FormData();
+
+  (Object.keys(salesRep) as (keyof ISalesPerson)[]).forEach((key) => {
+    const value = salesRep[key];
+    if (value !== undefined && value !== null) {
+      formData.append(key, value as string | Blob);
+    }
+  });
+
+  if (photoFile) {
+    formData.append("photoFile", photoFile);
+    console.log("appended");
+  }
+
+  const headers = {
+    "Content-Type": "multipart/form-data",
+  };
+
+  const res = await auth({
+    method: "POST",
+    url,
+    user,
+    data: salesRep,
+    options: { headers },
+  });
   return res;
 };
 

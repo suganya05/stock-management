@@ -18,7 +18,8 @@ interface ProductStore {
   updateProduct: (
     user: User | null,
     productId: string,
-    updatedProduct: IProduct
+    updatedProduct: IProduct,
+    imageFile: File | undefined
   ) => void;
   uploadCSV: (user: User | null, csvFile: File) => void;
 }
@@ -53,13 +54,18 @@ const useProductStore = create<ProductStore>((set) => ({
       }));
     }
   },
-  updateProduct: async (user, productId, updatedProduct) => {
-    const updateRes = await updateProductBck(user, productId, updatedProduct);
+  updateProduct: async (user, productId, updatedProduct, imageFile) => {
+    const updateRes = await updateProductBck(
+      user,
+      productId,
+      updatedProduct,
+      imageFile
+    );
     if (updateRes.type == "sucess") {
       set((state) => ({
         products: state.products.map((product) =>
           product._id === productId
-            ? { ...product, ...updatedProduct }
+            ? { ...product, ...updateRes.data?.data }
             : product
         ),
       }));
