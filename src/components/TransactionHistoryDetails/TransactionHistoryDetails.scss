@@ -54,6 +54,20 @@
           align-items: center;
           gap: 10px;
           padding-right: 10px;
+          .custom-date-picker {
+            border-radius: 8px;
+            padding: 8px;
+            width: fit-content;
+            font-size: 0.9rem;
+            color: #333;
+            border: 1px solid #ddd;
+            cursor: pointer;
+
+            &:focus {
+              outline: none;
+              cursor: none;
+            }
+          }
           .img {
             cursor: pointer;
             background: #fff;

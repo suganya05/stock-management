@@ -16,6 +16,22 @@ import { getTransactionHistory } from "../CompanyDetails/CompanyDetailsUtils";
 import useAuthStore from "../../context/userStore";
 import { isValidObjectId } from "../../helpers/objectIdTester";
 import useOutletStore from "../../context/outletStore";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import DatePicker from "react-datepicker";
+
+const validationSchema = Yup.object({
+  startDate: Yup.date().required("Start date is required").nullable(),
+  endDate: Yup.date()
+    .required("End date is required")
+    .nullable()
+    .min(Yup.ref("startDate"), "End date must be after start date"),
+});
+
+const initialValue = {
+  startDate: new Date(),
+  endDate: new Date(),
+};
 
 const TransactionHistoryDetails: React.FC = () => {
   const navigate = useNavigate();
@@ -31,6 +47,8 @@ const TransactionHistoryDetails: React.FC = () => {
   const [trasacLoading, setTransacLoading] = useState(false);
   const [trasacs, setTransacs] = useState<ISales[]>([]);
   const [transacProds, setTransacProds] = useState<INewStockItem[]>([]);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const datePickerRef = useRef<HTMLInputElement>(null);
 
   const toggleModal = () => setModalState(!isModalOpen);
 
@@ -40,8 +58,28 @@ const TransactionHistoryDetails: React.FC = () => {
 
   const generatePDF = () => {
     const doc = new jsPDF();
-    doc.text("Hello world!", 10, 10);
-    doc.save("sample.pdf");
+
+    // Set up title
+    doc.setFontSize(18);
+    doc.text("Transaction History", 14, 20);
+
+    // Set up table header
+    doc.setFontSize(12);
+    doc.text("Date", 14, 30);
+    doc.text("Status", 50, 30);
+    doc.text("Executed By", 100, 30);
+    doc.text("Order Amount", 150, 30);
+
+    let yPosition = 40; // Starting Y position for table rows
+    trasacs.forEach((t) => {
+      doc.text(new Date(t.salesDate).toDateString(), 14, yPosition);
+      doc.text(t.paymentStatus || "", 50, yPosition);
+      doc.text(t.soldBy.name, 100, yPosition);
+      doc.text(t.totalAmount.toString(), 150, yPosition);
+      yPosition += 10; // Increment Y position for next row
+    });
+
+    doc.save("transaction-history.pdf");
   };
 
   useEffect(() => {
@@ -61,7 +99,14 @@ const TransactionHistoryDetails: React.FC = () => {
     try {
       if (companyId) {
         setTransacLoading(true);
-        const res = await getTransactionHistory(user, companyId, page, limit);
+        const res = await getTransactionHistory(
+          user,
+          companyId,
+          page,
+          limit,
+          formik.values.startDate,
+          formik.values.endDate
+        );
         console.log("fetching transactions", res.data);
         setTransacs((prev) => [...prev, ...res.data.transactions]);
         setTransacLoading(false);
@@ -93,13 +138,43 @@ const TransactionHistoryDetails: React.FC = () => {
     }
   }, []);
 
+  const handleCalendarClose = () => {
+    // Blur the focused element when the calendar closes
+    (document.activeElement as HTMLElement)?.blur();
+  };
+
+  const handleFetch = (values: any) => {};
+
+  const formik = useFormik({
+    initialValues: initialValue,
+    validationSchema: validationSchema,
+    onSubmit: handleFetch,
+  });
+
+  const handleStartDateChange = (date: Date | null) => {
+    formik.setFieldValue("startDate", date);
+  };
+
+  const handleEndDateChange = (date: Date | null) => {
+    formik.setFieldValue("endDate", date);
+  };
+
+  useEffect(() => {
+    fetchTransactions(transacPage);
+  }, [transacPage]);
+
+  useEffect(() => {
+    setTransacs([]);
+    fetchTransactions(transacPage);
+  }, [formik.values]);
+
   return (
     <Layout className="transaction-history">
       <div className="transaction-history-details">
-        <div className="head" onClick={handleGoBack}>
-          <img src={LeftArrow} alt="" />
+        <div className="head">
+          <img src={LeftArrow} alt="" onClick={handleGoBack} />
           <div className="img">
-            <img src={selectedOutlet?.photoUrl} alt="" />
+            <img src={selectedOutlet?.photoUrl} alt="Oulet" />
           </div>
           <div className="title">
             <h3>{selectedOutlet?.outletName}</h3>
@@ -110,6 +185,23 @@ const TransactionHistoryDetails: React.FC = () => {
           <div className="transaction-head">
             <h4>Transaction History</h4>
             <div className="icons">
+              <DatePicker
+                selected={formik.values.startDate}
+                onChange={handleStartDateChange}
+                placeholderText="Start Date"
+                dateFormat="dd/MM/yyyy"
+                className="custom-date-picker"
+                onCalendarClose={handleCalendarClose}
+                name="startDate"
+              />
+              <DatePicker
+                selected={formik.values.endDate}
+                onChange={handleEndDateChange}
+                placeholderText="End Month"
+                dateFormat="dd/MM/yyyy"
+                className="custom-date-picker"
+                name="endDate"
+              />
               <div className="img" onClick={generatePDF}>
                 <img src={DownloadIcon} alt="" />
               </div>

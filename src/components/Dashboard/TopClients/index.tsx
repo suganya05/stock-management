@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import ImgThree from "../../../assets/images/img-3.png";
 import Rupee from "../../../assets/images/rupee.png";
 import Briefcase from "../../../assets/icons/briefcase.png";
 import "./TopClients.scss";
-import { getMonetoryStat } from "../../Report/Revenue/RevenueUtils";
+import Button from "../../Button";
+import { getMonetoryStat } from "../../Report/RevenueChart/RevenueUtils";
 import useAuthStore from "../../../context/userStore";
 import { getTopClients } from "./TopClients";
+import { ISales } from "../../../types/types";
 
 const TopClient: React.FC = () => {
   const [totalRevenue, setTotalRevenue] = useState<number>();
@@ -45,7 +48,8 @@ const TopClient: React.FC = () => {
   const getTopClient = async () => {
     try {
       const data = await getTopClients(user);
-      setTopClients(data.data.data);
+      setTopClients(data.data.topClients);
+      console.log(data.data.topClients);
     } catch (error) {
       console.log(error);
     }

@@ -49,7 +49,7 @@
     }
   }
   .revenue-container {
-    width: 790px;
+    width: 600px;
     height: 218px;
     background: #dbdbdb;
     border-radius: 15px;
@@ -97,6 +97,31 @@
             font-weight: 600;
           }
         }
+      }
+    }
+  }
+  .flex-three {
+    height: 218px;
+    width: 300px;
+    background: #dbdbdb;
+    border-radius: 15px;
+    padding: 18px 20px 8px 20px;
+    .pi-head {
+      margin-bottom: 15px;
+      h4 {
+        font-size: 18px;
+        font-weight: 600;
+      }
+    }
+    .chart-container {
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 8px;
+      .chart {
+        height: 180px;
+        width: 200px;
       }
     }
   }

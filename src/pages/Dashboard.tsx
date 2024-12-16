@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "../components/Layout";
-import TopSales from "../components/Dashboard/TopSales";
+import TopSales from "../components/Dashboard/BalanceSheet";
 import TopClient from "../components/Dashboard/TopClients";
 import DamageProduct from "../components/Dashboard/DamageProduct";
 import "../styles/Dashboard.scss";

@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../Button";
 import LayoutModule from "../../LayoutModal";
 import "./ManageRep.scss";
-import { getManageSalesPerson } from "./ManageRepUtils";
 import useAuthStore from "../../../context/userStore";
 import { IDenomination, IGetMangeRep, IHandOver } from "../../../types/types";
+import { getManageSalesPerson } from "./ManageRepUtils";
 
 const ManageRep: React.FC = () => {
   const [showDenomination, setShowDenomination] = useState(false);

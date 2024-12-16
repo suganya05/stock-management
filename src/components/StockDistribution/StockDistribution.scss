@@ -38,14 +38,10 @@
     background: #fff;
     border-radius: 15px;
     padding: 12px;
-
     .persons-wrapper {
-      display: flex;
-      flex-direction: column; /* Ensure inner content stacks vertically */
       padding-left: 6px;
       padding-right: 6px;
       border-right: 1px solid #d9d8d8;
-      width: 100%; /* Ensure even width */
       .person-head {
         display: flex;
         align-items: center;
@@ -138,16 +134,6 @@
               padding-right: 8px;
               h3 {
                 font-size: 13px;
-                .slick-slide {
-                  display: flex !important; /* Ensure each slide aligns horizontally */
-                  justify-content: center; /* Center content horizontally */
-                }
-
-                .slick-list {
-                  overflow: hidden; /* Prevent overflow issues */
-                  display: flex;
-                  align-items: center; /* Ensure proper alignment */
-                }
                 font-weight: 500;
               }
             }

@@ -125,8 +125,11 @@ const CompanyDetails: React.FC = () => {
           page,
           limit
         );
-        setTransacs((prev) => [...prev, ...res.data.data]);
-        setTransacLoading(false);
+        console.log("trans hist", res);
+        if (res.type === "sucess") {
+          setTransacs((prev) => [...prev, ...res.data.data]);
+          setTransacLoading(false);
+        }
       }
     } catch (error) {
       console.log("Error occured transac", error);

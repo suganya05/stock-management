@@ -48,8 +48,8 @@ const useStockStore = create<StockStore>((set, get) => ({
         console.log("data stock", data.data);
         let updatedStock = [...state.stocks];
         const newStock = updatedStock.map((item) => {
-          if (item.product._id == data.data.data.product._id) {
-            item.quantity = data.data.data.stocks.quantity;
+          if (item.product._id == data.data.data?.product?._id) {
+            item.quantity = data.data.data?.quantity;
           }
           return item;
         });

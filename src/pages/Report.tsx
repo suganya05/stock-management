@@ -3,8 +3,8 @@ import Layout from "../components/Layout";
 import ExploreOutlets from "../components/Report/Explore";
 import ManageRep from "../components/Report/ManageRep";
 import "../styles/Report.scss";
-import TopSales from "../components/Dashboard/TopSales";
-import Revenue from "../components/Report/Revenue";
+import BalanceSheet from "../components/Dashboard/BalanceSheet";
+import RevenueChart from "../components/Report/RevenueChart";
 
 const Report: React.FC = () => {
   return (
@@ -14,8 +14,8 @@ const Report: React.FC = () => {
         <ExploreOutlets />
       </div>
       <div className="second-component">
-        <TopSales />
-        <Revenue />
+        <BalanceSheet />
+        <RevenueChart />
       </div>
     </Layout>
   );

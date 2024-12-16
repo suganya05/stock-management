@@ -3,7 +3,6 @@ import { IStatus, IStockItem } from "../types/types";
 import Papa from "papaparse";
 import { auth, handleError } from "../utils/handleCalls";
 import { ParseFile } from "../utils/handleFile";
-import Revenue from "../components/Report/Revenue";
 import { toast } from "react-toastify";
 
 export const createStock = async (user: User | null, stockData: IStockItem) => {

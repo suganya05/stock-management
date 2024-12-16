@@ -33,7 +33,7 @@ const CProducts: React.FC<ICustomProduct> = ({
       const response = await getCustomPricingProduct(user, selectedId);
       if (response) {
         // setProducts(prods.products);
-        setProducts(response.data?.data);
+        setProducts(response.data?.data?.products);
       } else {
         setProducts([]);
       }
@@ -45,7 +45,8 @@ const CProducts: React.FC<ICustomProduct> = ({
   };
 
   const filteredProducts = useMemo(() => {
-    return products.filter((prod) =>
+    console.log("cp prodcuts", products);
+    return products?.filter((prod) =>
       prod?.productId?.name?.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [searchQuery, products]);

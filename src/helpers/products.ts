@@ -44,7 +44,7 @@ export const updateProductBck = async (
   updatedProductData: any
   //   imageFile: any
 ) => {
-  const url = `${backend_url}/admin/products/${productId}`;
+  const url = `admin/products/${productId}`;
   const formData = new FormData();
 
   formData.append("name", updatedProductData.name);
